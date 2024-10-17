@@ -10,7 +10,7 @@
 class ConfigYamlLoader
   class << self
     def load(file_path, use_rails_env = true)
-      hash = YAML.safe_load(File.open(file_path)).deep_symbolize_keys
+      hash = YAML.safe_load(File.open(file_path),permitted_classes: [Symbol]).deep_symbolize_keys
       hash = hash[Rails.env.to_sym] if use_rails_env
       exclude_unsubstituted_envvars(hash)
     end
