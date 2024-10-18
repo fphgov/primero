@@ -74,7 +74,7 @@ export default ({
         condition: canRefer,
         disableOffline: true,
         enabledFor: ENABLED_FOR_ONE_MANY,
-        name: `${i18n.t("buttons.referral")} ${formRecordType}`,
+        name: `${i18n.t("buttons.referral")}`,
         recordType: RECORD_PATH.cases
       },
       {
@@ -82,7 +82,7 @@ export default ({
         condition: canAssign,
         disableOffline: true,
         enabledFor: ENABLED_FOR_ONE_MANY_ALL,
-        name: `${i18n.t("buttons.reassign")} ${formRecordType}`,
+        name: `${i18n.t("buttons.reassign")}`,
         recordListAction: true,
         recordType: [RECORD_PATH.cases, RECORD_PATH.incidents]
       },
@@ -91,7 +91,7 @@ export default ({
         condition: canTransfer,
         disableOffline: true,
         enabledFor: ENABLED_FOR_ONE_MANY,
-        name: `${i18n.t("buttons.transfer")} ${formRecordType}`,
+        name: `${i18n.t("buttons.transfer")}`,
         recordType: RECORD_PATH.cases
       },
       {
