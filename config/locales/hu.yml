@@ -37,16 +37,16 @@ hu:
   actions:
     approvals: Jóváhagyások
     button: Műveletek
-    close: Bezárás
+    close: Lezárás
     description:
       invalid: Érvénytelen rekord
       valid: Érvényes rekord
-    disable: Letiltás
-    enable: Engedélyezés
-    incident_details_from_case: Esemény hozzáadása
-    incident_from_case: Esemény létrehozása
+    disable: Inaktívvá tesz
+    enable: Újra engedélyez
+    incident_details_from_case: Incidens hozzáadása
+    incident_from_case: Incidens létrehozása
     next: Következő
-    notes: Megjegyzések hozzáadása
+    notes: Jegyzetek hozzáadása
     previous: Előző
     reopen: Újranyitás
     request_approval: Jóváhagyás kérése
@@ -143,7 +143,7 @@ hu:
     close: Bezárás
     continue: Folytatás
     create_case: Ügyfél létrehozása
-    create_incident: Esemény létrehozása
+    create_incident: Incidens létrehozása
     create_new_record: Új %{model} létrehozása
     delete: Törlés
     disable: Letiltás
@@ -270,7 +270,7 @@ hu:
       service_implemented: Szolgáltatás megvalósítva
       services_implemented: Szolgáltatás megvalósítva
   linkedincidents:
-    label: Kapcsolódó események
+    label: Kapcsolódó incidensek
   activity_log:
     label: Tevékenységnapló
     accepted_transfer: '%{to} elfogadta a %{record_type} %{record_id} átadását %{from}-tól'
@@ -2235,7 +2235,7 @@ hu:
       title: Írja be az ID számot egy meglévő rekord kereséséhez.
     phonetic_search:
       title: Írjon be egy nevet egy meglévő rekord kereséséhez.
-      label: Használja a név mezők használata
+      label: Keresés név alapján
       help_text: A név mezőkhöz fonetikus keresés érhető el.
     bulk_exports: Exportok
     cases: Ügyfelek
@@ -2297,7 +2297,7 @@ hu:
       cases_by_task_overdue_followups: Ügyfelek megtekintése késő feladatok szerint
       cases_by_task_overdue_services: Ügyfelek megtekintése késő feladatok szerint
       cases_managed_other_users: Más felhasználók által kezelt ügyfelek
-      close: Bezárás
+      close: Lezárás
       consent_override: Hozzájárulás felülbírálása
       copy: Másolás
       copy_of: Másolat
@@ -2998,7 +2998,7 @@ hu:
           write:
             explanation: Képesség a "Szerkesztés" gombra kattintani, az incidens adatainak frissítése, és a "Mentés" gombra kattintás. Ez lehetővé teszi az incidens letiltását vagy engedélyezését is.
             label: Szerkesztés
-        explanation: Egy eseményt képvisel, amely történt. Ezek általában bántalmazás vagy erőszak incidensei, de előfordulhatnak események, mint például a bűnüldöző szervekkel való találkozások. Az incidensek gyakran kapcsolódnak Ügyekhez.
+        explanation: Egy incidenst képvisel, amely történt. Ezek általában bántalmazás vagy erőszak incidensei, de előfordulhatnak incidensek, mint például a bűnüldöző szervekkel való találkozások. Az incidensek gyakran kapcsolódnak Ügyekhez.
         label: Incidens
       is_manager:
         explanation: Alkalmazható bármely felhasználói szerepkörre, amely általában más felhasználók felügyeletét végzi. Ez lehetővé teszi a felhasználó számára, hogy lássa a csapat irányítását segítő műszerfalakat és szűrőket.
