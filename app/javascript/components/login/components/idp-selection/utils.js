@@ -13,7 +13,7 @@ export const setMsalConfig = (idp = {}, forceStandardOidc) => {
         authority: idp.authorization_url,
         autoRefreshToken: true,
         authorityMetadata: JSON.stringify({
-          authorization_endpoint: `${idp.authorization_url}/protocol/openid-connect/auth`,
+          authorization_endpoint: `${idp.authorization_url}`,
           token_endpoint: `${idp.authorization_url}/protocol/openid-connect/token`,
           end_session_endpoint: `${idp.authorization_url}/protocol/openid-connect/logout`,
           issuer: idp.authorization_url
