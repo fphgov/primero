@@ -14,8 +14,8 @@ export const setMsalConfig = (idp = {}, forceStandardOidc) => {
         autoRefreshToken: true,
         authorityMetadata: JSON.stringify({
           authorization_endpoint: `${idp.authorization_url}`,
-          token_endpoint: `${idp.authorization_url}/protocol/openid-connect/token`,
-          end_session_endpoint: `${idp.authorization_url}/protocol/openid-connect/logout`,
+          token_endpoint: `${idp.token_endpoint}`,
+          end_session_endpoint: `${idp.session_endpoint}`,
           issuer: idp.authorization_url
         }),
         knownAuthorities: ["unicefpartners.b2clogin.com", idp.authorization_url],
