@@ -51,7 +51,8 @@ export const setMsalApp = async (msalConfig, historyObj) => {
   const navigationClient = new CustomNavigationClient(historyObj);
 
   app.setNavigationClient(navigationClient);
-
+  app.addEventCallback((event) => {
+    console.log("Event:", event);});
   return app;
 };
 
