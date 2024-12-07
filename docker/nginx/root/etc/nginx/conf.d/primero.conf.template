@@ -23,7 +23,9 @@ server {
     add_header X-Content-Type-Options nosniff;
     ssl_certificate_key       /certs/wildcard.budapest.hu.2024.key;
     ssl_certificate           /certs/wildcard.budapest.hu.2024.crt;
-
+    
+    large_client_header_buffers 4 32k;
+    
     if ($request_method !~ ^(GET|PUT|POST|PATCH|DELETE)$ ) {
         return 444;
     }
@@ -68,13 +70,13 @@ server {
         deny all;
     }
 
-    location /v2/login/ {
-        limit_req zone=login_app_limit burst=5;
-    }
+#    location /v2/login/ {
+#        limit_req zone=login_app_limit burst=5;
+#    }
 
-    location /api/v2/tokens/ {
-        limit_req zone=login_app_limit burst=5;
-    }
+#    location /api/v2/tokens/ {
+#        limit_req zone=login_app_limit burst=5;
+#    }
 
     location ~* ^/(assets|images|javascripts|stylesheets|options)/ {
         gzip_static on;
