@@ -376,6 +376,17 @@ describe Api::V2::ChildrenController, type: :request do
       expect(response).to have_http_status(200)
     end
 
+    it 'returns an empty response for an invalid filter and logs the error' do
+      allow(Rails.logger).to receive(:error).and_return(nil)
+      login_for_test
+
+      get '/api/v2/cases?associated_user_names=List["user1"]'
+      expect(response).to have_http_status(200)
+      expect(json['metadata']['total']).to eq(0)
+      expect(json['data']).to be_empty
+      expect(Rails.logger).to have_received(:error)
+    end
+
     context 'when a user can only see his own records but has search_owned_by_others' do
       it 'lists only those cases a user has permission to see' do
         sign_in(@user_owned_others)
@@ -570,7 +581,7 @@ describe Api::V2::ChildrenController, type: :request do
               user_id: fake_user_id, # This is technically wrong, but an artifact of the way we do tests
               resource_url: request.url,
               metadata: { user_name: fake_user_name, remote_ip: '127.0.0.1', agency_id: nil, role_id: nil,
-                          http_method: 'GET' })
+                          http_method: 'GET', record_ids: [@case1.id] })
     end
 
     it 'obfuscates the case name when hidden' do
