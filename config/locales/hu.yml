@@ -558,7 +558,7 @@ hu:
       new: Új
       new_this_week: Új ezen a héten
       referrals: Referálások
-      transfers: Átirányítások
+      transfers: Átadások
     approval_action_plan_approved: Jóváhagyva
     approval_action_plan_pending: Függőben
     approval_action_plan_pending_group: Akcióterv
@@ -1429,7 +1429,7 @@ hu:
   incident:
     code: Incidens kód
     associated_case: "Kapcsolódó ügyfél:"
-    link_incident_to_case: Incidens kapcsolása az ügyfélhez
+    link_incident_to_case: Incidens ügyfélhez kapcsolása
     link_incident_to_case_success: Az incidens(ek) sikeresen kapcsolva az ügyfélhez
     messages:
       creation_success: Az incidens rekord sikeresen létrehozva.
@@ -2513,13 +2513,13 @@ hu:
             explanation: Lehetővé teszi a menedzser számára, hogy jóváhagyja az %{approval_label} az ügyintézői ügyeiben.
             label: "%{approval_label} űrlap jóváhagyása"
           assign:
-            explanation: Lehetővé teszi a felhasználó számára, hogy az ügyet átküldje egy másik felhasználónak a rendszerben. Ehhez nincs szükség a gyermek hozzájárulására. A transzferekkel ellentétben a fogadó felhasználónak nincs lehetősége elfogadni vagy elutasítani a hozzárendelést.
+            explanation: Lehetővé teszi a felhasználó számára, hogy az ügyet átküldje egy másik felhasználónak a rendszerben. Ehhez nincs szükség a gyermek hozzájárulására. Az átadással ellentétben a fogadó felhasználónak nincs lehetősége elfogadni vagy elutasítani a hozzárendelést.
             label: Hozzárendelés
           assign_within_agency:
-            explanation: Lehetővé teszi a felhasználó számára, hogy az ügyet átküldje egy másik felhasználónak ugyanazon szervezetben. Ehhez nincs szükség a gyermek hozzájárulására. A transzferekkel ellentétben a fogadó felhasználónak nincs lehetősége elfogadni vagy elutasítani a hozzárendelést.
+            explanation: Lehetővé teszi a felhasználó számára, hogy az ügyet átküldje egy másik felhasználónak ugyanazon szervezetben. Ehhez nincs szükség a gyermek hozzájárulására. Az átadással ellentétben a fogadó felhasználónak nincs lehetősége elfogadni vagy elutasítani a hozzárendelést.
             label: Hozzárendelés saját szervezeten belüli felhasználóhoz
           assign_within_user_group:
-            explanation: Lehetővé teszi a felhasználó számára, hogy az ügyet átküldje egy másik felhasználónak ugyanazon felhasználói csoportban. Ehhez nincs szükség a gyermek hozzájárulására. A transzferekkel ellentétben a fogadó felhasználónak nincs lehetősége elfogadni vagy elutasítani a hozzárendelést.
+            explanation: Lehetővé teszi a felhasználó számára, hogy az ügyet átküldje egy másik felhasználónak ugyanazon felhasználói csoportban. Ehhez nincs szükség az ügyfél hozzájárulására. Az átadással ellentétben a fogadó felhasználónak nincs lehetősége elfogadni vagy elutasítani a hozzárendelést.
             label: Hozzárendelés saját felhasználói csoporton belüli felhasználóhoz
           change_log:
             explanation: Lehetővé teszi a felhasználó számára, hogy megtekinthesse az ügyhöz kapcsolódó összes változás történetét a rekord létrehozása óta. Ez magában foglalja az összes mező értékét.
@@ -2528,8 +2528,8 @@ hu:
             explanation: Lehetővé teszi a felhasználó számára, hogy az ügy státuszát zártra állítsa.
             label: Ügy lezárása
           consent_override:
-            explanation: Lehetővé teszi a felhasználó számára, hogy hozzájárulás hiánya esetén is végrehajthassa a referálást vagy a transzfert.
-            label: Hozzájárulás hiányának figyelmen kívül hagyása referálás vagy transzfer során
+            explanation: Lehetővé teszi a felhasználó számára, hogy hozzájárulás hiánya esetén is végrehajthassa a referálást vagy a átadást.
+            label: Hozzájárulás hiányának figyelmen kívül hagyása referálás vagy átadás során
           create:
             explanation: Ügy létrehozása
             label: Létrehozás
@@ -2603,8 +2603,8 @@ hu:
             explanation: Lehetővé teszi a felhasználó számára, hogy olyan rekordra referálást fogadjon, amelyet egy másik Primero modulban hoztak létre.
             label: Referálás fogadása más modultól
           receive_transfer:
-            explanation: Lehetővé teszi a felhasználó számára, hogy transzfert fogadjon. Azok a felhasználók, akik ezzel a jogosultsággal rendelkeznek, megjelennek a transzfer címzettjei között.
-            label: Transzfer fogadása
+            explanation: Lehetővé teszi a felhasználó számára, hogy átadást fogadjon. Azok a felhasználók, akik ezzel a jogosultsággal rendelkeznek, megjelennek a átadás címzettjei között.
+            label: Átadás fogadása
           referral:
             explanation: Lehetővé teszi a felhasználó számára, hogy ideiglenes hozzáférést biztosítson egy ügyhöz egy másik felhasználónak.
             label: Referálás
@@ -2636,7 +2636,7 @@ hu:
             explanation: Lehetővé teszi a felhasználó számára (általában egy ügyintéző), hogy kérje a menedzserét, hogy hagyja jóvá az ügyének %{approval_label}.
             label: "%{approval_label} jóváhagyásának kérése"
           request_transfer:
-            explanation: Megjeleníti az "Átadás kérése" gombot a "Nézet modálban". A gomb lehetővé teszi a felhasználó számára, hogy egy személyes jegyzetet tartalmazó üzenetet küldjön e-mailben az ügy jelenlegi rekord tulajdonosának, és kérje, hogy az ügyet a felhasználónak adják át. Ez hasznos olyan kontextusokban, ahol a gyermekek gyakran változtatják a helyüket, és az ügyintézőnek szüksége van az előző ügyintéző által összegyűjtött információkra, hogy elkerüljék az ismétlődő rekordok létrehozását.
+            explanation: Megjeleníti az "Átadás kérése" gombot a "Nézet modálban". A gomb lehetővé teszi a felhasználó számára, hogy egy személyes jegyzetet tartalmazó üzenetet küldjön e-mailben az ügy jelenlegi rekord tulajdonosának, és kérje, hogy az ügyet a felhasználónak adják át. Ez hasznos olyan kontextusokban, ahol az ügyfelek gyakran változtatják a helyüket, és az ügyintézőnek szüksége van az előző ügyintéző által összegyűjtött információkra, hogy elkerüljék az ismétlődő rekordok létrehozását.
             label: Átadás kérése
           search_owned_by_others:
             explanation: Lehetővé teszi a felhasználó számára, hogy keresést végezzen olyan rekordok között, amelyekhez általában nincs hozzáférése, akár azért, mert nem ő az ügy tulajdonosa, akár azért, mert a tulajdonos nem az ő felhasználói csoportjaiban van. Bár a felhasználó látni fogja az ügyet a keresési eredmények között, nem fog tudni belépni az ügy részletes oldalára, így nem fog tudni részletes információkat megtekinteni az ügyről.
@@ -2654,7 +2654,7 @@ hu:
             explanation: Lehetővé teszi a felhasználó számára, hogy az eseteket offline használatra tárolja.
             label: Offline jelölés
           transfer:
-            explanation: Lehetővé teszi a felhasználó számára, hogy az ügyet átküldje bármelyik felhasználónak a rendszerben, akinek van jogosultsága transzfer fogadására. Az ügy tulajdonosa azonban csak akkor változik, ha a címzett elfogadja a transzfert.
+            explanation: Lehetővé teszi a felhasználó számára, hogy az ügyet átküldje bármelyik felhasználónak a rendszerben, akinek van jogosultsága átadás fogadására. Az ügy tulajdonosa azonban csak akkor változik, ha a címzett elfogadja a átadást.
             label: Átadás
           view_photo:
             explanation: Lehetővé teszi a felhasználó számára, hogy megtekinthesse az ügy fényképeit az ügylista nézetből.
@@ -2672,8 +2672,8 @@ hu:
             explanation: Lehetővé teszi a felhasználó számára, hogy az "Szerkesztés" gombra kattintva frissítse az ügy információit és mentse azokat.
             label: Szerkesztés
           accept_or_reject_transfer:
-            explanation: Lehetővé teszi a felhasználó számára, hogy elfogadjon vagy elutasítson egy transzfert egy csapattag nevében (például, ha egy felügyelő elfogadja a transzfert az ő ügyintézője nevében).
-            label: Transzfer elfogadása vagy elutasítása más felhasználó nevében
+            explanation: Lehetővé teszi a felhasználó számára, hogy elfogadjon vagy elutasítson egy átadást egy csapattag nevében (például, ha egy felügyelő elfogadja a átadást az ő ügyintézője nevében).
+            label: Átadás elfogadása vagy elutasítása más felhasználó nevében
           list_case_names:
             explanation: A menedzserek általában nem láthatják az ügyek nevét az ügylistában. Ha egy menedzser rendelkezik ezzel a jogosultsággal, akkor látni fogja az ügyneveket a listában.
             label: Ügynevek megtekintése az ügylistában, ha menedzser
@@ -2689,7 +2689,7 @@ hu:
           link_family_record:
             explanation: Lehetővé teszi a felhasználó számára, hogy egy meglévő Háztartás rekordot kapcsoljon egy ügyhöz, illetve hogy eltávolítsa a kapcsolódó háztartás rekordot az ügyből.
             label: Háztartás rekord kapcsolása / eltávolítása az ügyből
-        explanation: Egy egyéni gyermeket, túlélőt vagy más kedvezményezettet képvisel.
+        explanation: Egy ügyfelet más kedvezményezettet képvisel.
         label: Ügy
       dashboard:
         actions:
@@ -3047,8 +3047,8 @@ hu:
             label: Erőszak Típusa (Ügyek és Incidensek)
             explanation: Képesség statisztikák megtekintésére az Erőszak Típusáról.
           referrals_transfers_report:
-            label: Átirányítások és Áthelyezések (Ügyek)
-            explanation: A felhasználók megtekinthetik az egyes Felhasználói Csoportokból átirányított és áthelyezett ügyek számát.
+            label: Referálások és Átadások (Ügyek)
+            explanation: A felhasználók megtekinthetik az egyes Felhasználói Csoportokból átadott és referált ügyek számát.
       matching_configuration:
         actions:
           manage:
@@ -3097,9 +3097,9 @@ hu:
       referral:
         actions:
           refer:
-            explanation: Ez azt jelenti, hogy a szerepkör megjelenik a "Címzett Típus" lehetőségek között, amikor a felhasználó külső átirányítást hajt végre. Ha a felhasználó ezt a szerepkört választja a címzett típusának, az exportált fájl csak azokat az űrlapokat fogja tartalmazni, amelyekhez ez a szerepkör hozzáféréssel rendelkezik. Például, ha a felhasználó a "Orvosi Szolgáltató" szerepkört választja címzettként, és az Orvosi Szolgáltató szerepkör csak az Alapvető Személyazonosító és Védelmi Aggályok űrlapokhoz fér hozzá, akkor az exportált fájl csak ezen két űrlap mezőit tartalmazza.
-            label: Használható-e ez a szerepkör külső átirányításokhoz?
-        label: Átirányítás
+            explanation: Ez azt jelenti, hogy a szerepkör megjelenik a "Címzett Típus" lehetőségek között, amikor a felhasználó külső referálást hajt végre. Ha a felhasználó ezt a szerepkört választja a címzett típusának, az exportált fájl csak azokat az űrlapokat fogja tartalmazni, amelyekhez ez a szerepkör hozzáféréssel rendelkezik. Például, ha a felhasználó a "Orvosi Szolgáltató" szerepkört választja címzettként, és az Orvosi Szolgáltató szerepkör csak az Alapvető Személyazonosító és Védelmi Aggályok űrlapokhoz fér hozzá, akkor az exportált fájl csak ezen két űrlap mezőit tartalmazza.
+            label: Használható-e ez a szerepkör külső referálásokhoz?
+        label: Referálás
       registry_record:
         actions:
           change_log:
@@ -3228,7 +3228,7 @@ hu:
         explanation: Aggregált adatelemzési eszköz. Tartalmaz táblázatos és grafikonos megjelenítést az adatokhoz.
         label: Jelentés
       reporting_location_level:
-        explanation: 'Ez fogja meghatározni, hogy mely helyszíni szintek jelennek meg ennek a szerepkörnek a műszerfalon, szűrőkben, áthelyezési űrlapokban. Ha üresen hagyod, a rendszer alapértelmezett jelentési helyszín szintje fog megjelenni.'
+        explanation: 'Ez fogja meghatározni, hogy mely helyszíni szintek jelennek meg ennek a szerepkörnek a műszerfalon, szűrőkben, átadási űrlapokban. Ha üresen hagyod, a rendszer alapértelmezett jelentési helyszín szintje fog megjelenni.'
         label: Milyen helyszín típus jelenjen meg ennek a szerepkörnek a jelentéseihez?
       tracing_request:
         actions:
@@ -3288,9 +3288,9 @@ hu:
       transfer:
         actions:
           transfer:
-            explanation: Ez azt jelenti, hogy a szerepkör megjelenik a "Címzett típusa" opcióként, amikor a felhasználó külső átirányítást hajt végre. Ha a felhasználó ezt a szerepkört választja átirányítás típusként, a Primero által generált export fájl csak azokat az információkat fogja tartalmazni, amelyek szerepelnek a szerepkör által hozzáférhető űrlapokban. Például, ha a felhasználó "Orvosi szolgáltató"-t választ címzettként, és az orvosi szolgáltató szerepkör csak a "Basic Identity" és "Protection Concerns" űrlapokhoz fér hozzá, az export fájl csak ezeket a mezőket fogja tartalmazni.
-            label: Használható ez a szerepkör külső áthelyezésekhez?
-        label: Áthelyezés
+            explanation: Ez azt jelenti, hogy a szerepkör megjelenik a "Címzett típusa" opcióként, amikor a felhasználó külső átadást hajt végre. Ha a felhasználó ezt a szerepkört választja átadás típusként, a Primero által generált export fájl csak azokat az információkat fogja tartalmazni, amelyek szerepelnek a szerepkör által hozzáférhető űrlapokban. Például, ha a felhasználó "Orvosi szolgáltató"-t választ címzettként, és az orvosi szolgáltató szerepkör csak a "Basic Identity" és "Protection Concerns" űrlapokhoz fér hozzá, az export fájl csak ezeket a mezőket fogja tartalmazni.
+            label: Használható ez a szerepkör külső átadásokhoz?
+        label: Átadás
       user:
         actions:
           agency_read:
@@ -3352,17 +3352,17 @@ hu:
       activity_log:
         actions:
           transfer:
-            explanation: A felhasználó a Műszerfal Aktivitásnapló részébe léphet, és láthatja az összes elfogadott vagy elutasított áthelyezést az általa hozzáférhető Esetekhez.
-            label: Áthelyezések
+            explanation: A felhasználó a Műszerfal Aktivitásnapló részébe léphet, és láthatja az összes elfogadott vagy elutasított átadást az általa hozzáférhető Esetekhez.
+            label: Átadások
           manage:
             label: Teljes jogosultság (ehhez az erőforrástípushoz)
             explanation: Lehetőség mindenhez való hozzáférésre.
         label: Aktivitásnapló
   potential_match:
-    case_id: Eset ID
-    child_age: Gyermek életkora
-    child_gender: Gyermek neme
-    child_id: Gyermek azonosító #
+    case_id: Ügyfélszám
+    child_age: Ügyfél életkora
+    child_gender: Ügyfél neme
+    child_id: Ügyfél azonosító #
     inquirer_id: Lekérdező azonosító #
     inquirer_tr_name: nyomkövetési kérelem
     inquiry_date: Lekérdezés dátuma
@@ -3380,10 +3380,10 @@ hu:
     multiple_error: Hiba történt. %{select_records} eset nem lett áthelyezve.
     multiple_successfully: A Primero áthelyezi a(z) %{select_records} esetet. Néhány percbe telhet, amíg ezek az esetek frissülnek
     notes_label: Jegyzetek
-    successfully: Sikeres áthelyezés
+    successfully: Sikeres átadás
     user_mandatory_label: A címzett szükséges
     users_label: Címzett
-    incident_from_case_warning: Nem lehet áthelyezni ezt az incidenst, mert már hozzá van kapcsolva egy esethez. Amikor áthelyezed az esetet, az incidens is áthelyezésre kerül.
+    incident_from_case_warning: Nem lehet áthelyezni ezt az incidenst, mert már hozzá van kapcsolva egy esethez. Amikor áthelyezed az esetet, az incidens is átadásra kerül.
   record_information:
     assigned_user_names: Más kijelölt felhasználók
     created_at: Rekord létrehozva ekkor
@@ -3404,20 +3404,20 @@ hu:
     record_information: Változások elvetése
   referral:
     type_of_recipient: Címzett típusa
-    type_of_referral_required: Átirányítás típusa szükséges
-    referral_authorization_label: Meg szeretné adni az átirányítás típusát?
+    type_of_referral_required: Referálás típusa szükséges
+    referral_authorization_label: Meg szeretné adni az referálás típusát?
     referral_authorization_help_text: Ez korlátozza, hogy mely űrlapokhoz férhet hozzá a címzett.
     agency_label: Ügynökség
     is_remote_label: Távoli rendszerhez irányítasz?
     location_label: Helyszín
     notes_label: Jegyzetek
-    notes_on_referral: Jegyzetek az átirányításról
-    note_on_referral_from_provider: Jegyzetek az átirányításról a szolgáltatótól
+    notes_on_referral: Jegyzetek az referálásról
+    note_on_referral_from_provider: Jegyzetek az referálásról a szolgáltatótól
     provided_consent_label: Beleegyezés nincs megadva az űrlapokon.
     recipient_label: Címzett
-    refer_anyway_label: Átirányítás mindenképp?
+    refer_anyway_label: Referál mindenképp?
     service_label: Szolgáltatás
-    success: '%{record_type} %{id} sikeresen átirányítva'
+    success: '%{record_type} %{id} sikeresen referálva'
     user_mandatory_label: A címzett szükséges
     date: Dátum
     rejected_reason: Elutasítás oka
@@ -3482,7 +3482,7 @@ hu:
   request_transfer:
     notes_label: Jegyzetek
     submit_label: Kérelem küldése
-    success: Áthelyezési kérelem elküldve
+    success: Átadási kérelem elküldve
   role:
     agency_ids_label: Ügynökségek, amelyeket ez a szerep kezel
     copy_failure: Hiba a szerep másolásakor. Győződj meg arról, hogy a név nem ütközik másik szereppel.
@@ -3501,11 +3501,11 @@ hu:
       deleted: A szerep sikeresen törölve.
       updated: A szerep sikeresen frissítve.
     name: Név
-    referral_label: Használható ez a szerep átirányításokhoz?
+    referral_label: Használható ez a szerep referálásokhoz?
     reporting_location_level_label: Milyen helyszíntípust kell használni ehhez a szerephez a jelentésekhez?
     role_ids_label: Más szerepek, amelyeket ez a szerep kezel
     successfully_updated: A szerep adatai sikeresen frissítve.
-    transfer_label: Használható ez a szerep áthelyezésekhez?
+    transfer_label: Használható ez a szerep átadásokhoz?
     hide: Elrejtés
     read: Megjelenítés
     read_write: Megjelenítés és szerkesztés
@@ -3681,9 +3681,9 @@ hu:
       disabled: Háztartás le van tiltva
       confirm_create_case: Szeretnél esetet létrehozni ennek a személynek?
   transfer:
-    label: Áthelyezés
+    label: Átadás
     agency_label: Ügynökség
-    consent_from_individual_label: Megszerezted az egyén beleegyezését az áthelyezéshez?
+    consent_from_individual_label: Megszerezted az egyén beleegyezését az átadáshoz?
     consent_label: A feljegyzések nem tartalmaznak beleegyezést.
     consent_override_label: Szeretnéd felülírni ezt a beállítást?
     is_remote_label: Távoli rendszerbe helyezed át?
@@ -3697,7 +3697,7 @@ hu:
     user_mandatory: A címzett megadása kötelező
     rejected_reason: Elutasítás oka
   transfer_assignment:
-    title: Áthelyezések és hozzárendelések
+    title: Átadások és hozzárendelések
   transition:
     agency_label: Ügynökség
     assigned_by: Hozzárendelve általa
@@ -3710,7 +3710,7 @@ hu:
     errors:
       consent: Beleegyezés nincs megadva
       to_user_can_receive: Ez a felhasználó nem fogadhatja a feljegyzést
-    individual_consent: Megszerezte az esetmunkás az egyén beleegyezését az áthelyezéshez?
+    individual_consent: Megszerezte az esetmunkás az egyén beleegyezését az átadáshoz?
     no_consent_share: Beleegyezés megosztásának felülírása?
     notes: Megjegyzések
     recipient: Címzett
@@ -3731,8 +3731,8 @@ hu:
       reassign: Újrahozzárendelés
       referral: Referálás
       external_referral: Külső beutalás
-      transfer: Áthelyezés
-      transferRequest: Áthelyezési kérelem
+      transfer: Átadás
+      transferRequest: Átadási kérelem
   user:
     agency_office: Ügynökség irodája (GBV mező)
     code: Felhasználói kód
@@ -3790,8 +3790,8 @@ hu:
     notification_preferences:
         approval_request: 'Jóváhagyási kérelem (Menedszerek)'
         approval_response: 'Jóváhagyási válasz (Esetmunkások)'
-        transition_notification: 'Hozzárendelések, áthelyezések, és beutalások'
-        transfer_request: 'Áthelyezési kérelmek'
+        transition_notification: 'Delegálások, átadások, és referálások'
+        transfer_request: 'Átadási kérelmek'
     user_group_unique_ids: Felhasználói csoportok
     user_name: Felhasználónév
     services: Szolgáltatások
