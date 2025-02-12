@@ -794,27 +794,27 @@ hu:
       disabled: Letiltva
       enabled: Engedélyezve
   email_notification:
-    assign: '%{user} a következő ügyet delegálta Önnek: %{record_id}.'
-    assign_subject: '%{record_type}: %{id} - Önnek delegálva'
-    approval_request: 'A(z) %{user} felhasználó jóváhagyást kér a %{approval_type} ügyfélnél %{case_id}.'
+    assign: '%{user} a következő ügyfelet delegálta Önnek: %{record_id}.'
+    assign_subject: '%{id} - Önnek delegálva'
+    approval_request: '%{user} jóváhagyást kér a %{case_id} azonosítójú ügyfélnél  - %{approval_type} ügyben.'
     approval_request_subject: 'Ügyfél: %{id} - Jóváhagyás kérése'
-    approval_response: '%{user} %{status} a jóváhagyási kérelmet a %{approval_type} ügyfélnél %{case_id}.'
-    approval_response_subject: 'Ügyfél: %{id} - Jóváhagyás visszajelzés'
-    referral: '%{user} a(z) %{agency} szolgáltatótól a következő ügyet referálta Önnek: %{record_id} a %{service_type} számára.'
-    transfer: '%{user} a következő ügyet átadta Önnek: %{record_id}.'
-    transfer_request_subject: Átadás kérelem az egyik ügyfelére
-    transfer_subject: '%{record_type}: %{id} - Átadás'
-    referral_subject: '%{record_type}: %{id} - Referálás'
-    transfer_request: 'A(z) %{user} Primero felhasználó a(z) %{agency} szolgáltatótól kéri, hogy helyezze át ennek a %{record_type} rekordnak a tulajdonjogát %{record_id}, hogy szolgáltatásnyújtást biztosíthassanak az egyén számára az ő területén. Ha elfogadja az átadást, kattintson az e-mailben található %{record_type} ID linkre, hogy megnyissa a %{record_type}-t a Primeroban és elindítsa az átadást.'
-    approval_request_html: 'A(z) <strong>%{user}</strong> felhasználó jóváhagyást kér a(z) <strong> %{approval_type}</strong> ügyfélnél <strong>%{case_id}</strong>.'
-    approval_response_html: '<strong>%{user}</strong> %{status} a jóváhagyási kérelmet a(z) <strong>%{approval_type}</strong> ügyfélnél <strong>%{case_id}</strong>.'
-    referral_html: '<strong>%{user}</strong> a(z) %{agency} szolgáltatótól a következő %{record_type}-t referálta Önnek: <strong>%{record_id}</strong> a %{service_type} számára.'
-    transfer_html: '<strong>%{user}</strong> a következő ügyet átadta Önnek: <strong>%{record_id}</strong>.'
-    assign_html: '<strong>%{user}</strong> a következő ügyet delegálta Önnek: <strong>%{record_id}</strong>.'
-    transfer_request_html: 'A(z) Primero felhasználó <strong>%{user}</strong> a(z) %{agency} szolgáltatótól kéri, hogy helyezze át ennek a %{record_type} rekordnak <strong>%{record_id}</strong> a tulajdonjogát, hogy szolgáltatásnyújtást biztosíthassanak az egyén számára az ő területén. Ha elfogadja az átadást, kattintson az e-mailben található %{record_type} ID linkre, hogy megnyissa a %{record_type}-t a Primeroban és elindítsa az átadást.'
+    approval_response: '%{user} %{status} a jóváhagyási kérelmet a %{case_id} azonosítójú ügyfélnél - %{approval_type} ügyben.'
+    approval_response_subject: 'Ügyfél: %{id} - Jóváhagyás visszaigazolás'
+    referral: '%{user} a(z) %{agency} szolgáltatótól a következő ügyfelet referálta Önnek: %{record_id} a %{service_type} igénybevételére'
+    transfer: '%{user} a következő ügyfelet adta át Önnek: %{record_id}.'
+    transfer_request_subject: 'Átadási kérelem az egyik ügyfelére'
+    transfer_subject: 'Ügyfél: %{id} - Átadás'
+    referral_subject: 'Ügyfél: %{id} - Referálás'
+    transfer_request: '%{user} Primero felhasználó a(z) %{agency} szolgáltatótól kéri, hogy helyezze át a %{case_id} azonosítójú ügyfelet, hogy megfelelő szolgáltatást biztosíthassanak számára. Ha elfogadja az átadást, kattintson az e-mailben található %{record_id} linkre, hogy megnyissa az ügyfél adatlapját a Primeroban, és elindítsa az átadást.'
+    approval_request_html: 'Kedves Felhasználó! <br><br> %{user} jóváhagyást kér a %{case_id} azonosítójú ügyfélnél - %{approval_type} ügyben.'
+    approval_response_html: '%{user} %{status} a jóváhagyási kérelmet a %{case_id} azonosítójú ügyfélnél - %{approval_type} ügyben.'
+    referral_html: '%{user} a(z) %{agency} szolgáltatótól a következő ügyfelet referálta Önnek: %{record_id} a %{service_type} igénybevételére'
+    transfer_html: 'Kedves Felhasználó! <br><br> %{user} a következő ügyfelet adta át Önnek: %{record_id}.'
+    assign_html: '%{user} a következő ügyfelet delegálta Önnek: %{record_id}.'
+    transfer_request_html: '%{user} Primero felhasználó a(z) %{agency} szolgáltatótól kéri, hogy helyezze át a %{record_id} azonosítójú ügyfelet, hogy megfelelő szolgáltatást biztosíthassanak számára. Ha elfogadja az átadást, kattintson az e-mailben található %{record_id} linkre, hogy megnyissa az ügyfél adatlapját a Primeroban, és elindítsa az átadást.'
     transfer_request_notes_html: 'Megjegyzések a kérelmet benyújtó egyéntől: %{request_transfer_notes}'
-    alert: '%{record_type} %{id} - %{form_name} frissítve lett. Kérjük, jelentkezzen be a Primeroba a változtatások megtekintéséhez.'
-    alert_subject: '%{record_type}: %{id} - %{form_name} frissítve'
+    alert: 'A(z)  %{id} azonosítójú ügyfél adatlapján - %{form_name} frissítve lett. Kérjük, jelentkezzen be a Primeroba a változtatások megtekintéséhez.'
+    alert_subject: '%{id} azonosítójú ügyfél - %{form_name} frissítve'
   webpush_notification:
     action_label: Menjen az ügyfélhez
     approval_request:
@@ -3796,21 +3796,21 @@ hu:
     user_name: Felhasználónév
     services: Szolgáltatások
     welcome_email:
-      subject: 'Üdvözlünk a %{system}-n!'
-      greeting: 'Üdvözlünk a %{system}-n!'
-      body_native: 'A profilod létrejött %{role_name} szerepkörben. A weboldal 2 faktoros hitelesítést használ, a belépéshez szükséged lesz egy tőlünk kapott ideiglenes jelszóra és a Microsoft Authenticator mobilalkalmazásra, hogy megkezdhesd a munkát %{host} oldalán. Kérdés esetén keresed a Digitális Szolgáltatások Osztályát.'
+      subject: 'Üdvözlünk a %{system} rendszerében!'
+      greeting: 'Üdvözlünk a %{system} rendszerében!'
+      body_native: 'A profilod létrejött %{role_name} szerepkörben. A weboldal kétfaktoros hitelesítést használ, így a belépéshez egy általunk biztosított ideiglenes jelszóra, valamint a Microsoft Authenticator vagy egyéb hitelesítő alkalmazás használatára lesz szükséged, hogy megkezdhesd a munkát a %{host} oldalán. Ha bármilyen kérdésed van, keresd a Digitális Szolgáltatások Osztályát.'
       sso:
-        body: 'Hozzáadtak mint %{role_name}.'
-        step1: 'Menj a %{host}-ra és kattints a %{identity_provider}-ra.'
-        step2: 'Lépj be a %{identity_provider} fiókoddal %{user_name}.'
-        step3: 'Használd ugyanazt a jelszót, amelyet mindig is a %{identity_provider} fiókodhoz használtál.'
-        footer: 'Kérjük, vedd fel a kapcsolatot %{admin_full_name} (%{admin_email}) személlyel további részletekért.'
+        body: 'Hozzá lettél adva, mint %{role_name}.'
+        step1: 'Menj a %{host} oldalára, és válaszd a %{identity_provider} lehetőséget a belépéshez.'
+        step2: 'Lépj be a fiókoddal (%{user_name}).'
+        step3: 'Használd az Authenticator alkalmazást a belépési kód generálásához.'
+        footer: 'Kérdés, probléma esetén kérlek vedd fel a kapcsolatot a Digitális Szolgáltatások Osztályával.'
       otp:
-        body: 'Hozzáadtak mint %{role_name}.'
-        step1: 'Kérjük, vedd fel a kapcsolatot %{admin_full_name} (%{admin_email}) személlyel, hogy megkapd a felhasználói nevedet.'
-        step2: 'Menj a %{host}-ra és kattints a "belépés Primero felhasználói névvel" gombra.'
+        body: 'Hozzá lettél adva, mint %{role_name}.'
+        step1: 'Kérjük, vedd fel a kapcsolatot a Digitális Szolgáltatások osztályával'
+        step2: 'Menj a %{host} oldalára, és kattints a belépés gombra.'
         step3: 'Lépj be a felhasználói neveddel és az ideiglenes jelszóval %{otp}.'
-        step4: 'Amikor megkérdezik, állítsd vissza a jelszavad.'
+        step4: 'Változtasd meg a jelszavad.'
       url_label: Primero
       enabled_label: Üdvözlő e-mail küldése?
       text_label: Üdvözlő e-mail szövege
