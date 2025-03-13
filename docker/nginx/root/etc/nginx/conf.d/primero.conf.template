@@ -2,7 +2,7 @@ limit_req_zone $binary_remote_addr zone=login_app_limit:10m rate=1r/s;
 
 server {
     listen 80;
-    server_name primero.budapest.hu;
+    server_name ${NGINX_SERVER_NAME};
 
     location ~ ^/\.well-known/acme-challenge/ {
         default_type "text/plain";
@@ -16,7 +16,7 @@ server {
 
 server {
     listen 443 ssl;
-    server_name primero.budapest.hu;
+    server_name ${NGINX_SERVER_NAME};
     
     add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload";
     add_header X-Frame-Options DENY;
