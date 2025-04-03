@@ -297,6 +297,7 @@ hu:
     case_opening_date: Ügyfél megnyitás dátuma
     case_plan: Ügyfélterv
     case_worker_code: Ügyfélkezelő kódja
+    client_code: Kliens kódja
     clear_filter: Törlés
     close_dialog: Az OK gombra kattintva az ügyfél státusza lezártra változik
     close_dialog_title: Ügyfél lezárása
@@ -337,6 +338,7 @@ hu:
       closure: Lezárás
       current_location: Jelenlegi helyszín
       date: Dátum
+      disability_status: Fogyatékosság státusza
       displacement_status: Elmozdulási státusz
       district: Kerület
       duplicate: Duplikátum
@@ -345,6 +347,7 @@ hu:
       flag: Megjelölve
       flag_label: Megjelölve?
       gbv_closure: GBV lezárás
+      gender: Neme
       high: Magas
       low: Alacsony
       male: Férfi
@@ -360,12 +363,14 @@ hu:
       photo_label: Van fénykép?
       protection_concerns: Védelmi aggályok
       protection_status: Védelmi státusz
+      protection_risks: Védelmi kockázatok
       record_state: Rekord állapot
       referred_cases: Hozzám referált ügyfelek
       registration_date: Regisztráció dátuma
       risk_level: Prioritás
       sex: Nem
       social_worker: Terep/Ügyfél/Szociális munkás
+      sogiesc_self_identifying: A kliens a SOGIESC közösség tagjaként azonosítja magát?
       status: Státusz
       transferred: Átadva
       type_of_risk: Kockázat típusa
@@ -373,13 +378,17 @@ hu:
       user_group: Felhasználói csoport
       workflow: Ügyfelek munkafolyamat szerint
       include_disabled: Letiltottak megjelenítése
+      safety_plan_needed: Biztonsági terv szükséges az ügyfélnél?
+      mhpss_suicidal_thoughts_last_month_most_recent: Az elmúlt hónapokban voltak-e öngyilkossági gondolatai?
     flag_summary: Jelölési összegzés
     full_name: Teljes név
     gbv_closure: GBV lezárás
+    gender: Neme
     hide_name: Név elrejtése
     hide_name_error: Hiba történt a változtatások mentésekor. Kérjük, próbálja újra.
     id: ID#
     label: Ügyfelek
+    location_current: Helyszín
     my_filters: Saját szűrők
     name: Név
     notes_dialog_title: Megjegyzések hozzáadása
@@ -559,6 +568,7 @@ hu:
       new_this_week: Új ezen a héten
       referrals: Referálások
       transfers: Átadások
+      cases: Ügyfelek
     approval_action_plan_approved: Jóváhagyva
     approval_action_plan_pending: Függőben
     approval_action_plan_pending_group: Akcióterv
@@ -765,7 +775,7 @@ hu:
     shared_with_my_team_pending_transfers: Függőben lévő átadások
     shared_with_my_team_referrals: Referálások
     shared_with_others_pending_transfers: Függőben lévő átadások
-    shared_with_others_referrals: Referálások
+    shared_with_others_referrals: Összesen
     shared_with_others_rejected_transfers: Elutasított átadások
     status_of_cases: Ügyfelek státusza
     system_user: Rendszer
@@ -803,14 +813,14 @@ hu:
     referral: '%{user} a(z) %{agency} szolgáltatótól a következő ügyfelet referálta Önnek: %{record_id} a %{service_type} igénybevételére'
     transfer: '%{user} a következő ügyfelet adta át Önnek: %{record_id}.'
     transfer_request_subject: 'Átadási kérelem az egyik ügyfelére'
-    transfer_subject: 'Ügyfél: %{id} - Átadás'
-    referral_subject: 'Ügyfél: %{id} - Referálás'
+    transfer_subject: 'Ügyfél: %{id} - Átadási kérés'
+    referral_subject: 'Ügyfél: %{id} - Referálási kérés'
     transfer_request: '%{user} Primero felhasználó a(z) %{agency} szolgáltatótól kéri, hogy helyezze át a %{case_id} azonosítójú ügyfelet, hogy megfelelő szolgáltatást biztosíthassanak számára. Ha elfogadja az átadást, kattintson az e-mailben található %{record_id} linkre, hogy megnyissa az ügyfél adatlapját a Primeroban, és elindítsa az átadást.'
     approval_request_html: 'Kedves Felhasználó! <br><br> %{user} jóváhagyást kér a %{case_id} azonosítójú ügyfélnél - %{approval_type} ügyben.'
     approval_response_html: '%{user} %{status} a jóváhagyási kérelmet a %{case_id} azonosítójú ügyfélnél - %{approval_type} ügyben.'
-    referral_html: '%{user} a(z) %{agency} szolgáltatótól a következő ügyfelet referálta Önnek: %{record_id} a %{service_type} igénybevételére'
-    transfer_html: 'Kedves Felhasználó! <br><br> %{user} a következő ügyfelet adta át Önnek: %{record_id}.'
-    assign_html: '%{user} a következő ügyfelet delegálta Önnek: %{record_id}.'
+    referral_html: '%{user} a(z) %{agency} szolgáltatótól a következő ügyfelet referálta Önnek: %{record_id} a %{service_type} igénybevételére. Kérjük, jelentkezzen be a fiókjába a következő linken: %{login_url}'
+    transfer_html: 'Kedves Felhasználó! <br><br> %{user} a következő ügyfelet adta át Önnek: %{record_id}. Kérjük, jelentkezzen be a fiókjába a következő linken: %{login_url}'
+    assign_html: '%{user} a következő ügyfelet delegálta Önnek: %{record_id}. Kérjük, jelentkezzen be a fiókjába a következő linken: %{login_url}'
     transfer_request_html: '%{user} Primero felhasználó a(z) %{agency} szolgáltatótól kéri, hogy helyezze át a %{record_id} azonosítójú ügyfelet, hogy megfelelő szolgáltatást biztosíthassanak számára. Ha elfogadja az átadást, kattintson az e-mailben található %{record_id} linkre, hogy megnyissa az ügyfél adatlapját a Primeroban, és elindítsa az átadást.'
     transfer_request_notes_html: 'Megjegyzések a kérelmet benyújtó egyéntől: %{request_transfer_notes}'
     alert: 'A(z)  %{id} azonosítójú ügyfél adatlapján - %{form_name} frissítve lett. Kérjük, jelentkezzen be a Primeroba a változtatások megtekintéséhez.'
@@ -2647,6 +2657,11 @@ hu:
           services_section_from_case:
             explanation: Lehetővé teszi a felhasználó számára, hogy szolgáltatási bejegyzést adjon hozzá egy olyan ügyhöz, amelyet a keresési eredmények között talált, de amelyhez nincs hozzáférése. A felhasználó ezt a műveletet a keresési eredmények oldalon hajtja végre.
             label: Szolgáltatásnyújtás hozzáadása más felhasználó ügyéhez
+          service_own_entries_only:
+            explanation: Azok a felhasználók, akik rendelkeznek ezzel a jogosultsággal, amikor hozzáférnek egy hozzájuk továbbított ügyfélhez,
+              csak azokat a bejegyzéseket fogják látni a Szolgáltatások alűrlapon, amelyeknél őket választották szolgáltatóként.
+              Ez jellemzően a szolgáltatói szerepköröknél használatos.
+            label: Hozzáférés kizárólag a saját Szolgáltatások alűrlap-bejegyzéseimhez.
           sync_external:
             explanation: Lehetővé teszi, hogy a felhasználó szinkronizálja a rekordokat egy külső információkezelő rendszerrel.
             label: Szinkronizálás külső információkezelő rendszerrel
@@ -3879,4 +3894,16 @@ hu:
     body:
       one: Szeretnéd engedélyezni, hogy a Primero értesítéseket küldjön neked? Ne feledd, hogy akkor is értesítéseket fogsz kapni ezen az eszközön %{count} napig a kijelentkezés után. Ezt nem ajánljuk megosztott eszközökön.
       other: Szeretnéd engedélyezni, hogy a Primero értesítéseket küldjön neked? Ne feledd, hogy akkor is értesítéseket fogsz kapni ezen az eszközön %{count} napig a kijelentkezés után. Ezt nem ajánljuk megosztott eszközökön.
-
+  email:
+    greeting: "Kedves %{full_name}"
+    admin_closing: "Probléma bejelentéséhez vagy hibaelhárításhoz kérjük, vegye fel a kapcsolatot a %{sys_admin} felhasználóval."
+    login: bejelentkezés
+    system_admin: 'Rendszergazda'
+    unsubscribe: 'Leiratkozás'
+    site_description: A Primero egy nyílt forráskódú szoftverplatform, amely segíti a szociális szolgáltatókat, humanitárius és fejlesztési dolgozókat a védelemmel kapcsolatos adatok kezelésében, eszközökkel támogatva az esetkezelést, az incidensfigyelést, valamint a családok nyomon követését és újraegyesítését.
+    email_disclaimer_pre: NE VÁLASZOLJON ERRE AZ E-MAILRE
+    email_welcome_greeting: Üdvözöljük a Primero csapatában
+    email_welcome_closing: Üdvözöljük a Primero közösségben
+    email_closing: Üdvözlettel,
+    email_signature: Primero csapat
+    email_admin_name: Rendszergazda
