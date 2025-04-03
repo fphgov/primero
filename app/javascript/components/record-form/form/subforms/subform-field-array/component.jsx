@@ -116,7 +116,7 @@ function Component({
         {!renderAsAccordion && (
           <div data-testid="subForm-header">
             <h3 className={css.subformTitle}>
-              {renderAddFieldTitle} {title} {parentTitle}
+              {renderAddFieldTitle}
             </h3>
           </div>
         )}
