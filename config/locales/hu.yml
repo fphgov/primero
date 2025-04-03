@@ -257,7 +257,7 @@ hu:
     search_helper_text: Miért? Az ismétlődő ügyfelek létrehozásának megakadályozása érdekében.
     consent_agreements: Válassza ki az összes érvényes beleegyezési nyilatkozatot
     legitimate_basis: Válassza ki az összes érvényes jogos alap besorolást
-    family_linked_subform_delete_disabled: Ez az alűrlap bejegyzés egy háztartási rekordhoz van kapcsolva. Kérjük, távolítsa el ezt a háztartás tagot a háztartási rekordból, vagy válassza le a háztartás tag ügyfelét a háztartási rekordról.
+    family_linked_subform_delete_disabled: Ez az alűrlap bejegyzés egy háztartáshoz van kapcsolva. Kérjük, távolítsa el ezt a tagot a háztartásból.
     workflow:
       assessment: Értékelés
       case_plan: Ügyfélterv
@@ -1347,8 +1347,8 @@ hu:
       violation: Jogszabálysértés
       registry_details: Nyilvántartási részletek
       registry_record: Nyilvántartási rekord
-      family_record: Háztartási rekord
-      family: Háztartási rekord
+      family_record: Háztartás
+      family: Háztartás
     required_field: '%{field} kötelező mező'
     select_label: Válasszon
     settings: Beállítások
@@ -2242,11 +2242,11 @@ hu:
       sort: Rendezés
   navigation:
     id_search:
-      title: Írja be az ID számot egy meglévő rekord kereséséhez.
+      title: Írjon be az ID számot az ügyfél kereséséhez.
     phonetic_search:
-      title: Írjon be egy nevet egy meglévő rekord kereséséhez.
+      title: Írjon be egy nevet az ügyfél kereséséhez.
       label: Keresés név alapján
-      help_text: A név mezőkhöz fonetikus keresés érhető el.
+      help_text: Név szerinti fonetikus keresés bekapcsolva.
     bulk_exports: Exportok
     cases: Ügyfelek
     home: Kezdőlap
@@ -2696,14 +2696,14 @@ hu:
             explanation: Lehetővé teszi a felhasználó számára, hogy az ügyeket offline használatra tárolja.
             label: Offline jelölés
           view_family_record:
-            explanation: A felhasználók megtekinthetik az "Háztartás rekord" űrlapot az ügyhöz kapcsolódó családtagokra vonatkozóan.
-            label: Háztartás rekord megtekintése az ügyből
+            explanation: A felhasználók megtekinthetik az "Háztartás" űrlapot az ügyfélhez kapcsolódó családtagokra vonatkozóan.
+            label: Háztartás megtekintése
           case_from_family:
             explanation: A felhasználók létrehozhatnak egy új ügyet egy családtag számára a Háztartás részletek alformban.
             label: Ügy létrehozása a Háztartás részletekből
           link_family_record:
-            explanation: Lehetővé teszi a felhasználó számára, hogy egy meglévő Háztartás rekordot kapcsoljon egy ügyhöz, illetve hogy eltávolítsa a kapcsolódó háztartás rekordot az ügyből.
-            label: Háztartás rekord kapcsolása / eltávolítása az ügyből
+            explanation: Lehetővé teszi a felhasználó számára, hogy egy meglévő Háztartást kapcsoljon egy ügyfélhez, illetve hogy szétkapcsolja a háztartást az ügyféltől.
+            label: Háztartás kapcsolása / eltávolítása az ügyféltől
         explanation: Egy ügyfelet más kedvezményezettet képvisel.
         label: Ügy
       dashboard:
@@ -2904,10 +2904,10 @@ hu:
               csoportokat. Nem látnak egyedi ügyeket, nyomkövetési kérelmeket vagy incidenseket.
             label: Nincs rekord - Csak adminisztrációs funkciók
           agency:
-            explanation: A szerepkör hozzáférhet az ügynökségük által kezelt rekordokhoz.
-              Ha a felhasználó hozzáfér a felhasználókhoz, akkor hozzáférhet az ügynökségük
+            explanation: A szerepkör hozzáférhet a szociális szolgáltatók által kezelt rekordokhoz.
+              Ha a felhasználó hozzáfér a felhasználókhoz, akkor hozzáférhet a szolgáltatójuk
               összes felhasználójához.
-            label: Az ügynökségemben kezelt összes rekord vagy felhasználó
+            label: Az szolgáltató intézményemben kezelt összes ügyfél vagy felhasználó
           all:
             explanation: A szerepkör hozzáfér az összes rekordhoz, felhasználóhoz és
               felhasználói csoporthoz a rendszerben, függetlenül attól, hogy mely felhasználói
@@ -3039,7 +3039,7 @@ hu:
           managed_report_scope_group:
             label: Csak csoport alapú adatok
           managed_report_scope_agency:
-            label: Csak ügynökség alapú adatok
+            label: Csak szolgáltató alapú adatok
           violations:
             explanation: Képesség hozzáférni az MRM Jogsértések Insight-hoz.
             label: Jogsértések
@@ -3167,7 +3167,7 @@ hu:
             explanation: Lehetőség egy Háztartás letiltására vagy engedélyezésére. Az "Letiltott" Háztartások alapértelmezés szerint nem jelennek meg a Háztartás listában. A felhasználók szűrő használatával láthatják a letiltott Háztartásokat.
             label: Engedélyezés / Letiltás
           export_csv:
-            explanation: 'A felhasználó CSV fájlt exportálhat a Háztartás lista vagy a Háztartás megjelenítési oldalak közül, amely tartalmazza az összes mezőt, amelyhez a jelenlegi felhasználó hozzáféréssel rendelkezik, egy vagy több Háztartás rekordhoz, amelyhez hozzáféréssel rendelkezik. MEGJEGYZÉS: A CSV export nem jeleníti meg olvasható formában a nem latin karaktereket (pl. arab, bengáli).'
+            explanation: 'A felhasználó CSV fájlt exportálhat a Háztartás lista vagy a Háztartás megjelenítési oldalak közül, amely tartalmazza az összes mezőt, amelyhez a jelenlegi felhasználó hozzáféréssel rendelkezik, egy vagy több Háztartáshoz, amelyhez hozzáféréssel rendelkezik. MEGJEGYZÉS: A CSV export nem jeleníti meg olvasható formában a nem latin karaktereket (pl. arab, bengáli).'
             label: CSV exportálás
           export_json:
             explanation: A felhasználó JSON fájl exportálást készíthet a Háztartás lista vagy Háztartás megjelenítési oldalak közül, amely tartalmazza az összes mezőt, amelyhez a jelenlegi felhasználó hozzáféréssel rendelkezik. A JSON formátum gép által olvasható, és nem gyakorlati a legtöbb felhasználó számára.
@@ -3200,7 +3200,7 @@ hu:
             explanation: Lehetőség a "Szerkesztés" gombra kattintani, frissíteni az információkat a Háztartásról, majd a "Mentés" gombra kattintani.
             label: Szerkesztés
           sync_mobile:
-            explanation: Lehetővé teszi a felhasználónak, hogy offline használatra elmentse a háztartás rekordokat.
+            explanation: Lehetővé teszi a felhasználónak, hogy offline használatra elmentse a háztartásokat.
             label: Jelölés offline használatra
           close:
             explanation: Lehetőség egy nyitott háztartás státuszát lezártra állítani.
@@ -3222,11 +3222,11 @@ hu:
           group_read:
             explanation: Lehetőség minden jelentés megtekintésére. Az egyes jelentésekben szereplő adatok csak azokat a rekordokat tükrözik,
               amelyekhez a jelenlegi felhasználói csoport felhasználói hozzáféréssel rendelkeznek. Ez a jogosultság gyakran használatos helyi,
-              regionális vagy ügynökségi adminisztrátorok számára, hogy betekintést nyerjenek saját csapatuk vagy szervezetük teljesítményébe.
+              regionális vagy szolgáltató adminisztrátorok számára, hogy betekintést nyerjenek saját csapatuk vagy szervezetük teljesítményébe.
               Ez a jogosultság lehetőséget ad a felhasználónak adatok exportálására is a jelentésből.
             label: Megtekintés (csoport-alapú adatok)
           manage:
-            explanation: Lehetőség az összes rendelkezésre álló művelet végrehajtására Ügynökségeken. A "Teljes kezelési jogosultság" lényegében mindent magában foglal.
+            explanation: Lehetőség az összes rendelkezésre álló művelet végrehajtására szociális szolgáltatókon. A "Teljes kezelési jogosultság" lényegében mindent magában foglal.
             label: Teljes kezelési jogosultság (ehhez az erőforrástípushoz)
           read:
             explanation: Lehetőség minden jelentés megtekintésére. Az egyes jelentésekben szereplő adatok az összes rekordot tükrözik
@@ -3238,8 +3238,8 @@ hu:
             label: Szerkesztés
           agency_read:
             explanation: Lehetőség minden jelentés megtekintésére. Az egyes jelentésekben szereplő adatok csak azokat a rekordokat tükrözik,
-              amelyekhez a jelenlegi felhasználói ügynökség felhasználói hozzáféréssel rendelkeznek. Ez a jogosultság gyakran használatos ügynökségi adminisztrátorok számára.
-            label: Megtekintés (ügynökség alapú adatok)
+              amelyekhez a jelenlegi szolgáltatók felhasználói hozzáféréssel rendelkeznek. Ez a jogosultság gyakran használatos szolgáltató adminisztrátorok számára.
+            label: Megtekintés (szolgáltató alapú adatok)
         explanation: Aggregált adatelemzési eszköz. Tartalmaz táblázatos és grafikonos megjelenítést az adatokhoz.
         label: Jelentés
       reporting_location_level:
@@ -3309,8 +3309,8 @@ hu:
       user:
         actions:
           agency_read:
-            explanation: Csak azoknak a felhasználói fiókoknak a megtekintésére van lehetőség, amelyek az aktuális felhasználó ügynökségében vannak. Ez befolyásolja azt is, hogy mely felhasználói fiókokon tud a felhasználó más műveleteket végrehajtani. Például, ha a felhasználónak van "Szerkesztés" engedélye, de ügynökségi szintű olvasási hozzáféréssel rendelkezik, akkor csak a saját ügynökségének fiókjait tudja szerkeszteni.
-            label: Megtekintés (Ügynökségen belül)
+            explanation: Csak azoknak a felhasználói fiókoknak a megtekintésére van lehetőség, amelyek az aktuális felhasználó szolgáltatójánál vannak. Ez befolyásolja azt is, hogy mely felhasználói fiókokon tud a felhasználó más műveleteket végrehajtani. Például, ha a felhasználónak van "Szerkesztés" engedélye, de szolgáltatói szintű olvasási hozzáféréssel rendelkezik, akkor csak a saját szolgáltatójának fiókjait tudja szerkeszteni.
+            label: Megtekintés (Szolgáltatón belül)
           create:
             explanation: Lehetőség felhasználói fiók létrehozására.
             label: Létrehozás
@@ -3384,7 +3384,7 @@ hu:
     name: Név
     score: Pontszám
     social_worker: Szociális munkás
-    social_worker_agency: Ügynökség
+    social_worker_agency: Szociális szolgáltató
     tracing_request_id: Nyomkövetési kérelem ID
     trace: Nyomon követés
     likelihood_likely: Valószínű
@@ -3403,14 +3403,14 @@ hu:
     assigned_user_names: Más kijelölt felhasználók
     created_at: Rekord létrehozva ekkor
     created_by: Rekord létrehozta
-    created_organization: Létrehozta az ügynökség
+    created_organization: Létrehozta a szolgáltatót
     current_owner_separator: Jelenlegi tulajdonos
     module_id: Modul
     owned_by: Esetmunkás kód
-    owned_by_agency_id: Ügynökség
+    owned_by_agency_id: Szolgáltató
     owned_by_text: Mező/Eset/Szociális munkás
     previously_owned_by: Előző tulajdonos
-    previously_owned_by_agency: Előző ügynökség
+    previously_owned_by_agency: Előző szolgáltató
     reassigned_tranferred_on: "Áthelyezve ezen:   "
     record_history_separator: Rekordtörténet
     last_updated_at: Utolsó frissítés ekkor
@@ -3422,7 +3422,7 @@ hu:
     type_of_referral_required: Referálás típusa szükséges
     referral_authorization_label: Meg szeretné adni az referálás típusát?
     referral_authorization_help_text: Ez korlátozza, hogy mely űrlapokhoz férhet hozzá a címzett.
-    agency_label: Ügynökség
+    agency_label: Szolgáltató
     is_remote_label: Távoli rendszerhez irányítasz?
     location_label: Helyszín
     notes_label: Jegyzetek
@@ -3499,7 +3499,7 @@ hu:
     submit_label: Kérelem küldése
     success: Átadási kérelem elküldve
   role:
-    agency_ids_label: Ügynökségek, amelyeket ez a szerep kezel
+    agency_ids_label: Szociális szolgáltatók, amelyeket ez a szerep kezel
     copy_failure: Hiba a szerep másolásakor. Győződj meg arról, hogy a név nem ütközik másik szereppel.
     copy_success: Szerep sikeresen másolva.
     create: Szerep létrehozása
@@ -3539,7 +3539,7 @@ hu:
     save_search: Keresés mentése
   settings:
     navigation:
-      agencies: Ügynökségek
+      agencies: Szociális szolgáltatók
       audit_logs: Audit naplók
       configurations: Konfigurációk
       contact_information: Kapcsolattartási információ
@@ -3672,12 +3672,16 @@ hu:
     show_family: 'Háztartás ID %{short_id}'
     disable_dialog_title: Háztartás letiltása
     disable_dialog: Ha az OK gombra kattintasz, a háztartás állapota Letiltva lesz.
-    selected_records: '%{select_records} háztartás rekord kiválasztva'
+    disable_success: A háztartás sikeresen letiltva
+    enable_dialog_title: Háztartás engedélyezése
+    enable_dialog: Az OK gombra kattintva az háztartás állapota Engedélyezett lesz.
+    enable_success: A háztartás sikeresen aktiválva
+    selected_records: '%{select_records} háztartás kiválasztva'
     selected_all_records: 'Az összes %{total_records} háztartás kiválasztása, amely megfelel ennek a lekérdezésnek.'
     mark_for_offline:
       title: Offline használathoz jelölés
-      text: Biztosan offline használathoz jelölöd ezeket a háztartás rekordokat?
-      success: Háztartás rekordok sikeresen jelölve offline használathoz
+      text: Biztosan offline használathoz jelölöd ezeket a háztartásokat?
+      success: Háztartások sikeresen jelölve offline használathoz
     filter_by:
       by_date: Dátum alapján
       status: Állapot
@@ -3697,7 +3701,7 @@ hu:
       confirm_create_case: Szeretnél esetet létrehozni ennek a személynek?
   transfer:
     label: Átadás
-    agency_label: Ügynökség
+    agency_label: Szociális szolgáltató
     consent_from_individual_label: Megszerezted az egyén beleegyezését az átadáshoz?
     consent_label: A feljegyzések nem tartalmaznak beleegyezést.
     consent_override_label: Szeretnéd felülírni ezt a beállítást?
@@ -3714,7 +3718,7 @@ hu:
   transfer_assignment:
     title: Átadások és hozzárendelések
   transition:
-    agency_label: Ügynökség
+    agency_label: Szociális szolgáltató
     assigned_by: Hozzárendelve általa
     consent_individual_transfer_value:
       true_label: 'Igen'
@@ -3749,7 +3753,7 @@ hu:
       transfer: Átadás
       transferRequest: Átadási kérelem
   user:
-    agency_office: Ügynökség irodája (GBV mező)
+    agency_office: Szociális szolgáltató irodája (GBV mező)
     code: Felhasználói kód
     disabled: Letiltva
     email: Email
@@ -3775,8 +3779,8 @@ hu:
       updated: A felhasználó sikeresen frissítve.
       created_warning: "%{total_enabled} felhasználót hoztál létre az engedélyezett %{maximum_users} felhasználó közül."
     organization: Szervezet
-    agency: Ügynökség
-    services_help_text: Ha nem adsz meg szolgáltatásokat, ez a felhasználó ugyanazokat a szolgáltatásokat kapja, mint az Ügynöksége.
+    agency: Szociális szolgáltató
+    services_help_text: Ha nem adsz meg szolgáltatásokat, ez a felhasználó ugyanazokat a szolgáltatásokat kapja, mint az szociális szolgáltató, amihez tartozik.
     password_setting:
       label: Hogyan állítsa be a Primero a felhasználó jelszavát?
       self: Én fogom beállítani a jelszót
@@ -3848,7 +3852,7 @@ hu:
       body2_reset_notification: "Kapni fog egy további e-mailt, amelyben felszólítják, hogy állítsa vissza jelszavát."
       body3: "Ön felelős a biztonságos és időben történő bevezetésért. Minden bevezetéshez el kell készítenie a Megvalósítási Tervet, beleértve a felhasználói menedzsment stratégiáját és az információ-megosztási protokollt. Ön felelős azért is, hogy minden felhasználói szervezetnél aláírt Felhasználási Feltételek legyenek a fájlban."
   user_group:
-    associated_agencies: Felhasználói csoporthoz társított ügynökségek
+    associated_agencies: Felhasználói csoporthoz társított szociális szolgáltatók
     description: Leírás
     disabled:
       explanation: Ha letiltod ezt a felhasználói csoportot, nem fogod tudni hozzárendelni felhasználói fiókokhoz.
@@ -3865,7 +3869,7 @@ hu:
       full_name: Teljes név
       user_name: Felhasználónév
       position: Pozíció
-      agency: Ügynökség
+      agency: Szociális szolgáltató
     alerts:
       total_users_created: "%{total_enabled} felhasználót hoztál létre a megengedett %{maximum_users} engedélyezett felhasználóból."
       limit_user_reached: Elérted az %{maximum_users} engedélyezett felhasználói limitet. Ki kell kapcsolnod egy vagy több felhasználót, mielőtt újakat hozol létre.
