@@ -45,6 +45,7 @@ const colors = {
   purple: "#7c347b", // u
   red: "#d0021b", // u
   redLabelError: "#f44336",
+  scorpion: "#5f5f5f",
   solidBlack: "#000000",
   solidGreen: "#7ba024",
   solidOrange: "#ff9500",
@@ -87,7 +88,7 @@ const colors = {
 };
 
 const fontFamily = ["helvetica", "roboto", "arial", "sans-serif"].join(", ");
-const fontSizes = [9, 12, 13, 14, 16, 18, 20, 30, 96, 130, 186];
+const fontSizes = [9, 12, 13, 14, 16, 18, 20, 30, 60, 80, 96, 130, 186];
 const shadows = ["0 2px 12px 0 rgba(125, 125, 125, 0.23)"];
 const drawerWidth = "240px";
 const spacing = [1, 2, 3, 4];
@@ -98,7 +99,7 @@ const components = {
       "#root": {
         display: "flex",
         flexDirection: "column",
-        height: ["var(--doc-height, 100vh)", "100dvh"]
+        height: "100dvh"
       },
       legend: {
         display: "none"
@@ -297,7 +298,8 @@ const components = {
   MuiTableCell: {
     styleOverrides: {
       root: {
-        padding: "8px"
+        padding: "8px",
+        backgroundColor: "var(--c-white)"
       }
     }
   },
@@ -339,6 +341,13 @@ const components = {
         fontSize: "var(--fs-16)",
         fontWeight: "bold",
         padding: "var(--sp-2)"
+      }
+    }
+  },
+  MuiDialog: {
+    styleOverrides: {
+      paper: {
+        width: "100%"
       }
     }
   },

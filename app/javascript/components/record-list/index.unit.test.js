@@ -6,13 +6,12 @@ describe("<RecordList /> - index", () => {
   const indexValues = { ...index };
 
   it("should have known properties", () => {
-    expect(indexValues).to.be.an("object");
+    expect(typeof indexValues).toEqual("object");
 
     [
       "buildTableColumns",
       "default",
       "getAppliedFilters",
-      "getListHeaders",
       "getMetadata",
       "SET_PAGINATION",
       "RECORDS",
@@ -21,10 +20,10 @@ describe("<RecordList /> - index", () => {
       "RECORDS_STARTED",
       "RECORDS_SUCCESS"
     ].forEach(property => {
-      expect(indexValues).to.have.property(property);
+      expect(indexValues).toHaveProperty(property);
       delete indexValues[property];
     });
 
-    expect(indexValues).to.be.empty;
+    expect(Object.keys(indexValues)).toHaveLength(0);
   });
 });

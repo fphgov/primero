@@ -31,6 +31,9 @@ export const ACTIONS = {
   DASH_APPROVALS_GBV_CLOSURE: "approvals_gbv_closure",
   DASH_CASE_INCIDENT_OVERVIEW: "dash_case_incident_overview",
   DASH_CASE_OVERVIEW: "case_overview",
+  DASH_ACTION_NEEDED_NEW_UPDATED: "action_needed_new_updated",
+  DASH_ACTION_NEEDED_NEW_REFERRALS: "action_needed_new_referrals",
+  DASH_ACTION_NEEDED_TRANSFER_AWAITING_ACCEPTANCE: "action_needed_transfer_awaiting_acceptance",
   DASH_CASE_RISK: "case_risk",
   DASH_CASES_BY_SOCIAL_WORKER: "dash_cases_by_social_worker",
   DASH_CASES_BY_TASK_OVERDUE_ASSESSMENT: "cases_by_task_overdue_assessment",
@@ -149,6 +152,7 @@ export const RESOURCES = {
   roles: "roles",
   systems: "systems",
   tracing_requests: "tracing_requests",
+  usage_reports: "usage_reports",
   user_groups: "user_groups",
   users: "users",
   webhooks: "webhooks"
@@ -166,7 +170,8 @@ export const ADMIN_RESOURCES = [
   RESOURCES.forms,
   RESOURCES.metadata,
   RESOURCES.audit_logs,
-  RESOURCES.webhooks
+  RESOURCES.webhooks,
+  RESOURCES.usage_reports
 ];
 
 export const SEARCH_OTHERS = [...MANAGE, ACTIONS.SEARCH_OWNED_BY_OTHERS];
@@ -226,6 +231,8 @@ export const SHOW_AUDIT_LOGS = [...MANAGE, ACTIONS.READ];
 export const REFER_FROM_SERVICE = [...MANAGE, ACTIONS.REFERRAL, ACTIONS.REFERRAL_FROM_SERVICE];
 
 export const ACTIVITY_LOGS = [...MANAGE, ACTIONS.TRANSFER];
+
+export const SHOW_USAGE_REPORTS = [...MANAGE, ACTIONS.READ];
 
 export const REQUEST_APPROVAL = [
   ...MANAGE,

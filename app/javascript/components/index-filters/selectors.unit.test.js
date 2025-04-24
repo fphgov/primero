@@ -3,6 +3,7 @@
 import { fromJS } from "immutable";
 
 import { RECORD_PATH } from "../../config";
+import { PrimeroModuleRecord } from "../application/records";
 
 import { getFiltersByRecordType, getFiltersValuesByRecordType } from "./selectors";
 
@@ -10,9 +11,11 @@ const stateWithoutRecords = fromJS({});
 
 const state = fromJS({
   user: {
+    modules: ["test1"],
     filters: {
       cases: [
         {
+          unique_id: "filter1",
           field_name: "filter1",
           name: "filter1",
           options: { en: [{ id: "true", display_name: "Filter 1" }] },
@@ -21,6 +24,7 @@ const state = fromJS({
       ],
       incidents: [
         {
+          unique_id: "filter2",
           field_name: "filter2",
           name: "filter3",
           options: { en: [{ id: "true", display_name: "Filter 3" }] },
@@ -35,6 +39,9 @@ const state = fromJS({
         filter1: true
       }
     }
+  },
+  application: {
+    modules: [PrimeroModuleRecord({ unique_id: "test1", list_filters: { cases: ["filter1"] } })]
   }
 });
 
@@ -43,6 +50,7 @@ describe("<IndexFilters /> - Selectors", () => {
     it("should return list of filters", () => {
       const expected = fromJS([
         {
+          unique_id: "filter1",
           field_name: "filter1",
           name: "filter1",
           options: { en: [{ id: "true", display_name: "Filter 1" }] },
@@ -52,13 +60,13 @@ describe("<IndexFilters /> - Selectors", () => {
 
       const records = getFiltersByRecordType(state, RECORD_PATH.cases);
 
-      expect(records).to.deep.equal(expected);
+      expect(records).toEqual(expected);
     });
 
     it("should return empty list", () => {
       const records = getFiltersByRecordType(stateWithoutRecords, RECORD_PATH.cases);
 
-      expect(records).to.be.empty;
+      expect(records.size).toBe(0);
     });
   });
 
@@ -70,13 +78,13 @@ describe("<IndexFilters /> - Selectors", () => {
 
       const records = getFiltersValuesByRecordType(state, RECORD_PATH.cases);
 
-      expect(records).to.deep.equal(expected);
+      expect(records).toEqual(expected);
     });
 
     it("should return empty map", () => {
       const records = getFiltersValuesByRecordType(stateWithoutRecords, RECORD_PATH.cases);
 
-      expect(records).to.be.empty;
+      expect(records.size).toBe(0);
     });
   });
 });
