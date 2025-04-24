@@ -5,6 +5,7 @@ import { OrderedMap, fromJS } from "immutable";
 import { mountedComponent, screen, fireEvent } from "../../test-utils";
 import { ACTIONS } from "../permissions";
 import { FieldRecord, FormSectionRecord } from "../record-form/records";
+import { PrimeroModuleRecord } from "../application/records";
 
 import RecordActions from "./container";
 import {
@@ -147,7 +148,8 @@ describe("<RecordActions />", () => {
             flag_count: 0,
             short_id: "b575f47",
             age: 15,
-            workflow: "new"
+            workflow: "new",
+            module_id: "primeromodule-cp"
           }
         ],
         filters: {
@@ -155,21 +157,105 @@ describe("<RecordActions />", () => {
         }
       }
     },
-    user: {
+    application: fromJS({
+      modules: [
+        PrimeroModuleRecord({
+          unique_id: "primeromodule-cp",
+          name: "Primero Module CP",
+          associated_record_types: ["case"],
+          options: {
+            services_form: "services"
+          }
+        })
+      ]
+    }),
+    user: fromJS({
       permissions: {
         cases: [ACTIONS.MANAGE, ACTIONS.EXPORT_JSON]
-      }
-    },
+      },
+      modules: ["primeromodule-cp"]
+    }),
     forms
   });
 
   const defaultStateWithDialog = dialog =>
     defaultState.merge(
       fromJS({
-        ui: {
-          dialogs: {
-            dialog,
-            open: true
+        ui: { dialogs: { dialog, open: true } },
+        forms: {
+          formSections: {
+            1: FormSectionRecord({
+              id: 1,
+              unique_id: "notes_form",
+              name: { en: "Notes Form" },
+              visible: true,
+              is_first_tab: true,
+              order: 20,
+              order_form_group: 10,
+              parent_form: "case",
+              editable: true,
+              module_ids: ["primeromodule-cp"],
+              form_group_id: "notes",
+              form_group_name: { en: "Notes" },
+              fields: [1],
+              is_nested: false,
+              subform_prevent_item_removal: false
+            }),
+            2: FormSectionRecord({
+              id: 2,
+              unique_id: "nested_notes_form",
+              name: { en: "Nested Notes Form" },
+              visible: false,
+              is_first_tab: true,
+              order: 10,
+              order_form_group: 10,
+              parent_form: "case",
+              editable: true,
+              module_ids: ["primeromodule-cp"],
+              form_group_id: "nested_notes",
+              form_group_name: { en: "Nested Notes" },
+              fields: [2, 3, 4, 5],
+              is_nested: true,
+              subform_prevent_item_removal: false
+            })
+          },
+          fields: {
+            1: FieldRecord({
+              id: 1,
+              name: "notes_section",
+              visible: true,
+              type: "subform",
+              display_text: { en: "Notes Section Field" },
+              subform_section_id: 2
+            }),
+            2: FieldRecord({
+              id: 2,
+              name: "note_date",
+              visible: true,
+              type: "date_field",
+              display_name: { en: "Date" }
+            }),
+            3: FieldRecord({
+              id: 3,
+              name: "note_subject",
+              visible: true,
+              type: "text_field",
+              display_name: { en: "Subject" }
+            }),
+            4: FieldRecord({
+              id: 4,
+              name: "note_created_by",
+              visible: true,
+              type: "text_field",
+              display_name: { en: "Manager" }
+            }),
+            5: FieldRecord({
+              id: 5,
+              name: "note_text",
+              visible: true,
+              type: "text_field",
+              display_name: { en: "Notes" }
+            })
           }
         }
       })
@@ -341,10 +427,17 @@ describe("<RecordActions />", () => {
 
       it("renders MenuItem with Add Services Provision option", () => {
         mountedComponent(
-          <RecordActions recordType="cases" mode={{ isShow: true }} showListActions />,
+          <RecordActions
+            recordType="cases"
+            currentPage={0}
+            selectedRecords={{ 0: [0] }}
+            mode={{ isShow: true }}
+            showListActions
+          />,
           fromJS({
             records: {
               cases: {
+                data: [{ module_id: "primeromodule-cp" }],
                 filters: {
                   id_search: true
                 }
@@ -353,7 +446,20 @@ describe("<RecordActions />", () => {
             user: {
               permissions: {
                 cases: [ACTIONS.MANAGE]
-              }
+              },
+              modules: ["primeromodule-cp"]
+            },
+            application: {
+              modules: [
+                PrimeroModuleRecord({
+                  unique_id: "primeromodule-cp",
+                  name: "Primero Module CP",
+                  associated_record_types: ["case"],
+                  options: {
+                    services_form: "services"
+                  }
+                })
+              ]
             },
             forms
           })
@@ -625,7 +731,8 @@ describe("<RecordActions />", () => {
               flag_count: 0,
               short_id: "b575f47",
               age: 15,
-              workflow: "new"
+              workflow: "new",
+              module_id: "primeromodule-cp"
             }
           ],
           filters: {
@@ -637,8 +744,21 @@ describe("<RecordActions />", () => {
       user: {
         permissions: {
           cases: [ACTIONS.MANAGE]
-        }
+        },
+        modules: ["primeromodule-cp"]
       },
+      application: fromJS({
+        modules: [
+          PrimeroModuleRecord({
+            unique_id: "primeromodule-cp",
+            name: "Primero Module CP",
+            associated_record_types: ["case"],
+            options: {
+              services_form: "services"
+            }
+          })
+        ]
+      }),
       forms
     });
     const propsRecordSelected = {
@@ -758,7 +878,8 @@ describe("<RecordActions />", () => {
               flag_count: 0,
               short_id: "b575f47",
               age: 15,
-              workflow: "new"
+              workflow: "new",
+              module_id: "primeromodule-cp"
             },
             {
               sex: "male",
@@ -775,7 +896,8 @@ describe("<RecordActions />", () => {
               flag_count: 0,
               short_id: "c23a5fca",
               age: 5,
-              workflow: "new"
+              workflow: "new",
+              module_id: "primeromodule-cp"
             }
           ],
           metadata: {
@@ -791,8 +913,21 @@ describe("<RecordActions />", () => {
       user: {
         permissions: {
           cases: [ACTIONS.MANAGE]
-        }
+        },
+        modules: ["primeromodule-cp"]
       },
+      application: fromJS({
+        modules: [
+          PrimeroModuleRecord({
+            unique_id: "primeromodule-cp",
+            name: "Primero Module CP",
+            associated_record_types: ["case"],
+            options: {
+              services_form: "services"
+            }
+          })
+        ]
+      }),
       forms
     });
 
@@ -863,7 +998,8 @@ describe("<RecordActions />", () => {
               flag_count: 0,
               short_id: "b575f47",
               age: 15,
-              workflow: "new"
+              workflow: "new",
+              module_id: "primeromodule-cp"
             },
             {
               sex: "male",
@@ -880,7 +1016,8 @@ describe("<RecordActions />", () => {
               flag_count: 0,
               short_id: "c23a5fca",
               age: 5,
-              workflow: "new"
+              workflow: "new",
+              module_id: "primeromodule-cp"
             },
             {
               sex: "female",
@@ -897,7 +1034,8 @@ describe("<RecordActions />", () => {
               flag_count: 0,
               short_id: "9C68741",
               age: 7,
-              workflow: "new"
+              workflow: "new",
+              module_id: "primeromodule-cp"
             }
           ],
           metadata: {
@@ -913,8 +1051,21 @@ describe("<RecordActions />", () => {
       user: {
         permissions: {
           cases: [ACTIONS.MANAGE]
-        }
+        },
+        modules: ["primeromodule-cp"]
       },
+      application: fromJS({
+        modules: [
+          PrimeroModuleRecord({
+            unique_id: "primeromodule-cp",
+            name: "Primero Module CP",
+            associated_record_types: ["case"],
+            options: {
+              services_form: "services"
+            }
+          })
+        ]
+      }),
       forms
     });
 

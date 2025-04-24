@@ -6,11 +6,11 @@ describe("Verifying config constant", () => {
   it("should have known constant", () => {
     const clone = { ...constants };
 
-    ["NAME", "CONSENT", "FORM_ID", "LEGITIMATE_BASIS"].forEach(property => {
-      expect(clone).to.have.property(property);
+    ["NAME", "FORM_ID", "LEGITIMATE_BASIS"].forEach(property => {
+      expect(clone).toHaveProperty(property);
       delete clone[property];
     });
 
-    expect(clone).to.be.empty;
+    expect(Object.keys(clone)).toHaveLength(0);
   });
 });

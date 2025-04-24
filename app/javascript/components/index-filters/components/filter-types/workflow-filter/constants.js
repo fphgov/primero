@@ -2,4 +2,4 @@
 
 /* eslint-disable import/prefer-default-export */
 
-export const NAME = "ServicesSubform";
+export const NAME = "WorkflowFilter";

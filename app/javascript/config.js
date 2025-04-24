@@ -19,7 +19,8 @@ import {
   SHOW_SUMMARY,
   READ_MANAGED_REPORTS,
   READ_REGISTRY_RECORD,
-  READ_FAMILY_RECORD
+  READ_FAMILY_RECORD,
+  SHOW_USAGE_REPORTS
 } from "./components/permissions/constants";
 import getAdminResources from "./components/pages/admin/utils/get-admin-resources";
 
@@ -106,6 +107,7 @@ const CODE_FIELD = "code";
 const INCIDENT_CASE_ID_FIELD = "incident_case_id";
 const INCIDENT_CASE_ID_DISPLAY_FIELD = "case_id_display";
 const INCIDENT_SHORT_ID_FIELD = "short_id";
+const SERVICES_SUBFORM_FIELD = "services_section";
 
 const CONSENT_GIVEN_FIELD_BY_MODULE = Object.freeze({
   [MODULES.CP]: ["consent_for_services", "disclosure_other_orgs"],
@@ -137,6 +139,7 @@ const RECORD_PATH = {
   users: "users",
   activity_log: "activity_log",
   registry_records: "registry_records",
+  usage_reports: "usage_reports",
   webpush_config: "webpush/config"
 };
 
@@ -215,7 +218,8 @@ const ROUTES = {
   password_reset_request: "/password_reset_request",
   registry_records: "/registry_records",
   subscriptions: "/webpush/subscriptions",
-  subscriptions_current: "/webpush/subscriptions/current"
+  subscriptions_current: "/webpush/subscriptions/current",
+  usage_reports: "/admin/usage_reports"
 };
 
 const PERMITTED_URL = [
@@ -353,6 +357,12 @@ const ADMIN_NAV = [
     label: "settings.navigation.audit_logs",
     permission: SHOW_AUDIT_LOGS,
     recordType: RESOURCES.audit_logs
+  },
+  {
+    to: "/usage_reports",
+    label: "settings.navigation.usage_reports",
+    permission: SHOW_USAGE_REPORTS,
+    recordType: RESOURCES.usage_reports
   }
 ];
 
@@ -896,5 +906,6 @@ export {
   QUICK_SEARCH_FIELDS,
   DATE_SORTABLE_FIELDS,
   NOTIFICATION_PERMISSIONS,
-  POST_MESSAGES
+  POST_MESSAGES,
+  SERVICES_SUBFORM_FIELD
 };
