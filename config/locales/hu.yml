@@ -764,7 +764,7 @@ hu:
     score_range: Pontszám tartomány
     screening_service: Szűrőszolgáltatás
     services: Szolgáltatások
-    services_implemented: Megvalósított szolgáltatások
+    services_implemented: Megvalósult szolgáltatások
     shared_from_my_team_pending_transfers: Függőben lévő átadások
     shared_from_my_team_referrals: Referálások
     shared_from_my_team_rejected_transfers: Elutasított átadások
@@ -1858,7 +1858,7 @@ hu:
       agency: Szolgáltató
       user_group: Felhasználói csoport
       child: Gyermek
-      alert: Riasztás
+      alert: Figyelmeztetés
       form_section: Űrlap
       lookup: Lekérdezés
       system_settings: Rendszerbeállítások

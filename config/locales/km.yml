@@ -222,6 +222,8 @@ km:
       introductory_sentence: សូមបញ្ជាក់ការយល់ព្រមពីអតិថិជនក្នុងការទទួលសេវាគ្រប់គ្រងករណី និងសម្រាប់រក្សាទុកទិន្នន័យរបស់ពួកគេនៅក្នុង Primero ។
       consent_agreements_required: សូមជ្រើសរើសយ៉ាងហោចណាស់ជម្រើសមួយពីការយល់ព្រមទាំងនេះ
       legitimate_basis_required: សូមជ្រើសរើសយ៉ាងហោចណាស់ជម្រើសមួយពីការចាត់ថ្នាក់មូលដ្ឋានស្របច្បាប់។
+      case_transfer_pending: ករណីមួយកំពុងរង់ចាំការផ្ទេរ
+      transfer_request_made: ករណីនេះត្រូវបានស្នើរសំុការផ្ទេរ
     save: រក្សាទុកករណី
     save_text: មុននឹងបន្ត សូមរក្សាទុករាល់ការផ្លាស់ប្តូរសម្រាប់ករណី។
     skip_and_create: រំលង រួចបង្កើតករណីថ្មី
@@ -520,6 +522,11 @@ km:
     all_cases: គ្រប់ករណី​ទាំង​អស់
     all_services_implemented: បានអនុវត្តសេវា
     and: 'និង'
+    action_needed:
+      awaiting_acceptance: កំពុងរងចាំការទទួល
+      new: ការ​បញ្ជូន
+      referrals: ការ​បញ្ជូន
+      transfers: ​ផ្ទេរ
     approval_action_plan_approved: អនុម័ត
     approval_action_plan_pending: កំពុង​រង់ចាំ
     approval_action_plan_pending_group: ផែនការសកម្មភាព
@@ -603,7 +610,6 @@ km:
     dash_shared_from_my_team: ករណីបញ្ជូន/ផ្ទេរពីក្រុមខ្ញុំ
     dash_shared_with_me: ករណីបញ្ជូន ឬផ្ទេរមកខ្ញុំ
     dash_shared_with_my_team: ករណីបញ្ជូន/ផ្ទេរមកក្រុមខ្ញុំ
-    dash_shared_with_my_team_overview: ករណីបញ្ជូន/ផ្ទេរមកក្រុមខ្ញុំ
     dash_shared_with_others: 'ករណីបញ្ជូន ឬផ្ទេរពីខ្ញុំ '
     dash_national_admin_summary: សេចក្តីសង្ខេបរបស់ Admin
     date: កាលបរិច្ឆេទ
@@ -700,15 +706,13 @@ km:
     shared_from_my_team_pending_transfers: កំពុង​រង់ចាំការ​ផ្ទេរ​
     shared_from_my_team_referrals: ការ​បញ្ជូន
     shared_from_my_team_rejected_transfers: បដិសេធការ​ផ្ទេរ​​
-    shared_with_me_new_referrals: ការ​បញ្ជូន​ថ្មី
-    shared_with_me_total_referrals: ការ​បញ្ជូន​សរុប
-    shared_with_me_transfers_awaiting_acceptance: ការផ្ទេរកំពុងរងចាំការទទួល
-    shared_with_my_team_pending_transfers_overview: ការផ្ទេរកំពុងរងចាំការទទួល
+    shared_with_me_new_referrals: ការ​បញ្ជូន
+    shared_with_me_total_referrals: ការ​បញ្ជូន
+    shared_with_me_transfers_awaiting_acceptance: កំពុងរងចាំការទទួល
+    shared_with_my_team_pending_transfers_overview: កំពុងរងចាំការទទួល
     shared_with_my_team_pending_transfers: កំពុង​រង់ចាំការ​ផ្ទេរ​
     shared_with_my_team_referrals: ការ​បញ្ជូន
-    shared_with_others_pending_transfers: កំពុង​រង់ចាំការ​ផ្ទេរ​
     shared_with_others_referrals: ការ​បញ្ជូន
-    shared_with_others_rejected_transfers: បដិសេធការ​ផ្ទេរ​​
     status_of_cases: ស្ថានភាព​ករណី
     system_user: ប្រព័ន្ធ
     total: សរុប
@@ -736,23 +740,19 @@ km:
   email_notification:
     assign: '%{user}បានចាត់តាំងដល់អ្នកដូចខាងក្រោម%{record_type}៖%{record_id}'
     assign_subject: '%{record_type}:%{id}-បានចាត់តាំងឱ្យអ្នក។'
-    approval_request: 'អ្នកប្រើប្រាស់ %{user} កំពុង​ស្នើសុំ​ការ​អនុម័ត​សម្រាប់ %{approval_type} អំពី​ករណី %{case_id} ។'
     approval_request_subject: 'ករណី៖ %{id} - សំណើ​អនុម័ត'
-    approval_response: '%{user} មានការ​ស្នើសុំ​ %{status} សម្រាប់​កា​រអនុម័ត​សម្រាប់ %{approval_type} សម្រាប់​ករណី %{case_id} ។'
     approval_response_subject: 'ករណី៖ %{id} - ការ​ឆ្លើយតប​ការ​អនុម័ត'
     referral: '%{user} ពី %{agency} បាន​បញ្ជូន​%{record_type} ដូច​ខាង​ក្រោម​ទៅ​ឲ្យ​អ្នក៖%{record_id} សម្រាប់ %{service_type} ។'
     transfer: '%{user} បាន​ផ្ទេរ %{record_type} ដូច​ខាង​ក្រោម​ទៅ​ឲ្យ​អ្នក៖ %{record_id} ។'
     transfer_request_subject: សំណើ​ផ្ទេរ​សម្រាប់​ករណី​មួយ​ក្នុង​ចំណោម​ករណី​របស់​អ្នក
-    transfer_subject: '%{record_type}: %{id} - ការ​ផ្ទេរ'
-    referral_subject: '%{record_type}: %{id} - ការ​បញ្ជូន'
     transfer_request: 'អ្នក​ប្រើប្រាស់ Primero %{user} ពី %{agency} កំពុង​ស្នើសុំ​ឲ្យ​អ្នក​ផ្ទេរ​​ភាព​ជា​ម្ចាស់​របស់កំណត់ត្រា %{record_type} %{record_id} ដូច្នេះ​ពួកគេ​អាច​ផ្ដល់​សេវាកម្ម​គ្រប់គ្រង %{record_type} សម្រាប់​កំណត់ត្រា​នីមួយៗ​នៅ​ក្នុង​តំបន់​របស់​ពួកគេ។ ប្រសិនបើ​ការ​ផ្ទេរ​នេះ​អ្នក​អាច​ទទួលយក​​បាន សូម​ចុច​លើ​តំណ​លេខ​សម្គាល់ %{record_type} នៅ​ក្នុង​អ៊ីមែល ដើម្បី​បើក %{record_type} នៅ​ក្នុង Primero និង​ចាប់ផ្ដើម​ការ​ផ្ទេរ។'
     approval_request_html: 'អ្នក​ប្រើប្រាស់ <strong>%{user}</strong> កំពុង​ស្នើសុំ​ការ​អនុម័ត​សម្រាប់ <strong> %{approval_type}</strong> នៅ​លើ​ករណី <strong>%{case_id}</strong> ។'
-    approval_response_html: '<strong>%{user}</strong> មានសំណើ <strong>%{status}</strong> សម្រាប់​ការ​អនុម័ត​សម្រាប់ <strong>%{approval_type}</strong> សម្រាប់ករណី <strong>%{case_id}</strong> ។'
-    referral_html: '<strong>%{user}</strong> ពី %{agency} បាន​បញ្ជូន%{record_type} ដូច​ខាង​ក្រោម​ទៅ​ឲ្យ​អ្នក៖ <strong>%{record_id}</strong> សម្រាប់ %{service_type} ។'
-    transfer_html: '<strong>%{user}</strong> បាន​ផ្ទេរ​ %{record_type} ដូច​ខាង​ក្រោម​ទៅ​ឲ្យ​អ្នក៖ <strong>%{record_id}</strong> ។'
-    assign_html: '<strong>%{user}</strong> បាន​ចាត់ចែង %{record_type} ដូច​ខាង​ក្រោម​ទៅ​ឲ្យ​អ្នក៖ <strong>%{record_id}</strong>។'
-    transfer_request_html: 'អ្នក​ប្រើប្រាស់ Primero %{user} ពី %{agency} កំពុង​ស្នើសុំ​ឲ្យ​អ្នក​ផ្ទេរ​​ភាព​ជា​ម្ចាស់​របស់កំណត់ត្រា %{record_type} នេះ %{record_id} ដូច្នេះ​ពួកគេ​អាច​ផ្ដល់​សេវាកម្ម​គ្រប់គ្រង %{record_type} សម្រាប់​កំណត់ត្រា​នីមួយៗ​នៅ​ក្នុង​តំបន់​របស់​ពួកគេ។ ប្រសិនបើ​ការ​ផ្ទេរ​នេះ​អ្នក​អាច​ទទួលួក​បាន សូម​ចុច​លើ​តំណ​លេខ​សម្គាល់ %{record_type} នៅ​ក្នុង​អ៊ីមែល ដើម្បី​បើក %{record_type} នៅ​ក្នុង Primero និង​ចាប់ផ្ដើម​ការ​ផ្ទេរ។'
-    transfer_request_notes_html: 'កំណត់សម្គាល់​ពី​​អ្នកធ្វើការ​ស្នើសុំ៖ %{request_transfer_notes}'
+  webpush_notification:
+    transfer:
+      title: ​ផ្ទេរថ្មី
+      body: អ្នកទើបទទួលបានការផ្ទេរថ្មី
+    transfer_request:
+      title: សុំផ្ទេរ
   encrypt:
     export_type: ប្រភេទ​ការ​នាំចេញ
     file_name: បង្កើត​ឈ្មោះ​ឯកសារ​ផ្ទាល់​របស់​អ្នក (ជា​ជម្រើស)
@@ -1623,7 +1623,6 @@ km:
       user: អ្នកប្រើប្រាស់
       agency: ស្ថាប័ន
       user_group: ក្រុម​អ្នកប្រើប្រាស់
-      child: កុមារ
       alert: ការជូនដំណឹង
       form_section: ទម្រង់
       lookup: រក​មើល
@@ -1706,6 +1705,7 @@ km:
     filter_by:
       date: កាលបរិច្ឆេទ
       verification_status: ស្ថានភាពការ​ផ្ទៀងផ្ទាត់
+      referral_transfer_status: ស្ថានភាពបញ្ជូន/ផ្ទេរ
     date_range:
       month: ខែ
       quarter: ត្រីមាស
@@ -1723,6 +1723,9 @@ km:
     followups_report:
       filter_options:
         followup_date: កាលបរិច្ឆេទនៃការតាមដាន
+    ghn_report:
+      sub_reports:
+        total: ការ​បញ្ជូន
     violations:
       name: ការបំពាន
       filter_options:
@@ -1754,6 +1757,14 @@ km:
         incident_date: កាលបរិច្ឆេទហេតុការណ៍
       reports:
         perpetrators: ជនល្មើស
+        referrals: ការ​បញ្ជូន
+    referrals_transfers_report:
+      name: ស្ថានភាពបញ្ជូន និងផ្ទេរ
+      reports:
+        total_referrals: ការ​បញ្ជូន
+        total_transfers: ផ្ទេរ
+      sub_reports:
+        total_transfers_by_user_groups: ​ផ្ទេរសរុប
   messages:
     alert_items: អ្នកមាន%{items}កំណត់គសម្គាល់។
     alerts_for:
@@ -2222,6 +2233,8 @@ km:
         label: ករណី
       dashboard:
         actions:
+          action_needed_transfer_awaiting_acceptance:
+            label: 'ការផ្ទេរកំពុងរង់ចាំការទទួល'
           approvals_action_plan:
             explanation: បង្ហាញចំនួនករណីរបស់អ្នកប្រើប្រាស់បច្ចុប្បន្នជាមួយនឹងសំណើការអនុម័តផែនការ ដែលកំពុងរងចាំ អនុម័ត ឬបដិសេធ។
             label: អ្នកកាន់ករណី%{approval_label}អនុម័ត
@@ -2438,6 +2451,8 @@ km:
             label: ការបំពាន
           gbv_statistics:
             label: ស្ថិតិ GBV
+          referrals_transfers_report:
+            label: ស្ថានភាពបញ្ជូន និងផ្ទេរ (ករណី)
       matching_configuration:
         actions:
           manage:
@@ -3027,6 +3042,7 @@ km:
       inprogress: កំពុង​រង់ចាំ
       rejected: បដិសេធ
       revoked: ហៅមកវិញ (revoke)
+    transferred_by: បាន​ផ្ទេរដោយ
     type:
       assign: ចាត់តាំង
       reassign: ចាត់តាំង
@@ -3075,46 +3091,29 @@ km:
     provider_username_help: 'ឧទាហរណ៍៖ my.username@%{domain}'
     role_id: តួនាទី
     send_mail: តើ​ទទួល​បាន​ការ​ជូន​ដំណឹង​តាម​អ៊ីមែល​ដែ​រឬទេ?
+    notification_preferences:
+      transfer_request: 'សំណើ​ផ្ទេរ'
     user_group_unique_ids: ក្រុម​អ្នកប្រើប្រាស់
     user_name: អ្នកប្រើប្រាស់
     services: សេវា
     welcome_email:
       subject: 'ស្វាគមន៍​មកកាន់%{system} !'
       greeting: 'ស្វាគមន៍​មកកាន់%{system} !'
-      body_native: 'អ្នកត្រូវបានបន្ថែមជា%{role_name} ។​ សូមទាក់ទង%{admin_full_name} (%{admin_email}) សម្រាប់ការណែនាំបន្ត ដើម្បីចាប់ផ្តើមធ្វើការជាមួយ %{host}.'
       sso:
         body: 'អ្នកត្រូវបានបញ្ចូលជា%{role_name}'
-        step1: 'ចូលទៅ%{host}ហើយចុច%{identity_provider}។'
-        step2: 'ចូលក្នុងប្រព័ន្ធដោយ%{identity_provider}គណនី%{user_name}'
-        step3: 'ប្រើពាក្យសម្ងាត់ដូចនឹងគណនី%{identity_provider}របស់អ្នក។'
-        footer: 'សូមទាក់ទង %{admin_full_name}(%{admin_email}) សម្រាប់ព័ត៌មានបន្ថែម ។'
       otp:
         body: 'អ្នកត្រូវបានបញ្ចូលជា%{role_name}'
-        step1: 'សូមទាក់ទង %{admin_full_name}(%{admin_email}) ដើម្បីស្នើរសុំឈ្មោះប្រើប្រាស់ប្រព័ន្ធរបស់អ្នក។'
-        step2: 'ចូលទៅ%{host}និងចុច "ចូលក្នុងប្រព័ន្ធដោយប្រើឈ្មោះអ្នកប្រើប្រាស់" ​។'
-        step3: 'ចូលក្នុងប្រព័ន្ធដោយប្រើឈ្មោះអ្នកប្រើប្រាស់ និងលេខកូដបណ្តោះអាសន្ន%{otp}'
-        step4: 'នៅពេលទម្រង់លេចឡើង កែប្រែលេខសម្ងាត់របស់អ្នក។'
       url_label: Primero
       enabled_label: តើ​ផ្ញើ​អ៊ីមែល​ស្វាគមន៍​ឬ?
       text_label: អត្ថបទ​អ៊ីមែល​ស្វាគមន៍
     password_reset:
       subject: 'ការណែនាំពីរបៀបផ្លាស់ប្តូរលេខកូខសម្ងាត់'
-      email_greeting: "សូមគោរព%{full_name}"
-      email_body1: "មានអ្នកស្នើសុំឱ្យកំណត់ពាក្យសម្ងាត់របស់អ្នកសម្រាប់%{host_href} . ចុចលើ url ខាងក្រោមដើម្បីចាប់ផ្តើម៖"
-      email_body2: "តំណនេះនឹងផុតកំណត់ក្នុងរយៈពេល%{hours}ម៉ោង ហើយអាចប្រើបានតែម្តងប៉ុណ្ណោះ។ សូមកុំយកចិត្តទុកដាក់នឹងអ៊ីមែលនេះ ប្រសិនបើអ្នកមិនបានធ្វើការស្នើសុំកំណត់ពាក្យសម្ងាត់ឡើងវិញទេ ឬអ្នកប្រើប្រាស់ Primero ថ្មីមិនត្រូវបានចុះឈ្មោះក្នុងនាមអ្នកទេ។ ប្រសិនបើតំណខាងលើផុតកំណត់ សូមចុច%{reset_request_href}ដើម្បីដាក់ស្នើសំណើកំណត់ពាក្យសម្ងាត់ឡើងវិញ។"
       email_body_link: នៅទីនេះ
       request_submitted: "សំណើកែសម្រួលលេខសម្ងាត់ឡើងវិញត្រូវបានបញ្ជូន"
       success: "ប្តូរពាក្យសម្ងាត់ដោយជោគជ័យ"
       errors:
         reset_password_token: "កំណត់ពាក្យសម្ងាត់ឡើងវិញមិនត្រឹមត្រូវ"
         password_confirmation: "ពាក្យសម្ងាត់ត្រូវតែដូចគ្នា"
-    onboard_email:
-      subject: "បន្តដំណើរទៅ%{system}"
-      greeting: "សូមគោរព%{full_name}"
-      body1: "សូម​ស្វាគមន៍​មក​កាន់ Primero!"
-      body2: "អ្នក​ត្រូវ​បាន​កំណត់​ថា​ជា​អ្នក​គ្រប់គ្រង​ការ​អនុវត្ត​សម្រាប់%{host_href}.%{reset_notification}"
-      body2_reset_notification: "អ្នកនឹងទទួលបានអ៊ីមែលបន្ថែមឱ្យអ្នកកំណត់ពាក្យសម្ងាត់របស់អ្នកឡើងវិញ។"
-      body3: "អ្នកទទួលខុសត្រូវក្នុងការធានាការអនុវត្តប្រកបដោយសុវត្ថិភាព និងទាន់ពេលវេលា។ សម្រាប់ការដាក់ឱ្យដំណើរការនីមួយៗ អ្នកគួរតែបានបញ្ចប់ផែនការអនុវត្តជាមួយនឹងការចាប់ផ្តើម និងយុទ្ធសាស្ត្រគ្រប់គ្រងអ្នកប្រើប្រាស់ និងពិធីការចែករំលែកព័ត៌មាន។ អ្នកក៏ទទួលខុសត្រូវផងដែរក្នុងការធានាថាលក្ខខណ្ឌនៃការប្រើប្រាស់ដែលបានចុះហត្ថលេខាគឺនៅលើឯកសារសម្រាប់ស្ថាប័នអ្នកប្រើប្រាស់ទាំងអស់។"
   user_group:
     associated_agencies: ស្ថាបនដែលពាក់ព័ន្ធជាមួយក្រុមអ្នកប្រើប្រាស់នេះ
     description: ការពណ៌នា
