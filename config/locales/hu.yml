@@ -104,10 +104,11 @@ hu:
       requested: Kérve
   audit_log:
     action: Művelet
-    description: Leírás
+    description: Részletek
     record_owner: Rekord tulajdonosa
-    timestamp: Idő
+    timestamp: Időpont
     user_name: Végrehajtotta
+    type: Rekord típusa
   bulk_export:
     file_name: Fájl
     record_type: Típus
@@ -143,6 +144,7 @@ hu:
     close: Bezárás
     continue: Folytatás
     create_case: Ügyfél létrehozása
+    referral_create_case: 'Ügyfél létrehozása: %{module_id}'
     create_incident: Incidens létrehozása
     create_new_record: Új %{model} létrehozása
     delete: Törlés
@@ -409,6 +411,8 @@ hu:
       multiple_successfully: A Primero delegálja %{select_records} ügyfelet. Előfordulhat, hogy néhány percbe telik, amíg az összes ügyfél frissül.
     referral_done: A 'Kész' gombra kattintva jelzi, hogy elvégezte a referáláshoz kapcsolódó munkát ennél az ügyfélnél. Miután rákattint a 'Kész' gombra, már nem férhet hozzá ehhez a rekordhoz.
     referral_done_success: Referálás befejezve.
+    referral_create_case_header: 'Ügyfél létrehozása: %{module_id}'
+    referral_create_case: Biztos vagy benne? Az ügyfél kezelése innentől a te felelősségi körödbe fog tartozni.
     referral_accepted_header: Referálás elfogadása
     referral_accepted: Biztos benne? Mostantól Ön lesz felelős a referáláshoz kapcsolódó munkák befejezéséért.
     referral_accepted_success: Referálás elfogadva.
@@ -501,10 +505,14 @@ hu:
     selectable_date_options:
       assessment_requested_on: Értékelés dátuma
       closure_approved_date: 'Ügyfél lezárásának dátuma'
-      created_at: Ügyfél megnyitásának dátuma
+      created_at: Ügyfél megnyitás dátuma
       date_case_plan_initiated: Ügyfélterv dátuma
       date_of_creation: Létrehozás dátuma
       registration_date: Regisztráció dátuma
+      followup_date: Utókövetés dátuma
+      date_reunification: Újraegyesítés dátuma
+      tracing_date: Nyomkövetés dátuma
+      service_implemented_day_time: Szolgáltatás teljesítésének dátuma
   configurations:
     apply_label: Biztos benne? Ha alkalmazza, a beállítások a rendszerre lesznek alkalmazva.
       Minden jelenlegi beállítását elveszíti, és nem tudja visszaállítani őket, hacsak nem mentette el őket egy másik Konfigurációba.
@@ -543,7 +551,7 @@ hu:
       phone: Telefon
       position: Pozíció
       primero_version: Primero verzió
-      support_forum: Támogatói fórum
+      support_forum: Támogatási fórum
       system_version: Rendszer verzió
     info_label: Kapcsolati információk
     updated: A kapcsolati információk sikeresen frissítve.
@@ -813,11 +821,11 @@ hu:
     referral: '%{user} a(z) %{agency} szolgáltatótól a következő ügyfelet referálta Önnek: %{record_id} a %{service_type} igénybevételére'
     transfer: '%{user} a következő ügyfelet adta át Önnek: %{record_id}.'
     transfer_request_subject: 'Átadási kérelem az egyik ügyfelére'
-    transfer_subject: 'Ügyfél: %{id} - Átadási kérés'
+    transfer_subject: 'Ügyfél: %{id} - Átadás'
     referral_subject: 'Ügyfél: %{id} - Referálási kérés'
     transfer_request: '%{user} Primero felhasználó a(z) %{agency} szolgáltatótól kéri, hogy helyezze át a %{case_id} azonosítójú ügyfelet, hogy megfelelő szolgáltatást biztosíthassanak számára. Ha elfogadja az átadást, kattintson az e-mailben található %{record_id} linkre, hogy megnyissa az ügyfél adatlapját a Primeroban, és elindítsa az átadást.'
     approval_request_html: 'Kedves Felhasználó! <br><br> %{user} jóváhagyást kér a %{case_id} azonosítójú ügyfélnél - %{approval_type} ügyben.'
-    approval_response_html: '%{user} %{status} a jóváhagyási kérelmet a %{case_id} azonosítójú ügyfélnél - %{approval_type} ügyben.'
+    approval_response_html: '<strong>%{user}</strong> frissítette a(z) <strong>%{approval_type}</strong> jóváhagyási kérelmed státuszát ennél az ügyfélnél (<strong>%{case_id}</strong>) a következőre: <strong>%{status}</strong>. Kérjük, jelentkezz be a fiókodba a megtekintéshez.'
     referral_html: '%{user} a(z) %{agency} szolgáltatótól a következő ügyfelet referálta Önnek: %{record_id} a %{service_type} igénybevételére. Kérjük, jelentkezzen be a fiókjába a következő linken: %{login_url}'
     transfer_html: 'Kedves Felhasználó! <br><br> %{user} a következő ügyfelet adta át Önnek: %{record_id}. Kérjük, jelentkezzen be a fiókjába a következő linken: %{login_url}'
     assign_html: '%{user} a következő ügyfelet delegálta Önnek: %{record_id}. Kérjük, jelentkezzen be a fiókjába a következő linken: %{login_url}'
@@ -1764,6 +1772,9 @@ hu:
       _rejected: Elutasítva
       _requested: Kérve
       add_note: Megjegyzés hozzáadása
+      assessment_approved: Értékelés jóváhagyva
+      assessment_rejected: Értékelés elutasítva
+      assessment_requested: Értékelés kérése
       assign: Delegálás
       assign_to: Delegálás ide
       attach: Csatolás
@@ -1774,19 +1785,26 @@ hu:
       case_plan_rejected: Ügyfél akcióterv elutasítva
       case_plan_requested: Ügyfél akcióterv kérése
       close: Lezárás
+      closure_approved: Lezárás jóváhagyva
+      closure_rejected: Lezárás elutasítva
+      closure_requested: Lezárás kérése
       create: Létrehozás
       create_bulk: Tömeges létrehozás
+      create_family: Háztartás létrehozása
+      current: Jelenlegi
       delete: Törlés
       destroy: Megsemmisítés
       detach: Leválasztás
       enable_disable_record: Rekord engedélyezése/letiltása
       export: Exportálás
+      family: Háztartás listázása
       flag: Jelzés
       import: Importálás
       incident_details_from_case: Incidens részletek az ügyféltől
       index: Indexelés
       list: Lista
       login: Bejelentkezés
+      logout: Kijelentkezés
       password_reset: Jelszó visszaállítás
       password_reset_request: Jelszó visszaállítási kérelem
       refer: Referálás
@@ -1804,11 +1822,14 @@ hu:
       transfer_accepted: Átadás elfogadva
       transfer_rejected: Átadás elutasítva
       transfer_request: Átadási kérelem
+      transfer_revoked: Átadás visszavonva
       transfer_to: Átadás ide
       unflag: Jelzés törlése
       update: Frissítés
+      update_bulk: Csoportos frissítés
       user_password_reset_request: Felhasználói jelszó visszaállítási kérelem
       webhook: Webhook
+      add_note: Megjegyzés hozzáadása
     approve_form:
       action_plan: Akcióterv űrlap
       bia: BIA űrlap
@@ -1817,29 +1838,45 @@ hu:
       'false': Elutasítva
       gbv_closure: GBV lezárási űrlap
       'true': Jóváhagyva
+    action_plan_approved: "%{approval_label} jóváhagyva"
+    action_plan_requested: "%{approval_label} kérése"
+    action_plan_rejected: Akcióterv jóváhagyás elutasítva
     assessment_approved: "%{approval_label} jóváhagyva"
+    assessment_rejected: Értékelés jóváhagyás elutasítva
     assessment_requested: "%{approval_label} kérése"
+    assign_to: Felhasználók listázása a hozzárendeléséhez
+    assign: Hozzárendelés
+    attach: Melléklet hozzáadása
     bulk_index: Összes listázása
     by_user: felhasználó által
     case_plan_approved: "%{approval_label} jóváhagyva"
     case_plan_requested: "%{approval_label} kérése"
+    case_plan_rejected: Ügyféltervhez jóváhagyás elutasítva
     close: Lezárás
     closure_approved: "%{approval_label} jóváhagyva"
+    closure_rejected: Lezárás jóváhagyás elutasítva
     closure_requested: "%{approval_label} kérése"
     consent_count: Hozzájárulások száma
     copy: Másolás
     create: Létrehozás
     create_subform: Alűrlap létrehozása
+    detach: Csatolmány eltávolítása
     destroy: Törlés
     edit: Szerkesztés
     enable_disable_record: Engedélyezés / Letiltás
     export: Adatok exportálása
+    family: Háztartás rekord
     flag: Jelölés
     flag_records: Rekordok jelölése
+    gbv_closure_approved: "%{approval_label} jóváhagyva"
+    gbv_closure_requested: "%{approval_label} igényelve"
+    gbv_closure_rejected: GBV lezárás jóváhagyás elutasítva
     graph_data: Grafikon adatainak megtekintése
     hide_name:
       protect: Név elrejtése
       view: Név megtekintése
+    import: Importálás
+    incident_details_from_case: Incidens hozzáadása az ügyfélhez lista nézetből
     index: Rekordok listázása
     list: Lista
     login: Bejelentkezés
@@ -1849,15 +1886,17 @@ hu:
       'false': Mobilhoz nem jelölve
       'true': Mobilhoz jelölve
     match_record: Rekord egyezés
+    password_reset: Jelszó visszaállítása
     permitted_field_list: Engedélyezett mezők listája
     quick_view: Gyorsnézet megtekintése
     reassign: Újradelegálás
     resources:
       audit_log: Audit napló
       user: Felhasználó
+      flag: Megjelölés
       agency: Szolgáltató
       user_group: Felhasználói csoport
-      child: Gyermek
+      child: Ügyfél
       alert: Figyelmeztetés
       form_section: Űrlap
       lookup: Lekérdezés
@@ -1873,12 +1912,19 @@ hu:
       primero_configuration: Primero konfiguráció
       code_of_conduct: Magatartási kódex
       task: Feladat
+      tracing_request: Nyomkövetési kérelem
+      managed_report: Jelentés
     record_state:
       'false': Letiltás
       'true': Engedélyezés
     refer: Referálás
+    refer_accepted: Referálás elfogadva
     refer_to: Referálási címzett keresése
     referral: Referálás
+    refer_revoke: Referálás visszavonása
+    refer_rejected: Referálás elutasítva
+    refer_accpeted: Referálás elfogadva
+    refer_done: Referálás elvégezve
     relinquish_referral: Referálás visszavonva
     reopen: Újranyitás
     reopen_case: Ügy újranyitása
@@ -1894,12 +1940,19 @@ hu:
     search: API keresés
     show: Megtekintés
     show_alerts: Riasztások megtekintése
+    timestamp: Időbélyeg
     to: ide
     to_user: felhasználóhoz
+    traces: Nyomkövetések megtekintése
     transfer: Átadás
+    transfer_to: Felhasználók listázása átadáshoz
     transfer_status:
       Accepted: Átadás elfogadva
       Rejected: Átadás elutasítva
+    transfer_accepted: Átadás elfogadása
+    transfer_rejected: Átadás elutasítása
+    transfer_request: Átadás kérése
+    transfer_revoked: Átadás visszavonása
     unflag: Jelölés törlése
     update: Frissítés
   login:
@@ -1941,6 +1994,7 @@ hu:
     total: Összesen
     violations_total: Jogsértések
     filter_by:
+      module_id: Modul
       date: Dátum
       verification_status: Ellenőrzési státusz
       violation_type: Jogsértés típusa
@@ -2214,6 +2268,126 @@ hu:
         case_violence_type_by_sex_and_age: Ügyfelek száma nem és életkor szerint
         incident_violence_type_by_sex_and_age: Incidensek száma nem és életkor szerint
     success_message: Az exportált fájl sikeresen létrehozva
+    protection_outcomes:
+      reports:
+        improved_psychosocial_wellbeing: '% pszichoszociális jólétben javulást mutató kliens'
+        impacted_protection_risks: '% kevésbé érintett a védelmi kockázatok által'
+      description: 'Főbb eredmények, beleértve a pszichoszociális jólétükben javuló és a kockázatok által kevésbé érintett klienseket eseti menedzsment után'
+      name: Védelmi Eredmények
+      filter_options:
+        registration_date: Regisztráció dátuma
+        date_closure: Lezárás dátuma
+      sub_reports:
+        improved_wellbeing_after_support: '% pszichoszociális jólétben javulást mutató kliens támogatás után'
+        less_impacted_after_support: '% kevésbé érintett a védelmi kockázatok által támogatás után'
+      improved_wellbeing_after_support:
+        improve_by_at_least_3_points: 'Legalább 3 ponttal javult'
+        not_improve_by_at_least_3_points: 'Nem javult legalább 3 ponttal'
+      less_impacted_after_support:
+        clients_report_less_impacted: 'Kevésbé érintettként nyilatkozott'
+        clients_report_equally_or_more_severely_impacted: 'Ugyanúgy vagy súlyosabban érintettként nyilatkozott'
+    process_quality_total_cases:
+      reports:
+        process_quality_total_cases: 'Összes védelmi esetmenedzsment kliens'
+      description: Az esetek összesített száma státusz, nem és időszak szerinti bontásban.
+      name: 'Folyamat és Minőség - Összes védelmi esetmenedzsment kliens száma'
+      filter_options:
+        registration_date: Regisztráció dátuma
+        date_closure: Lezárás dátuma
+      sub_reports:
+        total_protection_management_cases: 'Összes védelmi esetmenedzsment kliens száma'
+    process_quality_average_cases:
+      reports:
+        process_quality_average_cases: 'Esetek eseti munkatársanként'
+      description: Esetek száma eseti munkatársanként, nem és időszak szerinti bontásban.
+      name: 'Folyamat és Minőség - Átlagos esetek száma eseti munkatársanként'
+      filter_options:
+        registration_date: Regisztráció dátuma
+        date_closure: Lezárás dátuma
+      sub_reports:
+        average_cases_per_case_worker: 'Átlagos esetek száma eseti munkatársanként'
+      average_cases_per_case_worker: 'Átlagos esetek száma eseti munkatársanként'
+    process_quality_successful_referrals:
+      reports:
+        process_quality_successful_referrals: Sikeres referálások
+      description: A szolgáltatási referálások sikerességi aránya nem és időszak szerinti bontásban
+      name: 'Folyamat és Minőség - Sikeres referálások aránya'
+      filter_options:
+        referral_created_at: Referálás dátuma
+        service_response_day_time: Szolgáltatás létrehozásának dátuma
+        case_status: Eset státusza
+      sub_reports:
+        percentage_successful_referrals: '% sikeres referálás'
+      implemented: 'Sikeres'
+      not_implemented: 'Nem sikeres'
+    process_quality_implemented_referrals:
+      reports:
+        process_quality_implemented_referrals: 'Sikeres referálások megvalósítási dátum szerint'
+      description: Sikeres szolgáltatási referálások megvalósítási dátum, nem és időszak szerint bontva
+      name: Folyamat és Minőség - Sikeres referálások megvalósítási dátum szerint
+      filter_options:
+        case_status: Eset státusza
+        service_implemented_day_time: Szolgáltatás megvalósításának dátuma
+      sub_reports:
+        implemented_successful_referrals: Sikeres referálások megvalósítás szerint
+      implemented: Sikeres referálások
+    case_characteristics:
+      reports:
+        case_protection_risk: Esetek védelmi kockázat szerint
+        case_risk_level: Esetek kockázati szint szerint
+        case_duration: Esetek időtartam szerint
+        clients_disability: Fogyatékkal élő kliensek
+        case_safety_plan: Esetek biztonsági tervvel
+        clients_gender: Esetek nemek szerint
+      description: 'Főbb esetjellemzők, beleértve az esetek %-os megoszlását kockázati szint, védelmi kockázatok, időtartam, fogyatékossági státusz, biztonsági terv megléte és nemek szerint.'
+      name: Esetjellemzők
+      filter_options:
+        registration_date: Regisztráció dátuma
+        date_closure: Lezárás dátuma
+      sub_reports:
+        percentage_cases_protection_risk: '% eset védelmi kockázat szerint'
+        percentage_cases_risk_level: '% eset kockázati szint szerint'
+        percentage_cases_duration: '% eset időtartam szerint'
+        percentage_clients_with_disability: '% fogyatékkal élő kliens'
+        percentage_cases_safety_plan: '% eset véglegesített biztonsági tervvel'
+        percentage_clients_gender: '% kliens nemek szerint'
+      percentage_cases_duration:
+        1_month: <1 hónap
+        1_3_months: '1-3 hónap'
+        3_6_months: '3-6 hónap'
+        over_6_months: több mint 6 hónap
+      percentage_cases_safety_plan:
+        safety_plan_completed: 'Biztonsági terv elkészült'
+        safety_plan_not_completed: 'Biztonsági terv nem készült el'
+  usage_report:
+    label: Használati jelentés exportálása
+    file_name: Saját fájlnév létrehozása (opcionális)
+    instructions: 'Negyedéves jelentések generálásához kattintson az "Exportálás" gombra'
+    invalid_date_format: '%{field} érvényes dátumformátum kell legyen'
+    invalid_date_range: '%{to} nagyobbnak kell lennie, mint %{from}'
+    export:
+      users: Felhasználók
+      hostname: Hosztnév
+      start_date: Kezdődátum
+      end_date: Záródátum
+      quarter: Negyedév
+      agencies_total: Ügynökségek összesen
+      module_yes: 'Igen'
+      module_no: 'Nem'
+      agency_list: Ügynökségek listája
+      users_total: Összes felhasználó
+      users_active: Aktív felhasználók
+      users_disabled: Letiltott felhasználók
+      users_new: Új felhasználók ebben a negyedévben
+      cases_total: Összes eset
+      cases_open: Nyitott esetek
+      cases_closed: Lezárt esetek
+      cases_open_this_quarter: Nyitott esetek ebben a negyedévben
+      cases_closed_this_quarter: Lezárt esetek ebben a negyedévben
+      services_total: Összes szolgáltatás
+      followups_total: Utókövetések összesen
+      incidents_total: Incidensek összesen
+      incidents_open_this_quarter: Incidensek ebben a negyedévben
   messages:
     alert_items: "%{items} figyelmeztetés van."
     alerts_for:
@@ -2415,6 +2589,7 @@ hu:
       write: Írás
       activity_log: Tevékenységnapló
       remove_alert: Figyelmeztetés eltávolítása
+      create_case_from_referral: Referálásból ügyfél létrehozása
     resource:
       kpi:
         actions:
@@ -2531,6 +2706,9 @@ hu:
           assign_within_user_group:
             explanation: Lehetővé teszi a felhasználó számára, hogy az ügyet átküldje egy másik felhasználónak ugyanazon felhasználói csoportban. Ehhez nincs szükség az ügyfél hozzájárulására. Az átadással ellentétben a fogadó felhasználónak nincs lehetősége elfogadni vagy elutasítani a hozzárendelést.
             label: Hozzárendelés saját felhasználói csoporton belüli felhasználóhoz
+          create_case_from_referral:
+            label: Ügy létrehozása referálásból
+            explanation: Lehetővé teszi a felhasználó számára, hogy egy referálásból új ügyet hozzon létre.
           change_log:
             explanation: Lehetővé teszi a felhasználó számára, hogy megtekinthesse az ügyhöz kapcsolódó összes változás történetét a rekord létrehozása óta. Ez magában foglalja az összes mező értékét.
             label: Módosítási napló
@@ -3064,6 +3242,24 @@ hu:
           referrals_transfers_report:
             label: Referálások és Átadások (Ügyek)
             explanation: A felhasználók megtekinthetik az egyes Felhasználói Csoportokból átadott és referált ügyek számát.
+          protection_outcomes:
+            label: Védelmi Eredmények
+            explanation: A védelmi eredményeket eredetileg a PCM modulhoz fejlesztették ki. Tartalmazza a pszichoszociális jólétükben javulást mutató kliensek és a védelmi kockázatok által kevésbé érintett kliensek százalékos arányát.
+          process_quality_total_cases:
+            label: 'Folyamat és Minőség - Összes védelmi esetmenedzsment kliens száma'
+            explanation: Csak a PCM (Védelmi Esetmenedzsment) modulra vonatkozik. Megmutatja az összes védelmi esetmenedzsment alatt álló eset számát.
+          process_quality_average_cases:
+            label: 'Folyamat és Minőség - Átlagos esetek száma eseti munkatársanként'
+            explanation: Csak a PCM (Védelmi Esetmenedzsment) modulra vonatkozik. Megmutatja az egy eseti munkatársra jutó PCM esetek átlagos számát.
+          process_quality_successful_referrals:
+            label: 'Folyamat és Minőség - Sikeres referálások aránya (%)'
+            explanation: Csak a PCM (Védelmi Esetmenedzsment) modulra vonatkozik. Megmutatja a sikeresen megvalósított szolgáltatási referálások százalékos arányát.
+          process_quality_implemented_referrals:
+            label: 'Folyamat és Minőség - Sikeres referálások megvalósítási dátum szerint'
+            explanation: Csak a PCM (Védelmi Esetmenedzsment) modulra vonatkozik. Megmutatja, hogy havonta hány sikeres szolgáltatási referálás került megvalósításra.
+          case_characteristics:
+            label: Esetjellemzők
+            explanation: 'Csak a PCM (Védelmi Esetmenedzsment) modulra vonatkozik. Az eseteket bontja le több kulcsfontosságú jellemző szerint: védelmi kockázat, kockázati szint, időtartam, fogyatékossági státusz, biztonsági terv teljesítése és nem.'
       matching_configuration:
         actions:
           manage:
@@ -3418,6 +3614,7 @@ hu:
   record_panel:
     record_information: Változások elvetése
   referral:
+    allow_all: Minden űrlaphoz való hozzáférés engedélyezése
     type_of_recipient: Címzett típusa
     type_of_referral_required: Referálás típusa szükséges
     referral_authorization_label: Meg szeretné adni az referálás típusát?
@@ -3436,6 +3633,8 @@ hu:
     user_mandatory_label: A címzett szükséges
     date: Dátum
     rejected_reason: Elutasítás oka
+    allow_case_creation: Engedélyezze ügyfél létrehozását ezzel a referálással
+    allow_case_creation_help_text: Ennek a négyzetnek a bejelölésével a fogadó fél létrehozhatja saját ügyfélrekordját, hogy esetmenedzsmenthez kötődő szolgáltatásokat nyújtson a kliens számára.
   report:
     aggregate_by: Csoportosítás sor alapján
     attribute: Attribútum
@@ -3688,17 +3887,17 @@ hu:
       current_location: Háztartás helyszíne
   family:
     family_member:
-      case_id: Eset ID
+      case_id: Ügyfél ID
       update_and_return: Frissítés és visszatérés
       save_and_return: Hozzáadás és visszatérés
-      create_case: Eset létrehozása
+      create_case: Ügyfél létrehozása
       back_to_family_members: Vissza a családtagokhoz
       create: Létrehozás
     messages:
       update_success: 'Háztartás %{record_id} sikeresen frissítve.'
       creation_success: Háztartás sikeresen létrehozva.
       disabled: Háztartás le van tiltva
-      confirm_create_case: Szeretnél esetet létrehozni ennek a személynek?
+      confirm_create_case: Szeretne ügyfelet létrehozni?
   transfer:
     label: Átadás
     agency_label: Szociális szolgáltató
