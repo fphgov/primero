@@ -13,6 +13,7 @@ class Exporters::RolePermissionsExporter
     referral transfer read create write enable_disable_record flag resolve_any_flag manage add_note reopen close
     change_log view_incident_from_case view_protection_concerns_filter list_case_names view_registry_record
     add_registry_record view_family_record case_from_family link_family_record remove_alert service_own_entries_only
+    create_case_from_referral view_case_relationships update_case_relationships
   ].freeze
   CASE_EXPORTS = %w[
     export_list_view_csv export_csv export_xls export_photowall export_unhcr_csv export_pdf consent_override
@@ -21,7 +22,7 @@ class Exporters::RolePermissionsExporter
   CASE_APPROVALS = %w[
     request_approval_assessment request_approval_case_plan request_approval_closure request_approval_action_plan
     request_approval_gbv_closure approve_assessment approve_case_plan approve_closure approve_action_plan
-    approve_gbv_closure
+    approve_gbv_closure self_approve
   ].freeze
   CASE_MANAGED_OTHER_USERS = %w[
     search_owned_by_others display_view_page view_photo incident_from_case

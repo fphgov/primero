@@ -20,6 +20,7 @@ class PermittedFieldService
     'registry_record_id' => { 'type' => '%w[string null]', 'format' => 'regex', 'pattern' => UUID_REGEX },
     'family_id' => { 'type' => '%w[string null]', 'format' => 'regex', 'pattern' => UUID_REGEX },
     'created_at' => { 'type' => 'date-time' },
+    'source_case_display_id' => { 'type' => 'string', 'format' => 'regex', 'pattern' => UUID_REGEX },
     'owned_by' => { 'type' => 'string' },
     'module_id' => { 'type' => 'string', 'enum' => PrimeroModule.available_module_ids }
   }.freeze
@@ -44,7 +45,7 @@ class PermittedFieldService
     alert_count assigned_user_names created_at created_by created_by_agency owned_by owned_by_agency_id
     owned_by_text owned_by_agency_office previous_agency previously_owned_by reassigned_tranferred_on reopened_logs
     last_updated_at last_updated_by owned_by_groups previously_owned_by_agency created_organization
-    consent_for_services disclosure_other_orgs
+    consent_for_services disclosure_other_orgs case_type
   ].freeze
 
   PERMITTED_DASHBOARD_FILTERS = {

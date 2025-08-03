@@ -36,6 +36,7 @@ function Referrals({
   formID,
   providedConsent,
   canConsentOverride,
+  allowCaseCreationFromReferral,
   record,
   recordType,
   setDisabled,
@@ -56,7 +57,8 @@ function Referrals({
   const recordTypesForms = useMemoizedSelector(state =>
     getRecordForms(state, {
       recordType: RECORD_TYPES[recordType],
-      primeroModule: record?.get("module_id")
+      primeroModule: record?.get("module_id"),
+      includeDefaultForms: false
     })
   );
 
@@ -72,7 +74,8 @@ function Referrals({
     recordModuleID: record?.get("module_id"),
     isReferralFromService,
     isExternalReferralFromService,
-    hasReferralRoles: !referralAuthorizationRoles.isEmpty()
+    hasReferralRoles: !referralAuthorizationRoles.isEmpty(),
+    allowCaseCreationFromReferral
   });
 
   const handleSubmit = values => {
@@ -160,6 +163,7 @@ function Referrals({
 Referrals.displayName = "Referrals";
 
 Referrals.propTypes = {
+  allowCaseCreationFromReferral: PropTypes.bool,
   canConsentOverride: PropTypes.bool,
   formID: PropTypes.string.isRequired,
   handleClose: PropTypes.func.isRequired,

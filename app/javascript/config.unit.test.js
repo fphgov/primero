@@ -32,6 +32,7 @@ describe("Verifying config constant", () => {
       "APPROVALS_TYPES",
       "CASE",
       "CASES",
+      "CASE_RELATIONSHIPS",
       "CHANGE_LOGS",
       "CODE_FIELD",
       "CODE_OF_CONDUCT_DATE_FORMAT",
@@ -87,6 +88,8 @@ describe("Verifying config constant", () => {
       "PASSWORD_MIN_LENGTH",
       "PERMITTED_URL",
       "POTENTIAL_MATCH_LIKELIHOOD",
+      "PROCESS_QUALITY_AVERAGE_CASES_SUBREPORTS",
+      "PROCESS_QUALITY_TOTAL_CASES_SUBREPORTS",
       "RECORD_INFORMATION",
       "RECORD_INFORMATION_GROUP",
       "IDENTIFICATION_REGISTRATION",
@@ -150,7 +153,11 @@ describe("Verifying config constant", () => {
       "PROTECTION_CONCERNS_SUBREPORTS",
       "REPORTING_LOCATIONS_SUBREPORTS",
       "SERVICES_SUBREPORTS",
-      "FOLLOWUPS_SUBREPORTS"
+      "FOLLOWUPS_SUBREPORTS",
+      "PROTECTION_OUTCOMES_SUBREPORTS",
+      "PROCESS_QUALITY_SUCCESSFUL_REFERRALS_SUBREPORTS",
+      "PROCESS_QUALITY_IMPLEMENTED_REFERRALS_SUBREPORTS",
+      "CASE_CHARACTERISTICS_SUBREPORTS"
     ].forEach(property => {
       it(`exports '${property}'`, () => {
         expect(configConstants).toHaveProperty(property);
