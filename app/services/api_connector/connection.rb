@@ -44,12 +44,14 @@ class ApiConnector::Connection
   def ssl(options = {})
     tls_client_key = options['tls_client_key']
     tls_client_cert = options['tls_client_cert']
+    ssl_options = {}
     if options['tls'] == 'client' && File.exist?(tls_client_key) && File.exist?(tls_client_cert)
-      {
-        cert: OpenSSL::X509::Certificate.new(File.read(tls_client_cert)),
-        key: OpenSSL::PKey::RSA.new(File.read(tls_client_key))
-      }
-    end || {}
+      ssl_options[:cert] = OpenSSL::X509::Certificate.new(File.read(tls_client_cert))
+      ssl_options[:key] = OpenSSL::PKey::RSA.new(File.read(tls_client_key))
+    end
+    # Disable SSL verification for debugging (DO NOT USE IN PRODUCTION)
+    ssl_options[:verify] = false
+    ssl_options
   end
 
   def headers(options = {})
