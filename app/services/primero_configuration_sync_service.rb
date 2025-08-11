@@ -29,6 +29,11 @@ class PrimeroConfigurationSyncService
 
   def sync!(record)
     connectors.each do |connector|
+      # Disable SSL verification for debugging (not recommended for production)
+      if connector.connection.respond_to?(:http) && connector.connection.http.respond_to?(:verify_mode=)
+        connector.connection.http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      end
+
       Rails.logger.info("[sync][config]['host'] #{connector.connection.options['host']}")
       sync_response = connector.sync(record)
 
