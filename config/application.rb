@@ -52,7 +52,7 @@ class Primero::Application < Rails::Application
   config.autoload_paths += load_paths
   config.eager_load_paths += load_paths
 
-  config.middleware.use Rack::Deflater
+  # config.middleware.use Rack::Deflater
 
   config.cache_store = :memory_store
 

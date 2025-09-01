@@ -85,7 +85,7 @@ export default (formMode, i18n, useIdentityProviders, providers, isMyAccountPage
           .email(i18n.t("errors.models.user.email"))
           .required()
           .label(i18n.t("user.user_name"))
-          .isIdpProvider(ref("identity_provider_unique_id"))
+          // .isIdpProvider(ref("identity_provider_unique_id"))
       : string().required().label(i18n.t("user.user_name"))
   };
 

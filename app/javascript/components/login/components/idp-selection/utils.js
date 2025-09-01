@@ -33,7 +33,7 @@ export const setMsalConfig = (idp = {}, forceStandardOidc) => {
     auth: {
       clientId: idp.client_id,
       authority: idp.authorization_url,
-      knownAuthorities: ["unicefpartners.b2clogin.com"],
+      knownAuthorities: ["unicefpartners.b2clogin.com", "bfphb2c.b2clogin.com"],
       validateAuthority: false,
       redirectUri: idp.redirect_uri
     },
