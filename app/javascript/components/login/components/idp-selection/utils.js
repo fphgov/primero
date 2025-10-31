@@ -18,7 +18,7 @@ export const setMsalConfig = (idp = {}, forceStandardOidc) => {
           end_session_endpoint: `${idp.authorization_url}/protocol/openid-connect/logout`,
           issuer: idp.authorization_url
         }),
-        knownAuthorities: ["unicefpartners.b2clogin.com", idp.authorization_url],
+        knownAuthorities: [idp.authorization_url],
         validateAuthority: false,
         redirectUri: idp.redirect_uri
       },
