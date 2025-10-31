@@ -35,6 +35,8 @@ server {
     server_name ${NGINX_SERVER_NAME};
     # @end-ssl
 
+    large_client_header_buffers 4 32k;
+
     if ($request_method !~ ^(GET|PUT|POST|PATCH|DELETE)$ ) {
         return 444;
     }
