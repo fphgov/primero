@@ -40,6 +40,15 @@ function Component({ children }) {
             <ModuleLogo white />
           </div>
           <div className={css.authContainer}>
+            <div className={css.disclaimer}>
+              <p>Tisztelt Felhasználó!</p>
+              <p>Tájékoztatjuk, hogy Ön a Főpolgármesteri Hivatal elektronikus információs rendszerét használja.</p>
+              <p>A rendszerben naplózásra kerülnek a felhasználói tevékenységek.</p>
+              <p>Amennyiben Ön nem rendelkezik a rendszerhasználathoz engedéllyel, kérjük, szíveskedjen a használatot
+                haladéktalanul befejezni.</p>
+              <p>A rendszer jogosulatlan használata tilos, és büntető- vagy polgári jogi felelősséggel jár.</p>
+              <p>A rendszer használata a fentiekben részletezett feltételek elfogadását jelenti.</p>
+            </div>
             <div className={classesAuthDiv}>
               <div className={css.formContainer}>
                 <div className={css.form}>{children}</div>

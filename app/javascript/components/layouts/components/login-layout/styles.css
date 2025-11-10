@@ -56,7 +56,6 @@
   flex-direction: column;
   gap: var(--sp-2);
   display: flex;
-  flex: 1;
   align-items: center;
   justify-content: center;
   width: 100%;
@@ -168,6 +167,30 @@
 .footerContained {
   flex-direction: column;
 }
+
+.disclaimer {
+  max-width: 800px;
+  margin: 0 auto 2rem auto;
+  background-color: #ffffff10;
+  padding: 1.5rem 2rem;
+  border-radius: 8px;
+  line-height: 1.6;
+  color: #fff;
+  font-size: 1.05rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.disclaimer p {
+  line-height: 1.2;
+  margin: 0.6rem 0;
+}
+
+.disclaimer p:first-child {
+  font-weight: 600;
+  font-size: 1.2rem;
+  margin-bottom: 1.6rem;
+}
+
 
 @media (max-width:600px) {
   .loginLogo {
