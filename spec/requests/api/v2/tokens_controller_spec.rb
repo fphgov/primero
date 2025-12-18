@@ -8,9 +8,11 @@ describe Api::V2::TokensController, type: :request do
   include ActiveJob::TestHelper
 
   before :all do
+    clean_data(PrimeroModule, PrimeroProgram, FormSection, Role)
+
     user_name = 'tokenstestuser'
     password = 'tokenstestuser0'
-    @user = User.new(user_name:, password:, password_confirmation: password)
+    @user = User.new(user_name:, password:, password_confirmation: password, role: create(:role))
     @user.save(validate: false)
     @params = { user: { user_name:, password: } }
   end
@@ -31,12 +33,20 @@ describe Api::V2::TokensController, type: :request do
       expect(response.status).to eq 401
     end
 
+    it 'returns nothing for invalid credentials' do
+      expect(AuditLogJob).to receive(:perform_later).with(hash_including(action: 'failed_login'))
+
+      post '/api/v2/tokens', params: { user: { user_name: @user.user_name, password: 'incorrect' } }
+      expect(response.status).to eq 401
+    end
+
     it 'enqueues an audit log job that records the login attempt' do
       metadata = {
-        user_name: @user.user_name, remote_ip: '127.0.0.1', agency_id: nil, role_id: nil, http_method: 'POST',
-        record_ids: []
+        user_name: @user.user_name, remote_ip: '127.0.0.1', agency_id: nil, role_id: @user.role_id,
+        http_method: 'POST', record_ids: []
       }
       post '/api/v2/tokens', params: @params
+
       expect(AuditLogJob).to have_been_enqueued
         .with(
           record_type: 'User',
@@ -52,7 +62,7 @@ describe Api::V2::TokensController, type: :request do
       before(:each) do
         Session.delete_all
         @use_identity_provider = Rails.configuration.x.idp.use_identity_provider
-        @idp_user = User.new(user_name: idp_user_name)
+        @idp_user = User.new(user_name: idp_user_name, role: create(:role))
         @idp_user.save(validate: false)
         @non_idp_user = User.new(user_name: non_idp_user_name, password:, password_confirmation: password)
         @non_idp_user.save(validate: false)

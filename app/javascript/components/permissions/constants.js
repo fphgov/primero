@@ -1,6 +1,7 @@
 // Copyright (c) 2014 - 2023 UNICEF. All rights reserved.
 
 export const ACTIONS = {
+  ACCESS_LOG: "access_log",
   ADD_NOTE: "add_note",
   ADD_REGISTRY_RECORD: "add_registry_record",
   AGENCY_READ: "agency_read",
@@ -20,6 +21,7 @@ export const ACTIONS = {
   COPY: "copy",
   CREATE: "create",
   CREATE_CASE_FROM_REFERRAL: "create_case_from_referral",
+  ATTRIBUTE: "attribute",
   DASH_APPROVALS_ACTION_PLAN_PENDING: "approvals_action_plan_pending",
   DASH_APPROVALS_ACTION_PLAN: "approvals_action_plan",
   DASH_APPROVALS_ASSESSMENT_PENDING: "approvals_assessment_pending",
@@ -33,6 +35,7 @@ export const ACTIONS = {
   DASH_CASE_INCIDENT_OVERVIEW: "dash_case_incident_overview",
   DASH_CASE_OVERVIEW: "case_overview",
   DASH_ACTION_NEEDED_NEW_UPDATED: "action_needed_new_updated",
+  DASH_ACTION_NEEDED_IDENTIFIED: "action_needed_identified",
   DASH_ACTION_NEEDED_NEW_REFERRALS: "action_needed_new_referrals",
   DASH_ACTION_NEEDED_TRANSFER_AWAITING_ACCEPTANCE: "action_needed_transfer_awaiting_acceptance",
   DASH_CASE_RISK: "case_risk",
@@ -76,6 +79,7 @@ export const ACTIONS = {
   FIND_TRACING_MATCH: "find_tracing_match",
   FLAG: "flag",
   FLAG_RESOLVE_ANY: "resolve_any_flag",
+  FLAG_UPDATE: "flag_update",
   GBV_STATISTICS: "gbv_statistics",
   GROUP_READ: "group_read",
   INCIDENT_DETAILS_FROM_CASE: "incident_details_from_case",
@@ -100,6 +104,7 @@ export const ACTIONS = {
   LINK_INCIDENT_TO_CASE: "link_incident_to_case",
   READ: "read",
   RECEIVE_REFERRAL: "receive_referral",
+  RECEIVE_REFERRAL_DIFFERENT_MODULE: "receive_referral_different_module",
   RECEIVE_TRANSFER: "receive_transfer",
   REFERRAL_FROM_SERVICE: "referral_from_service",
   REFERRAL: "referral",
@@ -128,7 +133,10 @@ export const ACTIONS = {
   REMOVE_ALERT: "remove_alert",
   PROTECTION_OUTCOMES: "protection_outcomes",
   UPDATE_CASE_RELATIONSHIPS: "update_case_relationships",
-  VIEW_CASE_RELATIONSHIPS: "view_case_relationships"
+  VIEW_CASE_RELATIONSHIPS: "view_case_relationships",
+  CASE_MANAGEMENT_KPIS_REPORT: "case_management_kpis_report",
+  DISTRIBUTION_USERS_ROLE_REPORT: "distribution_users_role_report",
+  DISABLE_MULTIPLE: "disable_multiple"
 };
 
 export const MANAGE = [ACTIONS.MANAGE];
@@ -197,7 +205,9 @@ export const READ_MANAGED_REPORTS = [
   ACTIONS.VIOLATIONS,
   ACTIONS.WORKFLOW_REPORT,
   ACTIONS.REFERRALS_TRANSFERS_REPORT,
-  ACTIONS.PROTECTION_OUTCOMES
+  ACTIONS.PROTECTION_OUTCOMES,
+  ACTIONS.CASE_MANAGEMENT_KPIS_REPORT,
+  ACTIONS.DISTRIBUTION_USERS_ROLE_REPORT
 ];
 
 export const EXPORT_CUSTOM = [...MANAGE, ACTIONS.EXPORT_CUSTOM];
@@ -215,6 +225,8 @@ export const ENABLE_DISABLE_RECORD = [...MANAGE, ACTIONS.ENABLE_DISABLE_RECORD];
 export const FLAG_RECORDS = [...MANAGE, ACTIONS.FLAG];
 
 export const FLAG_RESOLVE_ANY = [...MANAGE, ACTIONS.FLAG_RESOLVE_ANY];
+
+export const FLAG_UPDATE = [...MANAGE, ACTIONS.FLAG_UPDATE];
 
 export const ADD_NOTE = [...MANAGE, ACTIONS.ADD_NOTE];
 
@@ -274,6 +286,7 @@ export const EXPORTS_PERMISSIONS = [
 ];
 
 export const SHOW_EXPORTS = [...MANAGE, ...EXPORTS_PERMISSIONS];
+export const SHOW_ACCESS_LOG = [...MANAGE, ACTIONS.ACCESS_LOG];
 export const SHOW_CHANGE_LOG = [...MANAGE, ACTIONS.CHANGE_LOG];
 
 export const SHOW_APPROVALS = [
@@ -288,6 +301,15 @@ export const SHOW_APPROVALS = [
   ACTIONS.REQUEST_APPROVAL_CLOSURE,
   ACTIONS.REQUEST_APPROVAL_ACTION_PLAN,
   ACTIONS.REQUEST_APPROVAL_GBV_CLOSURE
+];
+
+export const SHOW_REFERRALS = [
+  ...MANAGE,
+  ACTIONS.REFERRAL_FROM_SERVICE,
+  ACTIONS.REMOVE_ASSIGNED_USERS,
+  ACTIONS.REFERRAL,
+  ACTIONS.RECEIVE_REFERRAL,
+  ACTIONS.RECEIVE_REFERRAL_DIFFERENT_MODULE
 ];
 
 export const DASH_APPROVALS_PENDING = [
@@ -318,6 +340,7 @@ export const OVERVIEW_DASHBOARD = Object.freeze([
 export const ACTION_NEEDED_DASHBOARD = Object.freeze([
   ACTIONS.DASH_ACTION_NEEDED_NEW_UPDATED,
   ACTIONS.DASH_ACTION_NEEDED_NEW_REFERRALS,
+  ACTIONS.DASH_ACTION_NEEDED_IDENTIFIED,
   ACTIONS.DASH_ACTION_NEEDED_TRANSFER_AWAITING_ACCEPTANCE
 ]);
 
@@ -334,7 +357,8 @@ export const GROUP_PERMISSIONS = {
   AGENCY: "agency",
   ALL: "all",
   GROUP: "group",
-  SELF: "self"
+  SELF: "self",
+  IDENTIFIED: "identified"
 };
 
 export const MANAGED_REPORT_SCOPE = {
@@ -391,3 +415,5 @@ export const REMOVE_ALERT = [...MANAGE, ACTIONS.REMOVE_ALERT];
 export const VIEW_CASE_RELATIONSHIPS = [...MANAGE, ACTIONS.VIEW_CASE_RELATIONSHIPS];
 
 export const UPDATE_CASE_RELATIONSHIPS = [...MANAGE, ACTIONS.UPDATE_CASE_RELATIONSHIPS];
+
+export const CAN_DISABLE_MULTIPLE_USERS = [ACTIONS.DISABLE_MULTIPLE];

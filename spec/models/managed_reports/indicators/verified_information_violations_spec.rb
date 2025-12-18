@@ -14,13 +14,16 @@ describe ManagedReports::Indicators::VerifiedInformationViolations do
     incident1 = Incident.create!(
       data: { incident_date: Date.new(2022, 4, 4), date_of_first_report: Date.new(2022, 4, 4), status: 'open' }
     )
+    incident2 = Incident.create!(
+      data: { incident_date: Date.new(2022, 5, 8), date_of_first_report: Date.new(2022, 5, 8), status: 'closed' }
+    )
 
     Violation.create!(
       data: {
         type: 'attack_on_schools',
         ctfmr_verified: 'verified',
         ctfmr_verified_date: Date.new(2021, 5, 23),
-        violation_tally: { 'boys': 2, 'girls': 0, 'unknown': 2, 'total': 4 }
+        violation_tally: { 'boys' => 2, 'girls' => 0, 'unknown' => 2, 'total' => 4 }
       },
       incident_id: incident.id
     )
@@ -28,7 +31,7 @@ describe ManagedReports::Indicators::VerifiedInformationViolations do
     Violation.create!(
       data: { type: 'attack_on_schools',
               ctfmr_verified_date: Date.new(2021, 5, 23),
-              violation_tally: { 'boys': 2, 'girls': 0, 'unknown': 2, 'total': 4 } },
+              violation_tally: { 'boys' => 2, 'girls' => 0, 'unknown' => 2, 'total' => 4 } },
       incident_id: incident.id
     )
 
@@ -42,7 +45,7 @@ describe ManagedReports::Indicators::VerifiedInformationViolations do
     Violation.create!(
       data: { type: 'killing',
               ctfmr_verified_date: Date.new(2021, 5, 23),
-              violation_tally: { 'boys': 2, 'girls': 0, 'unknown': 2, 'total': 4 } },
+              violation_tally: { 'boys' => 2, 'girls' => 0, 'unknown' => 2, 'total' => 4 } },
       incident_id: incident.id
     )
 
@@ -50,7 +53,7 @@ describe ManagedReports::Indicators::VerifiedInformationViolations do
       data: { type: 'attack_on_hospitals',
               ctfmr_verified_date: Date.new(2022, 4, 4),
               ctfmr_verified: 'verified',
-              violation_tally: { 'boys': 1, 'girls': 2, 'unknown': 5, 'total': 8 } },
+              violation_tally: { 'boys' => 1, 'girls' => 2, 'unknown' => 5, 'total' => 8 } },
       incident_id: incident1.id
     )
 
@@ -59,9 +62,27 @@ describe ManagedReports::Indicators::VerifiedInformationViolations do
         type: 'denial_humanitarian_access',
         ctfmr_verified: 'verified',
         ctfmr_verified_date: Date.new(2021, 5, 23),
-        violation_tally: { 'boys': 2, 'girls': 3, 'unknown': 2, 'total': 7 }
+        violation_tally: { 'boys' => 2, 'girls' => 3, 'unknown' => 2, 'total' => 7 }
       },
       incident_id: incident.id
+    )
+
+    Violation.create!(
+      data: {
+        type: 'deprivation_liberty',
+        ctfmr_verified: 'verified',
+        ctfmr_verified_date: Date.new(2021, 5, 23),
+        violation_tally: { 'boys' => 2, 'girls' => 3, 'unknown' => 2, 'total' => 7 }
+      },
+      incident_id: incident.id
+    )
+
+    Violation.create!(
+      data: {
+        type: 'attack_on_schools', ctfmr_verified: 'verified', ctfmr_verified_date: Date.new(2021, 5, 23),
+        violation_tally: { 'boys' => 1, 'girls' => 0, 'unknown' => 2, 'total' => 3 }
+      },
+      incident_id: incident2.id
     )
   end
 
@@ -72,17 +93,37 @@ describe ManagedReports::Indicators::VerifiedInformationViolations do
         'grouped_by' => SearchFilters::Value.new(field_name: 'grouped_by', value: 'quarter'),
         'ghn_date_filter' => SearchFilters::DateRange.new(
           field_name: 'ghn_date_filter',
-          from: '2021-04-01',
-          to: '2022-06-10'
+          from: Date.parse('2021-04-01'),
+          to: Date.parse('2022-06-10')
         )
       }
     ).data
 
+    query = %w[
+      has_late_verified_violations=false
+      ctfmr_verified_date=2021-04-01..2022-06-10
+    ]
+
     expect(data).to match_array(
       [
-        { 'id' => 'attack_on_hospitals', 'total' => 1 },
-        { 'id' => 'denial_humanitarian_access', 'total' => 1 },
-        { 'id' => 'attack_on_schools', 'total' => 1 }
+        {
+          'id' => 'attack_on_hospitals',
+          'total' => {
+            count: 1, query: %w[violation_with_verification_status=attack_on_hospitals_verified] + query
+          }
+        },
+        {
+          'id' => 'denial_humanitarian_access',
+          'total' => {
+            count: 1, query: %w[violation_with_verification_status=denial_humanitarian_access_verified] + query
+          }
+        },
+        {
+          'id' => 'attack_on_schools',
+          'total' => {
+            count: 1, query: %w[violation_with_verification_status=attack_on_schools_verified] + query
+          }
+        }
       ]
     )
   end

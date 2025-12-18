@@ -58,7 +58,8 @@ function Referrals({
     getRecordForms(state, {
       recordType: RECORD_TYPES[recordType],
       primeroModule: record?.get("module_id"),
-      includeDefaultForms: false
+      includeDefaultForms: false,
+      checkPermittedForms: true
     })
   );
 
@@ -153,6 +154,7 @@ function Referrals({
             formsSelectedSelector={OPTION_TYPES.MANAGED_ROLE_FORM_SECTIONS}
             customFilenameField={CUSTOM_EXPORT_FILE_NAME_FIELD}
             customFormProps={customReferralFormProps(i18n)}
+            includeAllFormsWhenEmpty={false}
           />
         )}
       />

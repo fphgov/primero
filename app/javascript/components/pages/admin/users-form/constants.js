@@ -69,6 +69,8 @@ export const FIELD_NAMES = Object.freeze({
   POSITION: "position",
   LOCATION: "location",
   DISABLED: "disabled",
+  DUPLICATE: "duplicate",
+  SELF_REGISTERED: "self_registered",
   SEND_MAIL: "send_mail",
   SEND_MAIL_APPROVAL_REQUEST: "settings.notifications.send_mail.approval_request",
   SEND_MAIL_APPROVAL_RESPONSE: "settings.notifications.send_mail.approval_response",
@@ -78,7 +80,10 @@ export const FIELD_NAMES = Object.freeze({
   RECEIVE_WEBPUSH_APPROVAL_REQUEST: "settings.notifications.receive_webpush.approval_request",
   RECEIVE_WEBPUSH_APPROVAL_RESPONSE: "settings.notifications.receive_webpush.approval_response",
   RECEIVE_WEBPUSH_TRANSITION_NOTIFICATION: "settings.notifications.receive_webpush.transition_notification",
-  RECEIVE_WEBPUSH_TRANSFER_REQUEST: "settings.notifications.receive_webpush.transfer_request"
+  RECEIVE_WEBPUSH_TRANSFER_REQUEST: "settings.notifications.receive_webpush.transfer_request",
+  LAST_ACCESS: "last_access",
+  LAST_CASE_UPDATED: "last_case_updated",
+  LAST_CASE_VIEWED: "last_case_viewed"
 });
 
 export const NOTIFICATIONS_PREFERENCES = [

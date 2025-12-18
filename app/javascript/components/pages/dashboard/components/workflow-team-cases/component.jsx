@@ -1,5 +1,7 @@
 // Copyright (c) 2014 - 2023 UNICEF. All rights reserved.
 
+import isEmpty from "lodash/isEmpty";
+
 import { getIsDashboardGroupLoading, getWorkflowTeamCases } from "../../selectors";
 import { useI18n } from "../../../../i18n";
 import { toListTable } from "../../utils";
@@ -10,11 +12,13 @@ import { selectUserModules } from "../../../../application";
 import { useMemoizedSelector } from "../../../../../libs";
 import { getAllWorkflowLabels } from "../../../../application/selectors";
 import { DASHBOARD_GROUP } from "../../constants";
+import useSystemStrings, { DASHBOARD } from "../../../../application/use-system-strings";
 
 import { NAME } from "./constants";
 
 function Component() {
   const i18n = useI18n();
+  const { label } = useSystemStrings(DASHBOARD);
   const loading = useMemoizedSelector(state => getIsDashboardGroupLoading(state, DASHBOARD_GROUP.workflow_team));
   const userModules = useMemoizedSelector(state => selectUserModules(state));
   const workflowLabels = useMemoizedSelector(state => getAllWorkflowLabels(state, RECORD_TYPES.cases));
@@ -23,9 +27,13 @@ function Component() {
   return userModules.map(userModule => {
     const title =
       userModules.size === 1
-        ? i18n.t("dashboard.workflow_team")
+        ? label("dashboard.workflow_team")
         : i18n.t("dashboard.workflow_team_module", { module_name: userModule.name });
-    const labels = workflowLabels.filter(moduleWorkflow => moduleWorkflow?.[2] === userModule.unique_id)?.[0];
+    const labels = workflowLabels.filter(moduleWorkflow => moduleWorkflow?.[2] === userModule.unique_id)?.[0]?.[1];
+
+    if (isEmpty(labels)) {
+      return null;
+    }
 
     return (
       <Permission resources={RESOURCES.dashboards} actions={ACTIONS.DASH_WORKFLOW_TEAM}>
@@ -33,8 +41,8 @@ function Component() {
           <DashboardTable
             pathname={ROUTES.cases}
             title={title}
-            {...toListTable(casesWorkflowTeam, labels?.[1], [], i18n.locale, indicators => {
-              return indicators[`workflow_team_${userModule.unique_id}`];
+            {...toListTable(casesWorkflowTeam, labels, [], i18n.locale, indicators => {
+              return indicators[`workflow_team_${userModule.unique_id}`] || {};
             })}
           />
         </OptionsBox>

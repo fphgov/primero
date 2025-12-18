@@ -3,6 +3,7 @@
 /* eslint-disable react/display-name */
 import Transitions from "../../../transitions";
 import {
+  ACCESS_LOGS,
   APPROVALS,
   FAMILY_FROM_CASE,
   RECORD_OWNER,
@@ -19,21 +20,20 @@ import RecordOwner from "../../../record-owner";
 import Approvals from "../../../approvals";
 import IncidentFromCase from "../../../incidents-from-case";
 import ChangeLogs from "../../../change-logs";
+import AccessLogs from "../../../access-logs";
 import Summary from "../../../summary";
 import CaseRegistry from "../../../case-registry";
 import CaseFamily from "../../../case-family";
 import SummaryIncidentMRM from "../../../summary-incident-mrm";
 import CaseRelationships from "../../../case-relationships";
+import { SHOW_ACCESS_LOG, SHOW_CHANGE_LOG, usePermissions } from "../../../permissions";
 
 const externalForms =
   ({
-    approvalSubforms,
-    canSeeChangeLog,
     containerMode,
     handleCreateIncident,
     handleToggleNav,
     id,
-    incidentsSubforms,
     mobileDisplay,
     primeroModule,
     record,
@@ -44,6 +44,9 @@ const externalForms =
     userPermittedFormsIds
   }) =>
   (form, setFieldValue, handleSubmit, values, dirty, formSections) => {
+    const canSeeAccessLog = usePermissions(recordType, SHOW_ACCESS_LOG);
+    const canSeeChangeLog = usePermissions(recordType, SHOW_CHANGE_LOG);
+
     const isTransitions = TRANSITION_TYPE.includes(form);
 
     const externalFormSelected = isTransitions ? TRANSITION_TYPE : form;
@@ -60,7 +63,7 @@ const externalForms =
       [APPROVALS]: (
         <Approvals
           primeroModule={primeroModule}
-          approvals={approvalSubforms}
+          approvals={record?.get("approval_subforms")}
           mobileDisplapary={mobileDisplay}
           handleToggleNav={handleToggleNav}
         />
@@ -68,7 +71,7 @@ const externalForms =
       [INCIDENT_FROM_CASE]: (
         <IncidentFromCase
           record={record}
-          incidents={incidentsSubforms}
+          incidents={record?.get("incident_details")}
           mobileDisplay={mobileDisplay}
           handleToggleNav={handleToggleNav}
           mode={containerMode}
@@ -88,7 +91,6 @@ const externalForms =
           recordType={RECORD_TYPES_PLURAL[recordType]}
           mobileDisplay={mobileDisplay}
           handleToggleNav={handleToggleNav}
-          primeroModule={primeroModule}
           selectedForm={selectedForm}
         />
       ),
@@ -149,6 +151,16 @@ const externalForms =
           mode={containerMode}
           formSections={formSections}
           values={values}
+        />
+      ),
+      [ACCESS_LOGS]: (
+        <AccessLogs
+          recordID={id}
+          recordType={RECORD_TYPES_PLURAL[recordType]}
+          mobileDisplay={mobileDisplay}
+          handleToggleNav={handleToggleNav}
+          selectedForm={selectedForm}
+          fetchable={canSeeAccessLog}
         />
       )
     }[externalFormSelected];

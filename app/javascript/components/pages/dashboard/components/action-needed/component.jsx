@@ -4,6 +4,7 @@ import { useMemo } from "react";
 
 import { useMemoizedSelector } from "../../../../../libs";
 import {
+  getActionNeededIdentified,
   getActionNeededNewReferrals,
   getActionNeededNewUpdated,
   getActionNeededTransferAwaitingAcceptance,
@@ -16,13 +17,16 @@ import { OptionsBox } from "../../../../dashboard";
 import { useI18n } from "../../../../i18n";
 import DashboardColumns from "../../../../dashboard/dashboard-columns";
 import { ACTION_NEEDED_DASHBOARD } from "../../../../permissions/constants";
+import useSystemStrings, { DASHBOARD } from "../../../../application/use-system-strings";
 
 function Component() {
   const i18n = useI18n();
 
+  const { label } = useSystemStrings(DASHBOARD);
   const loading = useMemoizedSelector(state => getIsDashboardGroupLoading(state, DASHBOARD_GROUP.action_needed));
   const hasData = useMemoizedSelector(state => getDashboardGroupHasData(state, DASHBOARD_GROUP.action_needed));
   const actionNeededNewUpdated = useMemoizedSelector(state => getActionNeededNewUpdated(state));
+  const actionNeededIdentified = useMemoizedSelector(state => getActionNeededIdentified(state));
   const actionNeededNewReferrals = useMemoizedSelector(state => getActionNeededNewReferrals(state));
   const actionNeededTransferAwaitingAcceptance = useMemoizedSelector(state =>
     getActionNeededTransferAwaitingAcceptance(state)
@@ -36,7 +40,17 @@ function Component() {
           actions: ACTIONS.DASH_ACTION_NEEDED_NEW_UPDATED,
           options: {
             data: actionNeededNewUpdated,
-            title: i18n.t("dashboard.action_needed.cases")
+            title: label("dashboard.action_needed.cases")
+          }
+        }
+      ],
+      [
+        {
+          type: DASHBOARD_TYPES.TOTAL_BOX,
+          actions: ACTIONS.DASH_ACTION_NEEDED_IDENTIFIED,
+          options: {
+            data: actionNeededIdentified,
+            title: label("dashboard.action_needed.cases")
           }
         }
       ],
@@ -61,7 +75,7 @@ function Component() {
         }
       ]
     ],
-    [hasData]
+    [hasData, i18n.locale]
   );
 
   return (

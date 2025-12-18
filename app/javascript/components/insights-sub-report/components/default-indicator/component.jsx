@@ -16,39 +16,42 @@ function Component({
   emptyMessage,
   groupedBy,
   hasTotalColumn,
-  incompleteDataLabel,
-  indicatorsRows,
+  headerTitle,
+  includeZeros,
   insightMetadata,
   isGrouped,
-  lookups,
+  labels,
   lookupValue,
   namespace,
   subColumnItems,
   subReportTitle,
   TableComponent,
-  totalText,
+  useAgeRows = false,
   value,
-  valueKey
+  indicatorKey,
+  indicatorRows,
+  indicatorLookups
 }) {
   const i18n = useI18n();
   const isRtl = useMemo(() => i18n.dir === "rtl", [i18n.dir]);
+  const tableType = insightMetadata.get("table_type");
 
   return (
     <div className={css.section}>
-      <h3 className={css.sectionTitle}>{subReportTitle(valueKey)}</h3>
+      <h3 className={css.sectionTitle}>{subReportTitle}</h3>
       {displayGraph && (
         <BarChartGraphic
           data={buildChartValues({
-            totalText,
             getLookupValue: lookupValue,
             localizeDate: i18n.localizeDate,
             value,
-            valueKey,
+            valueKey: indicatorKey,
             isGrouped,
             groupedBy,
             ageRanges,
-            lookupValues: lookups[valueKey],
-            incompleteDataLabel
+            lookupValues: indicatorLookups,
+            indicatorRows,
+            labels
           })}
           valueRender={chartValueRender}
           showDetails
@@ -59,35 +62,37 @@ function Component({
       <TableComponent
         useInsightsHeader
         valueRender={cellValueRender}
-        columns={buildInsightColumns[insightMetadata.get("table_type")]({
+        headerTitle={headerTitle}
+        columns={buildInsightColumns[tableType]({
           value,
           isGrouped,
           groupedBy,
+          labels,
           localizeDate: i18n.localizeDate,
-          totalText,
           getLookupValue: lookupValue,
-          incompleteDataLabel,
           subColumnItems,
           hasTotalColumn
         })}
-        values={buildInsightValues[insightMetadata.get("table_type")]({
+        values={buildInsightValues[tableType]({
           getLookupValue: lookupValue,
           data: value,
-          key: valueKey,
-          totalText,
+          key: indicatorKey,
+          labels,
           isGrouped,
           groupedBy,
           ageRanges,
-          lookupValues: lookups[valueKey],
-          indicatorRows: indicatorsRows[valueKey],
-          incompleteDataLabel,
+          lookupValues: indicatorLookups,
+          indicatorRows,
           subColumnItems,
-          hasTotalColumn
+          hasTotalColumn,
+          includeZeros
         })}
+        useAgeRows={useAgeRows}
         showPlaceholder
         name={namespace}
         emptyMessage={emptyMessage}
         subColumnItemsSize={subColumnItems?.length}
+        withTotals={hasTotalColumn}
       />
     </div>
   );
@@ -103,19 +108,21 @@ Component.propTypes = {
   emptyMessage: PropTypes.string,
   groupedBy: PropTypes.string,
   hasTotalColumn: PropTypes.bool,
-  incompleteDataLabel: PropTypes.string,
-  indicatorsRows: PropTypes.object,
+  headerTitle: PropTypes.string,
+  includeZeros: PropTypes.bool,
+  indicatorKey: PropTypes.string,
+  indicatorLookups: PropTypes.object,
+  indicatorRows: PropTypes.object,
   insightMetadata: PropTypes.object,
   isGrouped: PropTypes.bool,
-  lookups: PropTypes.object,
+  labels: PropTypes.object,
   lookupValue: PropTypes.func,
   namespace: PropTypes.string,
   subColumnItems: PropTypes.array,
-  subReportTitle: PropTypes.func,
+  subReportTitle: PropTypes.string,
   TableComponent: PropTypes.node,
-  totalText: PropTypes.string,
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  valueKey: PropTypes.string
+  useAgeRows: PropTypes.bool,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };
 
 export default Component;

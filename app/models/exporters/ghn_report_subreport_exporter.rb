@@ -4,6 +4,7 @@
 
 # Class to export Ghn Subreports
 class Exporters::GhnReportSubreportExporter < Exporters::SubreportExporter
+  # rubocop:disable Metrics/AbcSize
   # rubocop:disable Metrics/MethodLength
   def build_indicator_exporter(indicator_key, indicator_values)
     indicator_exporter_class(indicator_key, indicator_values).new(
@@ -17,25 +18,26 @@ class Exporters::GhnReportSubreportExporter < Exporters::SubreportExporter
       managed_report:,
       locale:,
       workbook:,
+      include_zeros: managed_report.include_zeros,
       subcolumn_lookups: subcolumn_lookups[indicator_key],
       indicator_subcolumns: indicators_subcolumns[indicator_key],
+      indicator_rows: metadata_property('indicators_rows')&.dig(indicator_key),
       subreport_id: id
     )
   end
   # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/AbcSize
 
   def indicator_exporter_class(key, values)
     if values.any? { |g| g[:group_id].present? }
       Exporters::GroupedGhnIndicatorExporter
-    elsif violations_indicator?(key)
-      Exporters::ViolationsIndicatorExporter
+    elsif ManagedReports::Indicators::MultipleViolations.id == key
+      Exporters::MultipleViolationsIndicatorExporter
+    elsif ManagedReports::Indicators::GroupMultipleViolations.id == key
+      Exporters::GroupMultipleViolationsIndicatorExporter
     else
       Exporters::IndicatorExporter
     end
-  end
-
-  def violations_indicator?(indicator_key)
-    indicator_key == ManagedReports::Indicators::MultipleViolations.id
   end
 
   def params_list

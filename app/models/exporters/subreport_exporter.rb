@@ -107,6 +107,7 @@ class Exporters::SubreportExporter < ValueObject
       managed_report:,
       locale:,
       workbook:,
+      include_zeros: managed_report.include_zeros,
       subcolumn_lookups: subcolumn_lookups[indicator_key],
       indicator_rows: metadata_property('indicators_rows')&.dig(indicator_key),
       indicator_subcolumns: indicators_subcolumns[indicator_key]
@@ -141,7 +142,8 @@ class Exporters::SubreportExporter < ValueObject
     lookup_config.reduce({}) do |acc, (key, value)|
       next acc.merge(key => user_group_as_lookup_values) if %w[UserGroupPermitted].include?(value)
 
-      if %w[reporting_location reporting_location_detention reporting_location_denial].include?(key)
+      if %w[reporting_location reporting_location_detention reporting_location_denial].include?(key) ||
+         %w[ReportingLocation].include?(value)
         next acc.merge(key => LocationService.instance)
       end
 
