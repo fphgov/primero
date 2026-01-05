@@ -1208,6 +1208,99 @@ describe Child do
     end
   end
 
+  describe 'calculate_assessment_due_dates' do
+    let(:primero_module_test) do
+      primero_module_test = PrimeroModule.new(
+        unique_id: 'test_module',
+        name: 'Test Module',
+        description: 'Test Module',
+        associated_record_types: %w[case],
+        module_options: {
+          use_workflow_assessment: true
+        }
+      )
+      primero_module_test.save(validate: false)
+      primero_module_test
+    end
+
+    before do
+      clean_data(PrimeroModule, Child)
+    end
+
+    it 'calculates the assessment_due_dates' do
+      child = Child.create!(
+        data: {
+          assessment_due_date: '2021-10-18',
+          module_id: primero_module_test.unique_id
+        }
+      )
+
+      expect(child.assessment_due_dates).to match_array([Date.new(2021, 10, 18)])
+    end
+  end
+
+  describe 'calculate_case_plan_due_dates' do
+    before do
+      clean_data(PrimeroModule, Child)
+    end
+
+    it 'calculates the case_plan_due_dates' do
+      child = Child.create!(data: { case_plan_due_date: '2021-10-18' })
+
+      expect(child.case_plan_due_dates).to match_array([Date.new(2021, 10, 18)])
+    end
+  end
+
+  describe 'calculate_followup_due_dates' do
+    before do
+      clean_data(Child)
+    end
+
+    it 'calculates the followup_due_dates without duplicates' do
+      child = Child.create!(
+        data: {
+          followup_subform_section: [
+            { followup_needed_by_date: '2021-10-18' },
+            { followup_needed_by_date: '2021-10-18' },
+            { followup_needed_by_date: '2021-10-20' }
+          ]
+        }
+      )
+
+      expect(child.followup_due_dates.size).to eq(2)
+      expect(child.followup_due_dates).to match_array([Date.new(2021, 10, 18), Date.new(2021, 10, 20)])
+    end
+  end
+
+  describe 'mark_identified' do
+    before do
+      travel_to Time.zone.parse('2023-08-10 12:00:00')
+    end
+
+    it 'sets the identified fields' do
+      user = fake_user(group_permission: Permission::IDENTIFIED, user_category: Role::CATEGORY_IDENTIFIED)
+      user.stub(:full_name).and_return('Fake User Name')
+      child = Child.new_with_user(user, { name: 'Identified Case', sex: 'male', age: 10 })
+      child.save!
+      child.reload
+
+      expect(child.status).to eq(Child::STATUS_IDENTIFIED)
+      expect(child.identified_by).to eq('faketest')
+      expect(child.identified_by_full_name).to eq('Fake User Name')
+      expect(child.identified_at).to eq(Time.zone.parse('2023-08-10 12:00:00'))
+    end
+
+    it 'returns a validation error if the user has an identified record' do
+      user = fake_user(group_permission: Permission::IDENTIFIED, user_category: Role::CATEGORY_IDENTIFIED)
+      user.stub(:full_name).and_return('Fake User Name')
+      child = Child.new_with_user(user, { name: 'Identified Case', sex: 'male', age: 10 })
+      child.save!
+
+      duplicated = Child.new_with_user(user, { name: 'Duplicated Identified Case', sex: 'male', age: 10 })
+      duplicated.should_not be_valid
+    end
+  end
+
   after do
     clean_data(SearchableIdentifier, Incident, Child, Field, FormSection, PrimeroModule)
   end

@@ -11,6 +11,7 @@ import { memoize } from "proxy-memoize";
 
 import { RECORD_PATH } from "../../config";
 import {
+  getPrimaryAgeRanges,
   getIncidentReportingLocationConfig,
   getReportingLocationConfig,
   getRoles,
@@ -33,7 +34,7 @@ import { CP_VIOLENCE_TYPE } from "../incidents-from-case/components/panel/consta
 import { selectorEqualityFn } from "../../libs/use-memoized-selector";
 
 import { OPTION_TYPES, CUSTOM_LOOKUPS } from "./constants";
-import { buildLinkedIncidentOptions, buildRoleOptions } from "./utils";
+import { buildLinkedIncidentOptions, buildRoleOptions, formatAgeRange } from "./utils";
 
 // TODO: Move to useMemoizedSelector
 const defaultCacheSelectorOptions = {
@@ -42,6 +43,7 @@ const defaultCacheSelectorOptions = {
 };
 
 const lookupsList = memoize(state => state.getIn(["forms", "options", "lookups"], fromJS([])));
+const userModuleUniqueIds = state => state.getIn(["user", "modules"], fromJS([]));
 const moduleList = state => state.getIn(["application", "modules"], fromJS([]));
 const formSectionList = state => state.getIn(["records", "admin", "forms", "formSections"], fromJS([]));
 const referralUserList = state => state.getIn(["records", "transitions", "referral", "users"], fromJS([]));
@@ -255,6 +257,21 @@ const modules = createCachedSelector(moduleList, data => {
     ],
     []
   );
+})(defaultCacheSelectorOptions);
+
+const userModules = createCachedSelector(moduleList, userModuleUniqueIds, (appModules, currentUserModuleUniqueIds) => {
+  return appModules
+    .filter(current => currentUserModuleUniqueIds.includes(current.get("unique_id")))
+    .reduce(
+      (prev, current) => [
+        ...prev,
+        {
+          id: current.get("unique_id"),
+          display_text: current.get("name")
+        }
+      ],
+      []
+    );
 })(defaultCacheSelectorOptions);
 
 const lookupValues = createCachedSelector(
@@ -501,6 +518,23 @@ const linkedIncidents = createCachedSelector(
     buildLinkedIncidentOptions(data.get("incident_details", fromJS([])), violenceLookupValues, options)
 )(defaultCacheSelectorOptions);
 
+const ageRanges = createCachedSelector(
+  state => getPrimaryAgeRanges(state) || [],
+  primaryAgeRanges =>
+    (primaryAgeRanges || fromJS([])).reduce(
+      (acc, range) => acc.concat({ id: range, display_text: formatAgeRange(range) }),
+      []
+    )
+)(defaultCacheSelectorOptions);
+
+const usersIdentified = createCachedSelector(
+  state => state.getIn(["forms", "options", "users", "identified"], fromJS([])),
+  users =>
+    users.reduce((acc, user) => {
+      return acc.concat({ id: user.get("user_name"), display_text: user.get("user_name") });
+    }, [])
+)(defaultCacheSelectorOptions);
+
 export const getOptions = source => {
   switch (source) {
     case OPTION_TYPES.AGENCY:
@@ -513,6 +547,8 @@ export const getOptions = source => {
       return reportingLocations;
     case OPTION_TYPES.MODULE:
       return modules;
+    case OPTION_TYPES.USER_MODULE:
+      return userModules;
     case OPTION_TYPES.FORM_GROUP:
       return formGroups;
     case OPTION_TYPES.LOOKUPS:
@@ -543,6 +579,10 @@ export const getOptions = source => {
       return transferToUsers;
     case OPTION_TYPES.LINKED_INCIDENTS:
       return linkedIncidents;
+    case OPTION_TYPES.AGE_RANGES:
+      return ageRanges;
+    case OPTION_TYPES.USER_IDENTIFIED:
+      return usersIdentified;
     default:
       return lookupValues;
   }

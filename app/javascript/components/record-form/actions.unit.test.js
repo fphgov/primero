@@ -17,6 +17,11 @@ describe("<RecordForm /> - Actions", () => {
       "FETCH_AGENCIES_STARTED",
       "FETCH_AGENCIES_SUCCESS",
       "FETCH_AGENCIES",
+      "FETCH_USERS_IDENTIFIED",
+      "FETCH_USERS_IDENTIFIED_STARTED",
+      "FETCH_USERS_IDENTIFIED_SUCCESS",
+      "FETCH_USERS_IDENTIFIED_FAILURE",
+      "FETCH_USERS_IDENTIFIED_FINISHED",
       "RECORD_FORMS_FAILURE",
       "RECORD_FORMS_FINISHED",
       "RECORD_FORMS_STARTED",
@@ -39,7 +44,9 @@ describe("<RecordForm /> - Actions", () => {
       "SET_SELECTED_FORM",
       "SET_SELECTED_RECORD",
       "SET_SERVICE_TO_REFER",
-      "SET_VALIDATION_ERRORS"
+      "SET_VALIDATION_ERRORS",
+      "SET_TEMP_INTIAL_VALUES",
+      "CLEAR_TEMP_INTIAL_VALUES"
     ].forEach(property => {
       expect(cloneActions).toHaveProperty(property);
       delete cloneActions[property];

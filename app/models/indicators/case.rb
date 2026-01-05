@@ -39,6 +39,28 @@ module Indicators
       ]
     ).freeze
 
+    IDENTIFIED = QueriedIndicator.new(
+      name: 'identified',
+      record_model: Child,
+      queries: [
+        SearchFilters::BooleanValue.new(field_name: 'record_state', value: true),
+        SearchFilters::TextValue.new(field_name: 'status', value: Record::STATUS_IDENTIFIED)
+      ]
+    ).freeze
+
+    def self.recently_assigned
+      QueriedIndicator.new(
+        name: 'recently_assigned_to_me',
+        record_model: Child,
+        queries: OPEN_ENABLED + [
+          SearchFilters::DateRange.new(
+            field_name: 'reassigned_transferred_on', from: SearchFilters::DateRange.recent_past
+          )
+        ],
+        scope_to_assigned: true
+      )
+    end
+
     def self.closed_recently
       QueriedIndicator.new(
         name: 'closed_recently',
@@ -516,7 +538,7 @@ module Indicators
         scope_to_owner: true,
         record_model: Child,
         queries: OPEN_ENABLED + [
-          SearchFilters::TextList.new(field_name: 'risk_level', values: risk_levels, not_filter: true)
+          SearchFilters::Not.new(filter: SearchFilters::TextList.new(field_name: 'risk_level', values: risk_levels))
         ]
       )] + risk_levels.map { |risk_level| risk_level_indicator(risk_level) }
     end
@@ -552,7 +574,7 @@ module Indicators
 
     def self.overdue_none_risk_level_queries(risk_levels)
       OPEN_ENABLED + [
-        SearchFilters::TextList.new(field_name: 'risk_level', values: risk_levels, not_filter: true),
+        SearchFilters::Not.new(filter: SearchFilters::TextList.new(field_name: 'risk_level', values: risk_levels)),
         SearchFilters::DateRange.new(
           field_name: 'reassigned_transferred_on',
           from: Time.at(0),

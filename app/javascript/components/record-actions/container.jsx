@@ -16,6 +16,7 @@ import useMemoizedSelector from "../../libs/use-memoized-selector";
 import useIncidentFromCase from "../records/use-incident-form-case";
 import { getRecordFormsByUniqueIdWithFallback, getServicesRecordForm } from "../record-form/selectors";
 import { selectRecordsByIndexes } from "../records";
+import { currentUser } from "../user";
 
 import { INCIDENT_SUBFORM, INCIDENTS_SUBFORM_NAME } from "./add-incident/constants";
 import { SERVICES_SUBFORM_NAME } from "./add-service/constants";
@@ -34,7 +35,8 @@ import {
   ENABLE_DISABLE_DIALOG,
   OPEN_CLOSE_DIALOG,
   MARK_FOR_OFFLINE_DIALOG,
-  LINK_INCIDENT_TO_CASE_DIALOG
+  LINK_INCIDENT_TO_CASE_DIALOG,
+  ATTRIBUTE_CASE_DIALOG
 } from "./constants";
 import { NAME } from "./config";
 import { isDisabledAction, buildApprovalList, buildActionList, subformExists } from "./utils";
@@ -63,7 +65,8 @@ function Container({
     SERVICE_DIALOG,
     TRANSFER_DIALOG,
     MARK_FOR_OFFLINE_DIALOG,
-    LINK_INCIDENT_TO_CASE_DIALOG
+    LINK_INCIDENT_TO_CASE_DIALOG,
+    ATTRIBUTE_CASE_DIALOG
   ]);
   const { handleCreateIncident } = useIncidentFromCase({ record, mode });
   const selectedRecordsFromList = useMemoizedSelector(state =>
@@ -90,6 +93,7 @@ function Container({
       fallbackModule: MODULES.CP
     })
   );
+  const user = useMemoizedSelector(state => currentUser(state));
 
   const handleDialogClick = dialog => {
     setDialog({ dialog, open: true });
@@ -107,6 +111,7 @@ function Container({
     canAddNotes,
     canAddService,
     canApprove,
+    canSelfApprove,
     canApproveActionPlan,
     canApproveBia,
     canApproveCasePlan,
@@ -129,7 +134,8 @@ function Container({
     canOnlyExportPdf,
     permittedAbilities,
     canMarkForOffline,
-    canLinkIncidentToCase
+    canLinkIncidentToCase,
+    canAttributeCase
   } = usePermissions(recordType, RECORD_ACTION_ABILITIES);
 
   const canOpenOrClose = (canReopen && openState === "reopen") || (canClose && openState === "close");
@@ -157,7 +163,7 @@ function Container({
     canAddIncident,
     canAddNotes,
     canAddService,
-    canApprove,
+    canApprove: record?.get("owned_by") === user ? canApprove && canSelfApprove : canApprove,
     canAssign,
     canCreateIncident,
     canEnable,
@@ -167,6 +173,7 @@ function Container({
     canShowExports,
     canMarkForOffline,
     canLinkIncidentToCase,
+    canAttributeCase,
     canTransfer,
     canOnlyExportPdf,
     enableState,

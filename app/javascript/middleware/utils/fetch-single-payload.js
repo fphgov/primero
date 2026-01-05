@@ -43,26 +43,24 @@ const fetchSinglePayload = async (action, store, options) => {
     controller.abort("timeout");
   }, FETCH_TIMEOUT);
 
+  const { type, api, fromQueue, fromAttachment } = action;
+
   const {
-    type,
-    api: {
-      id,
-      recordType,
-      path,
-      body,
-      params,
-      method,
-      normalizeFunc,
-      successCallback,
-      failureCallback,
-      configurationCallback,
-      db,
-      external,
-      queueAttachments
-    },
-    fromQueue,
-    fromAttachment
-  } = action;
+    id,
+    recordType,
+    path,
+    body,
+    params,
+    method,
+    normalizeFunc,
+    successCallback,
+    failureCallback,
+    configurationCallback,
+    db,
+    external,
+    queueAttachments,
+    mode
+  } = api;
 
   const [attachments, formData] = queueAttachments
     ? partitionObject(body?.data, (value, key) =>
@@ -70,12 +68,16 @@ const fetchSinglePayload = async (action, store, options) => {
       )
     : [false, false];
 
+  const bodyData = formData ? { data: formData } : body;
+  const serializedBody = isImmutable(bodyData) ? bodyData.toJS() : bodyData;
+
   const fetchOptions = {
     ...DEFAULT_FETCH_OPTIONS,
     method,
+    mode,
     signal: controller.signal,
     ...((formData || body) && {
-      body: JSON.stringify(formData ? { data: formData } : body)
+      body: JSON.stringify(serializedBody)
     })
   };
 
@@ -88,7 +90,7 @@ const fetchSinglePayload = async (action, store, options) => {
     headers.Authorization = `Bearer ${token}`;
   }
 
-  fetchOptions.headers = new Headers(Object.assign(fetchOptions.headers, headers));
+  fetchOptions.headers = new Headers(Object.assign(fetchOptions.headers, headers, api.headers));
 
   const urlParams = isImmutable(params) ? params.toJS() : params;
 
@@ -106,6 +108,7 @@ const fetchSinglePayload = async (action, store, options) => {
       if (status === 503 || (status === 204 && `/${checkHealthUrl}` === ROUTES.check_health)) {
         handleConfiguration(status, store, options, response, { fetchStatus, fetchSinglePayload, type });
       }
+
       const json =
         status === 204 ? { data: { id: body?.data?.id }, ...buildAttachmentData(action) } : await response.json();
 
@@ -172,13 +175,16 @@ const fetchSinglePayload = async (action, store, options) => {
         fetchSinglePayload(configurationCallback, store, options);
       }
     } catch (error) {
-      const silenceErrors = [["AbortError"].includes(error.name), error === "logging_out"];
+      const silenceErrors = [["AbortError", "SyntaxError"].includes(error.name), error === "logging_out"];
 
       if (silenceErrors.some(condition => condition === true)) {
+        // eslint-disable-next-line no-console
+        console.warn("Error suppressed:", error);
+
         return;
       }
 
-      const errorDataObject = { json: error?.json, recordType, fromQueue, id, error };
+      const errorDataObject = { json: error?.json, recordType, fromQueue, id, error, fromAttachment };
 
       if (fromAttachment && error?.response?.status === 422) {
         deleteFromQueue(fromQueue);

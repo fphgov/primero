@@ -39,6 +39,11 @@ class Role < ApplicationRecord
     'referral_authorization' => { 'type' => 'boolean' }
   }.freeze
 
+  CATEGORY_LIMITED = 'limited'
+  CATEGORY_SYSTEM = 'system'
+  CATEGORY_MAINTENANCE = 'maintenance'
+  CATEGORY_IDENTIFIED = 'identified'
+
   has_many :form_permissions
   has_many :form_sections, through: :form_permissions, dependent: :destroy
   has_and_belongs_to_many :primero_modules, -> { distinct }
@@ -124,6 +129,15 @@ class Role < ApplicationRecord
           next unless Permission::RESOURCE_FORM_ACTIONS[key].present?
 
           memo[key] = (memo[key] || []) | (value & Permission::RESOURCE_FORM_ACTIONS[key])
+        end
+      end
+    end
+
+    def create_case_from_referral?
+      list.any? do |role|
+        role.permissions&.any? do |permission|
+          Permission.records.include?(permission.resource) &&
+            permission.actions.include?(Permission::CREATE_CASE_FROM_REFERRAL)
         end
       end
     end

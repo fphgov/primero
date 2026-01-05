@@ -1,7 +1,6 @@
 // Copyright (c) 2014 - 2023 UNICEF. All rights reserved.
 
 import {
-  MODULES,
   MRM_INSIGHTS_SUBREPORTS,
   GBV_INSIGHTS_SUBREPORTS,
   LOOKUPS,
@@ -18,7 +17,16 @@ import {
   REPORTING_LOCATIONS_SUBREPORTS,
   FOLLOWUPS_SUBREPORTS,
   SERVICES_SUBREPORTS,
-  CASES_WORKFLOW_SUBREPORTS
+  CASES_WORKFLOW_SUBREPORTS,
+  PROTECTION_OUTCOMES_SUBREPORTS,
+  PROCESS_QUALITY_TOTAL_CASES_SUBREPORTS,
+  PROCESS_QUALITY_AVERAGE_CASES_SUBREPORTS,
+  PROCESS_QUALITY_SUCCESSFUL_REFERRALS_SUBREPORTS,
+  PROCESS_QUALITY_IMPLEMENTED_REFERRALS_SUBREPORTS,
+  CASE_CHARACTERISTICS_SUBREPORTS,
+  CASE_MANAGEMENT_KPIS_SUBREPORTS,
+  DISTRIBUTION_USERS_ROLE_SUBREPORTS,
+  CASE_MANAGEMENT_KPIS_SERVICE_REFERRALS_SUBREPORTS
 } from "../../config";
 import { DATE_FIELD, SELECT_FIELD, HIDDEN_FIELD, OPTION_TYPES } from "../form/constants";
 import { FieldRecord } from "../form/records";
@@ -32,8 +40,14 @@ const DATE = "date";
 const FILTER_BY = "filter_by";
 const FILTER_OPTIONS = "filter_options";
 const DATE_OF_FIRST_REPORT = "date_of_first_report";
+const DATE_CLOSURE = "date_closure";
 const BY_OPTIONS = "by_options";
 const REFERRAL_TRANSFER_STATUS_OPTIONS = "referral_transfer_status_options";
+const MODULE = "module_id";
+const AGE = "age";
+const USER_GROUP_UNIQUE_ID = "user_group_unique_id";
+const AGENCY_UNIQUE_ID = "agency_unique_id";
+const DISABLED = "disabled";
 
 const CTFMR_VERIFIED_DATE = "ctfmr_verified_date";
 const VERIFIED_CTFMR_TECHNICAL = "ctfmr_verified";
@@ -45,12 +59,26 @@ const GHN_DATE_FILTER = "ghn_date_filter";
 const VIOLATION_TYPE = "violation_type";
 const REGISTRATION_DATE = "registration_date";
 const SERVICE_IMPLEMENTED_DAY_TIME = "service_implemented_day_time";
+const SERVICE_RESPONSE_DAY_TIME = "service_response_day_time";
 const CREATED_AT = "created_at";
 const FOLLOWUP_DATE = "followup_date";
+const REFERRAL_CREATED_AT = "referral_created_at";
+const CASE_STATUS = "case_status";
+const HAS_LATE_VERIFIED_VIOLATIONS = "has_late_verified_violations";
+const SERVICE_IMPLEMENTED = "service_implemented";
 
 const GBV_STATISTICS = "gbv_statistics";
 const VIOLATIONS = "violations";
+const PROTECTION_OUTCOMES = "protection_outcomes";
+const PROCESS_QUALITY_TOTAL_CASES = "process_quality_total_cases";
+const PROCESS_QUALITY_AVERAGE_CASES = "process_quality_average_cases";
+const PROCESS_QUALITY_SUCCESSFUL_REFERRALS = "process_quality_successful_referrals";
+const PROCESS_QUALITY_IMPLEMENTED_REFERRALS = "process_quality_implemented_referrals";
+const CASE_CHARACTERISTICS = "case_characteristics";
+const CASE_MANAGEMENT_KPIS_REPORT = "case_management_kpis_report";
+const CASE_MANAGEMENT_KPIS_SERVICE_REFERRALS_REPORT = "case_management_kpis_service_referrals_report";
 
+export const MODULE_ID = "module_id";
 export const REPORTS = "reports";
 export const DATE_RANGE = "date_range";
 export const GROUPED_BY = "grouped_by";
@@ -99,6 +127,8 @@ export const CUSTOM = "custom";
 export const STATUS_CLOSED = "closed";
 export const STATUS_OPEN = "open";
 
+export const IMPLEMENTED = "implemented";
+
 export const QUARTER_OPTION_IDS = [THIS_QUARTER, LAST_QUARTER, CUSTOM];
 export const MONTH_OPTION_IDS = [THIS_MONTH, LAST_MONTH, CUSTOM];
 export const YEAR_OPTION_IDS = [THIS_YEAR, LAST_YEAR, CUSTOM];
@@ -107,12 +137,18 @@ export const WEEK_OPTION_IDS = [THIS_WEEK, LAST_WEEK, CUSTOM];
 export const EXPORT_INSIGHTS_PATH = "/managed_reports/export";
 export const INSIGHTS_EXPORTER_DIALOG = "insights_exporter_dialog";
 
+export const MODULE_ID_NAME = [MANAGED_REPORTS, FILTER_BY, MODULE_ID];
 export const DATE_RANGE_VIEW_BY_DISPLAY_NAME = [FIELDS, DATE_RANGE, VIEW_BY];
 export const DATE_RANGE_DISPLAY_NAME = [FIELDS, DATE_RANGE, DATE_RANGE];
 export const DATE_RANGE_FROM_DISPLAY_NAME = [FIELDS, DATE_RANGE, FROM];
 export const DATE_RANGE_TO_DISPLAY_NAME = [FIELDS, DATE_RANGE, TO];
 export const FILTER_BY_DATE_DISPLAY_NAME = [MANAGED_REPORTS, FILTER_BY, DATE];
 export const FILTER_BY_VERIFICATION_STATUS_DISPLAY_NAME = [MANAGED_REPORTS, FILTER_BY, VERIFICATION_STATUS];
+export const FILTER_BY_HAS_LATE_VERIFIED_VIOLATIONS_DISPLAY_NAME = [
+  MANAGED_REPORTS,
+  FILTER_BY,
+  HAS_LATE_VERIFIED_VIOLATIONS
+];
 export const FILTER_BY_VIOLATION_TYPE_DISPLAY_NAME = [MANAGED_REPORTS, FILTER_BY, VIOLATION_TYPE];
 export const STATUS_DISPLAY_NAME = [MANAGED_REPORTS, FILTER_BY, STATUS];
 export const CREATED_BY_GROUPS_DISPLAY_NAME = [MANAGED_REPORTS, FILTER_BY, CREATED_BY_GROUPS];
@@ -127,6 +163,8 @@ export const FOLLOWUPS_DISPLAY_NAME = [MANAGED_REPORTS, FILTER_BY, FOLLOWUPS];
 export const SERVICES_DISPLAY_NAME = [MANAGED_REPORTS, FILTER_BY, SERVICES];
 export const VIOLENCE_TYPE_DISPLAY_NAME = [MANAGED_REPORTS, FILTER_BY, VIOLENCE_TYPE];
 export const REFERRAL_TRANSFER_STATUS_DISPLAY_NAME = [MANAGED_REPORTS, FILTER_BY, REFERRAL_TRANSFER_STATUS];
+export const FILTER_BY_AGE_DISPLAY_NAME = [MANAGED_REPORTS, FILTER_BY, AGE];
+export const FILTER_BY_SERVICE_IMPLEMENTED_DISPLAY_NAME = [MANAGED_REPORTS, FILTER_BY, SERVICE_IMPLEMENTED];
 
 export const SHARED_FILTERS = {
   [GROUPED_BY]: {
@@ -185,6 +223,12 @@ export const SHARED_FILTERS = {
     type: DATE_FIELD,
     watchedInputs: DATE_RANGE,
     showIf: value => value === CUSTOM
+  },
+  [MODULE]: {
+    name: MODULE,
+    type: SELECT_FIELD,
+    display_name: MODULE_ID_NAME,
+    option_strings_source: OPTION_TYPES.MODULE
   }
 };
 
@@ -295,6 +339,7 @@ export const VIOLATIONS_FILTERS = [
   SHARED_FILTERS[DATE_RANGE],
   SHARED_FILTERS[FROM],
   SHARED_FILTERS[TO],
+  SHARED_FILTERS[MODULE],
   {
     name: DATE,
     display_name: FILTER_BY_DATE_DISPLAY_NAME,
@@ -312,6 +357,12 @@ export const VIOLATIONS_FILTERS = [
     name: VERIFIED_CTFMR_TECHNICAL,
     display_name: FILTER_BY_VERIFICATION_STATUS_DISPLAY_NAME,
     option_strings_source: LOOKUPS.verification_status,
+    type: SELECT_FIELD
+  },
+  {
+    name: HAS_LATE_VERIFIED_VIOLATIONS,
+    display_name: FILTER_BY_HAS_LATE_VERIFIED_VIOLATIONS_DISPLAY_NAME,
+    option_strings_source: LOOKUPS.yes_no,
     type: SELECT_FIELD
   }
 ];
@@ -337,11 +388,22 @@ export const SHARED_WORKFLOW_CONFIG = {
     RECORD_FILTERS[DATE_RANGE],
     RECORD_FILTERS[FROM],
     RECORD_FILTERS[TO],
+    SHARED_FILTERS[MODULE],
     RECORD_FILTERS[STATUS],
     {
       name: WORKFLOW,
       type: SELECT_FIELD,
-      display_name: WORKFLOW_DISPLAY_NAME
+      display_name: WORKFLOW_DISPLAY_NAME,
+      watchedInputs: [MODULE_ID],
+      filterOptionSource: (watchedInputsValue, options) => {
+        if (watchedInputsValue.module_id) {
+          const selectedOptions = options.find(optionGroup => optionGroup[2] === watchedInputsValue.module_id);
+
+          return selectedOptions?.[1]?.map(opt => ({ id: opt.id, display_text: opt.display_text.en }));
+        }
+
+        return [];
+      }
     },
     RECORD_FILTERS[BY],
     RECORD_FILTERS[CREATED_BY_GROUPS],
@@ -353,270 +415,626 @@ export const SHARED_WORKFLOW_CONFIG = {
 };
 
 export const INSIGHTS_CONFIG = {
-  [MODULES.MRM]: {
-    violations: {
-      ids: MRM_INSIGHTS_SUBREPORTS,
-      localeKeys: [MANAGED_REPORTS, VIOLATIONS, REPORTS],
-      defaultFilterValues: DEFAULT_VIOLATION_FILTERS,
-      filters: VIOLATIONS_FILTERS.map(filter => FieldRecord(filter))
-    },
-    ghn_report: {
-      ids: GHN_REPORT_SUBREPORTS,
-      localeKeys: [MANAGED_REPORTS, GHN_REPORT_SUBREPORTS, REPORTS],
-      filters: [
-        SHARED_FILTERS[GROUPED_BY],
-        SHARED_FILTERS[DATE_RANGE],
-        SHARED_FILTERS[FROM],
-        SHARED_FILTERS[TO],
-        {
-          name: DATE,
-          type: HIDDEN_FIELD
-        }
-      ].map(filter => FieldRecord(filter)),
-      defaultFilterValues: {
-        [GROUPED_BY]: QUARTER,
-        [DATE_RANGE]: LAST_QUARTER,
-        [DATE]: GHN_DATE_FILTER
+  violations: {
+    ids: MRM_INSIGHTS_SUBREPORTS,
+    localeKeys: [MANAGED_REPORTS, VIOLATIONS, REPORTS],
+    defaultFilterValues: DEFAULT_VIOLATION_FILTERS,
+    filters: VIOLATIONS_FILTERS.map(filter => FieldRecord(filter))
+  },
+  ghn_report: {
+    ids: GHN_REPORT_SUBREPORTS,
+    localeKeys: [MANAGED_REPORTS, GHN_REPORT_SUBREPORTS, REPORTS],
+    filters: [
+      SHARED_FILTERS[GROUPED_BY],
+      SHARED_FILTERS[DATE_RANGE],
+      SHARED_FILTERS[FROM],
+      SHARED_FILTERS[TO],
+      {
+        name: DATE,
+        type: HIDDEN_FIELD
       }
-    },
-    individual_children: {
-      ids: INDIVIDUAL_CHILDREN,
-      localeKeys: [MANAGED_REPORTS, INDIVIDUAL_CHILDREN, REPORTS],
-      defaultFilterValues: DEFAULT_VIOLATION_FILTERS,
-      filters: [
-        ...VIOLATIONS_FILTERS,
-        {
-          name: VIOLATION_TYPE,
-          display_name: FILTER_BY_VIOLATION_TYPE_DISPLAY_NAME,
-          option_strings_source: LOOKUPS.violation_type,
-          multi_select: true,
-          type: SELECT_FIELD
-        }
-      ].map(filter => FieldRecord(filter))
+    ].map(filter => FieldRecord(filter)),
+    defaultFilterValues: {
+      [GROUPED_BY]: QUARTER,
+      [DATE_RANGE]: LAST_QUARTER,
+      [DATE]: GHN_DATE_FILTER
     }
   },
-  [MODULES.GBV]: {
-    gbv_statistics: {
-      ids: GBV_INSIGHTS_SUBREPORTS,
-      localeKeys: [MANAGED_REPORTS, GBV_STATISTICS, REPORTS],
-      defaultFilterValues: {
-        [GROUPED_BY]: MONTH,
-        [DATE_RANGE]: LAST_MONTH,
-        [DATE]: INCIDENT_DATE
-      },
-      filters: [
-        SHARED_FILTERS[GROUPED_BY],
-        SHARED_FILTERS[DATE_RANGE],
-        SHARED_FILTERS[FROM],
-        SHARED_FILTERS[TO],
-        {
-          name: DATE,
-          display_name: FILTER_BY_DATE_DISPLAY_NAME,
-          option_strings_text: [
-            {
-              id: DATE_OF_FIRST_REPORT,
-              display_name: [MANAGED_REPORTS, GBV_STATISTICS, FILTER_OPTIONS, DATE_OF_FIRST_REPORT]
-            },
-            { id: INCIDENT_DATE, display_name: [MANAGED_REPORTS, GBV_STATISTICS, FILTER_OPTIONS, INCIDENT_DATE] }
-          ],
-          watchedInputs: GROUPED_BY,
-          type: SELECT_FIELD,
-          handleWatchedInputs: value => ({
-            disabled: !value
-          })
-        }
-      ].map(filter => FieldRecord(filter))
-    }
+  individual_children: {
+    ids: INDIVIDUAL_CHILDREN,
+    localeKeys: [MANAGED_REPORTS, INDIVIDUAL_CHILDREN, REPORTS],
+    defaultFilterValues: DEFAULT_VIOLATION_FILTERS,
+    filters: [
+      ...VIOLATIONS_FILTERS,
+      {
+        name: VIOLATION_TYPE,
+        display_name: FILTER_BY_VIOLATION_TYPE_DISPLAY_NAME,
+        option_strings_source: LOOKUPS.violation_type,
+        multi_select: true,
+        type: SELECT_FIELD
+      }
+    ].map(filter => FieldRecord(filter))
   },
-  [MODULES.CP]: {
-    protection_concerns_report: {
-      ids: PROTECTION_CONCERNS_SUBREPORTS,
-      defaultFilterValues: {
-        [GROUPED_BY]: WEEK,
-        [DATE_RANGE]: LAST_WEEK,
-        [STATUS]: [STATUS_OPEN],
-        [DATE]: REGISTRATION_DATE,
-        [BY]: OWNED_BY_GROUPS
-      },
-      filters: [
-        RECORD_FILTERS[GROUPED_BY],
-        RECORD_FILTERS[DATE_RANGE],
-        RECORD_FILTERS[FROM],
-        RECORD_FILTERS[TO],
-        RECORD_FILTERS[STATUS],
-        {
-          name: PROTECTION_CONCERNS,
-          type: SELECT_FIELD,
-          display_name: PROTECTION_CONCERNS_DISPLAY_NAME,
-          multi_select: true,
-          option_strings_source: LOOKUPS.protection_concerns
-        },
-        RECORD_FILTERS[BY],
-        RECORD_FILTERS[CREATED_BY_GROUPS],
-        RECORD_FILTERS[OWNED_BY_GROUPS],
-        RECORD_FILTERS[CREATED_ORGANIZATION],
-        RECORD_FILTERS[OWNED_BY_AGENCY_ID],
-        RECORD_FILTERS[DATE]
-      ].map(filter => FieldRecord(filter))
+  gbv_statistics: {
+    ids: GBV_INSIGHTS_SUBREPORTS,
+    localeKeys: [MANAGED_REPORTS, GBV_STATISTICS, REPORTS],
+    defaultFilterValues: {
+      [GROUPED_BY]: MONTH,
+      [DATE_RANGE]: LAST_MONTH,
+      [DATE]: DATE_OF_FIRST_REPORT
     },
-    reporting_locations_report: {
-      ids: REPORTING_LOCATIONS_SUBREPORTS,
-      defaultFilterValues: {
-        [GROUPED_BY]: WEEK,
-        [DATE_RANGE]: LAST_WEEK,
-        [STATUS]: [STATUS_OPEN],
-        [DATE]: REGISTRATION_DATE,
-        [BY]: OWNED_BY_GROUPS
-      },
-      filters: [
-        RECORD_FILTERS[GROUPED_BY],
-        RECORD_FILTERS[DATE_RANGE],
-        RECORD_FILTERS[FROM],
-        RECORD_FILTERS[TO],
-        RECORD_FILTERS[STATUS],
-        {
-          name: REPORTING_LOCATIONS,
-          type: SELECT_FIELD,
-          display_name: REPORTING_LOCATIONS_DISPLAY_NAME,
-          option_strings_source: LOOKUPS.reporting_locations
-        },
-        RECORD_FILTERS[BY],
-        RECORD_FILTERS[CREATED_BY_GROUPS],
-        RECORD_FILTERS[OWNED_BY_GROUPS],
-        RECORD_FILTERS[CREATED_ORGANIZATION],
-        RECORD_FILTERS[OWNED_BY_AGENCY_ID],
-        RECORD_FILTERS[DATE]
-      ].map(filter => FieldRecord(filter))
+    filters: [
+      SHARED_FILTERS[GROUPED_BY],
+      SHARED_FILTERS[DATE_RANGE],
+      SHARED_FILTERS[FROM],
+      SHARED_FILTERS[TO],
+      {
+        name: DATE,
+        display_name: FILTER_BY_DATE_DISPLAY_NAME,
+        option_strings_text: [
+          {
+            id: DATE_OF_FIRST_REPORT,
+            display_name: [MANAGED_REPORTS, GBV_STATISTICS, FILTER_OPTIONS, DATE_OF_FIRST_REPORT]
+          },
+          { id: INCIDENT_DATE, display_name: [MANAGED_REPORTS, GBV_STATISTICS, FILTER_OPTIONS, INCIDENT_DATE] }
+        ],
+        watchedInputs: GROUPED_BY,
+        type: SELECT_FIELD,
+        handleWatchedInputs: value => ({
+          disabled: !value
+        })
+      }
+    ].map(filter => FieldRecord(filter))
+  },
+  protection_concerns_report: {
+    ids: PROTECTION_CONCERNS_SUBREPORTS,
+    defaultFilterValues: {
+      [GROUPED_BY]: WEEK,
+      [DATE_RANGE]: LAST_WEEK,
+      [STATUS]: [STATUS_OPEN],
+      [DATE]: REGISTRATION_DATE,
+      [BY]: OWNED_BY_GROUPS
     },
-    followups_report: {
-      ids: FOLLOWUPS_SUBREPORTS,
-      defaultFilterValues: {
-        [GROUPED_BY]: WEEK,
-        [DATE_RANGE]: LAST_WEEK,
-        [STATUS]: [STATUS_OPEN],
-        [DATE]: FOLLOWUP_DATE,
-        [BY]: OWNED_BY_GROUPS
+    filters: [
+      RECORD_FILTERS[GROUPED_BY],
+      RECORD_FILTERS[DATE_RANGE],
+      RECORD_FILTERS[FROM],
+      RECORD_FILTERS[TO],
+      SHARED_FILTERS[MODULE],
+      RECORD_FILTERS[STATUS],
+      {
+        name: PROTECTION_CONCERNS,
+        type: SELECT_FIELD,
+        display_name: PROTECTION_CONCERNS_DISPLAY_NAME,
+        multi_select: true,
+        option_strings_source: LOOKUPS.protection_concerns
       },
-      filters: [
-        RECORD_FILTERS[GROUPED_BY],
-        RECORD_FILTERS[DATE_RANGE],
-        RECORD_FILTERS[FROM],
-        RECORD_FILTERS[TO],
-        RECORD_FILTERS[STATUS],
-        {
-          name: FOLLOWUPS,
-          type: SELECT_FIELD,
-          display_name: FOLLOWUPS_DISPLAY_NAME,
-          multi_select: true,
-          option_strings_source: LOOKUPS.followup_type
-        },
-        RECORD_FILTERS[BY],
-        RECORD_FILTERS[CREATED_BY_GROUPS],
-        RECORD_FILTERS[OWNED_BY_GROUPS],
-        RECORD_FILTERS[CREATED_ORGANIZATION],
-        RECORD_FILTERS[OWNED_BY_AGENCY_ID],
-        RECORD_FILTERS[DATE]
-      ].map(filter => FieldRecord(filter))
+      RECORD_FILTERS[BY],
+      RECORD_FILTERS[CREATED_BY_GROUPS],
+      RECORD_FILTERS[OWNED_BY_GROUPS],
+      RECORD_FILTERS[CREATED_ORGANIZATION],
+      RECORD_FILTERS[OWNED_BY_AGENCY_ID],
+      RECORD_FILTERS[DATE]
+    ].map(filter => FieldRecord(filter))
+  },
+  reporting_locations_report: {
+    ids: REPORTING_LOCATIONS_SUBREPORTS,
+    defaultFilterValues: {
+      [GROUPED_BY]: WEEK,
+      [DATE_RANGE]: LAST_WEEK,
+      [STATUS]: [STATUS_OPEN],
+      [DATE]: REGISTRATION_DATE,
+      [BY]: OWNED_BY_GROUPS
     },
-    services_report: {
-      ids: SERVICES_SUBREPORTS,
-      defaultFilterValues: {
-        [GROUPED_BY]: WEEK,
-        [DATE_RANGE]: LAST_WEEK,
-        [STATUS]: [STATUS_OPEN],
-        [DATE]: SERVICE_IMPLEMENTED_DAY_TIME,
-        [BY]: OWNED_BY_GROUPS
+    filters: [
+      RECORD_FILTERS[GROUPED_BY],
+      RECORD_FILTERS[DATE_RANGE],
+      RECORD_FILTERS[FROM],
+      RECORD_FILTERS[TO],
+      SHARED_FILTERS[MODULE],
+      RECORD_FILTERS[STATUS],
+      {
+        name: REPORTING_LOCATIONS,
+        type: SELECT_FIELD,
+        display_name: REPORTING_LOCATIONS_DISPLAY_NAME,
+        option_strings_source: LOOKUPS.reporting_locations
       },
-      filters: [
-        RECORD_FILTERS[GROUPED_BY],
-        RECORD_FILTERS[DATE_RANGE],
-        RECORD_FILTERS[FROM],
-        RECORD_FILTERS[TO],
-        RECORD_FILTERS[STATUS],
-        {
-          name: SERVICES,
-          type: SELECT_FIELD,
-          display_name: SERVICES_DISPLAY_NAME,
-          multi_select: true,
-          option_strings_source: LOOKUPS.service_type
-        },
-        RECORD_FILTERS[BY],
-        RECORD_FILTERS[CREATED_BY_GROUPS],
-        RECORD_FILTERS[OWNED_BY_GROUPS],
-        RECORD_FILTERS[CREATED_ORGANIZATION],
-        RECORD_FILTERS[OWNED_BY_AGENCY_ID],
-        RECORD_FILTERS[DATE]
-      ].map(filter => FieldRecord(filter))
+      RECORD_FILTERS[BY],
+      RECORD_FILTERS[CREATED_BY_GROUPS],
+      RECORD_FILTERS[OWNED_BY_GROUPS],
+      RECORD_FILTERS[CREATED_ORGANIZATION],
+      RECORD_FILTERS[OWNED_BY_AGENCY_ID],
+      RECORD_FILTERS[DATE]
+    ].map(filter => FieldRecord(filter))
+  },
+  followups_report: {
+    ids: FOLLOWUPS_SUBREPORTS,
+    defaultFilterValues: {
+      [GROUPED_BY]: WEEK,
+      [DATE_RANGE]: LAST_WEEK,
+      [STATUS]: [STATUS_OPEN],
+      [DATE]: FOLLOWUP_DATE,
+      [BY]: OWNED_BY_GROUPS
     },
-    workflow_report: SHARED_WORKFLOW_CONFIG,
-    cases_workflow_report: {
-      ids: CASES_WORKFLOW_SUBREPORTS,
-      ...SHARED_WORKFLOW_CONFIG
-    },
-    violence_type_report: {
-      ids: VIOLENCE_TYPE_SUBREPORTS,
-      defaultFilterValues: {
-        [GROUPED_BY]: WEEK,
-        [DATE_RANGE]: LAST_WEEK,
-        [STATUS]: [STATUS_OPEN],
-        [DATE]: REGISTRATION_DATE,
-        [BY]: OWNED_BY_GROUPS
+    filters: [
+      RECORD_FILTERS[GROUPED_BY],
+      RECORD_FILTERS[DATE_RANGE],
+      RECORD_FILTERS[FROM],
+      RECORD_FILTERS[TO],
+      SHARED_FILTERS[MODULE],
+      RECORD_FILTERS[STATUS],
+      {
+        name: FOLLOWUPS,
+        type: SELECT_FIELD,
+        display_name: FOLLOWUPS_DISPLAY_NAME,
+        multi_select: true,
+        option_strings_source: LOOKUPS.followup_type
       },
-      filters: [
-        RECORD_FILTERS[GROUPED_BY],
-        RECORD_FILTERS[DATE_RANGE],
-        RECORD_FILTERS[FROM],
-        RECORD_FILTERS[TO],
-        RECORD_FILTERS[STATUS],
-        {
-          name: VIOLENCE_TYPE,
-          type: SELECT_FIELD,
-          display_name: VIOLENCE_TYPE_DISPLAY_NAME,
-          option_strings_source: "lookup lookup-gbv-sexual-violence-type"
-        },
-        RECORD_FILTERS[BY],
-        RECORD_FILTERS[CREATED_BY_GROUPS],
-        RECORD_FILTERS[OWNED_BY_GROUPS],
-        RECORD_FILTERS[CREATED_ORGANIZATION],
-        RECORD_FILTERS[OWNED_BY_AGENCY_ID],
-        RECORD_FILTERS[DATE]
-      ].map(filter => FieldRecord(filter))
+      RECORD_FILTERS[BY],
+      RECORD_FILTERS[CREATED_BY_GROUPS],
+      RECORD_FILTERS[OWNED_BY_GROUPS],
+      RECORD_FILTERS[CREATED_ORGANIZATION],
+      RECORD_FILTERS[OWNED_BY_AGENCY_ID],
+      RECORD_FILTERS[DATE]
+    ].map(filter => FieldRecord(filter))
+  },
+  services_report: {
+    ids: SERVICES_SUBREPORTS,
+    defaultFilterValues: {
+      [GROUPED_BY]: WEEK,
+      [DATE_RANGE]: LAST_WEEK,
+      [STATUS]: [STATUS_OPEN],
+      [DATE]: SERVICE_IMPLEMENTED_DAY_TIME,
+      [BY]: OWNED_BY_GROUPS
     },
-    referrals_transfers_report: {
-      ids: REFERRAL_TRANSFERS_SUBREPORTS,
-      defaultFilterValues: {
-        [GROUPED_BY]: WEEK,
-        [DATE_RANGE]: LAST_WEEK,
-        [STATUS]: [STATUS_OPEN],
-        [DATE]: CREATED_AT,
-        [BY]: OWNED_BY_GROUPS,
-        [REFERRAL_TRANSFER_STATUS]: [ACCEPTED]
+    filters: [
+      RECORD_FILTERS[GROUPED_BY],
+      RECORD_FILTERS[DATE_RANGE],
+      RECORD_FILTERS[FROM],
+      RECORD_FILTERS[TO],
+      SHARED_FILTERS[MODULE],
+      RECORD_FILTERS[STATUS],
+      {
+        name: SERVICES,
+        type: SELECT_FIELD,
+        display_name: SERVICES_DISPLAY_NAME,
+        multi_select: true,
+        option_strings_source: LOOKUPS.service_type
       },
-      filters: [
-        RECORD_FILTERS[GROUPED_BY],
-        RECORD_FILTERS[DATE_RANGE],
-        RECORD_FILTERS[FROM],
-        RECORD_FILTERS[TO],
-        RECORD_FILTERS[STATUS],
-        RECORD_FILTERS[BY],
-        RECORD_FILTERS[CREATED_BY_GROUPS],
-        RECORD_FILTERS[OWNED_BY_GROUPS],
-        RECORD_FILTERS[CREATED_ORGANIZATION],
-        RECORD_FILTERS[OWNED_BY_AGENCY_ID],
-        {
-          name: REFERRAL_TRANSFER_STATUS,
-          type: SELECT_FIELD,
-          display_name: REFERRAL_TRANSFER_STATUS_DISPLAY_NAME,
-          multi_select: true,
-          option_strings_text: [
-            { id: INPROGRESS, display_name: [MANAGED_REPORTS, REFERRAL_TRANSFER_STATUS_OPTIONS, INPROGRESS] },
-            { id: ACCEPTED, display_name: [MANAGED_REPORTS, REFERRAL_TRANSFER_STATUS_OPTIONS, ACCEPTED] },
-            { id: REJECTED, display_name: [MANAGED_REPORTS, REFERRAL_TRANSFER_STATUS_OPTIONS, REJECTED] },
-            { id: DONE, display_name: [MANAGED_REPORTS, REFERRAL_TRANSFER_STATUS_OPTIONS, DONE] }
-          ]
-        },
-        RECORD_FILTERS[DATE]
-      ].map(filter => FieldRecord(filter))
-    }
+      RECORD_FILTERS[BY],
+      RECORD_FILTERS[CREATED_BY_GROUPS],
+      RECORD_FILTERS[OWNED_BY_GROUPS],
+      RECORD_FILTERS[CREATED_ORGANIZATION],
+      RECORD_FILTERS[OWNED_BY_AGENCY_ID],
+      RECORD_FILTERS[DATE]
+    ].map(filter => FieldRecord(filter))
+  },
+  workflow_report: SHARED_WORKFLOW_CONFIG,
+  cases_workflow_report: {
+    ids: CASES_WORKFLOW_SUBREPORTS,
+    ...SHARED_WORKFLOW_CONFIG
+  },
+  violence_type_report: {
+    ids: VIOLENCE_TYPE_SUBREPORTS,
+    defaultFilterValues: {
+      [GROUPED_BY]: WEEK,
+      [DATE_RANGE]: LAST_WEEK,
+      [STATUS]: [STATUS_OPEN],
+      [DATE]: REGISTRATION_DATE,
+      [BY]: OWNED_BY_GROUPS
+    },
+    filters: [
+      RECORD_FILTERS[GROUPED_BY],
+      RECORD_FILTERS[DATE_RANGE],
+      RECORD_FILTERS[FROM],
+      RECORD_FILTERS[TO],
+      SHARED_FILTERS[MODULE],
+      RECORD_FILTERS[STATUS],
+      {
+        name: VIOLENCE_TYPE,
+        type: SELECT_FIELD,
+        display_name: VIOLENCE_TYPE_DISPLAY_NAME,
+        option_strings_source: "lookup lookup-gbv-sexual-violence-type"
+      },
+      RECORD_FILTERS[BY],
+      RECORD_FILTERS[CREATED_BY_GROUPS],
+      RECORD_FILTERS[OWNED_BY_GROUPS],
+      RECORD_FILTERS[CREATED_ORGANIZATION],
+      RECORD_FILTERS[OWNED_BY_AGENCY_ID],
+      RECORD_FILTERS[DATE]
+    ].map(filter => FieldRecord(filter))
+  },
+  referrals_transfers_report: {
+    ids: REFERRAL_TRANSFERS_SUBREPORTS,
+    defaultFilterValues: {
+      [GROUPED_BY]: WEEK,
+      [DATE_RANGE]: LAST_WEEK,
+      [STATUS]: [STATUS_OPEN],
+      [DATE]: CREATED_AT,
+      [BY]: OWNED_BY_GROUPS,
+      [REFERRAL_TRANSFER_STATUS]: [ACCEPTED]
+    },
+    filters: [
+      RECORD_FILTERS[GROUPED_BY],
+      RECORD_FILTERS[DATE_RANGE],
+      RECORD_FILTERS[FROM],
+      RECORD_FILTERS[TO],
+      SHARED_FILTERS[MODULE],
+      RECORD_FILTERS[STATUS],
+      RECORD_FILTERS[BY],
+      RECORD_FILTERS[CREATED_BY_GROUPS],
+      RECORD_FILTERS[OWNED_BY_GROUPS],
+      RECORD_FILTERS[CREATED_ORGANIZATION],
+      RECORD_FILTERS[OWNED_BY_AGENCY_ID],
+      {
+        name: REFERRAL_TRANSFER_STATUS,
+        type: SELECT_FIELD,
+        display_name: REFERRAL_TRANSFER_STATUS_DISPLAY_NAME,
+        multi_select: true,
+        option_strings_text: [
+          { id: INPROGRESS, display_name: [MANAGED_REPORTS, REFERRAL_TRANSFER_STATUS_OPTIONS, INPROGRESS] },
+          { id: ACCEPTED, display_name: [MANAGED_REPORTS, REFERRAL_TRANSFER_STATUS_OPTIONS, ACCEPTED] },
+          { id: REJECTED, display_name: [MANAGED_REPORTS, REFERRAL_TRANSFER_STATUS_OPTIONS, REJECTED] },
+          { id: DONE, display_name: [MANAGED_REPORTS, REFERRAL_TRANSFER_STATUS_OPTIONS, DONE] }
+        ]
+      },
+      RECORD_FILTERS[DATE]
+    ].map(filter => FieldRecord(filter))
+  },
+  protection_outcomes: {
+    ids: PROTECTION_OUTCOMES_SUBREPORTS,
+    defaultFilterValues: {
+      [GROUPED_BY]: MONTH,
+      [DATE_RANGE]: LAST_MONTH,
+      [STATUS]: [],
+      [DATE]: REGISTRATION_DATE
+    },
+    filters: [
+      RECORD_FILTERS[GROUPED_BY],
+      RECORD_FILTERS[DATE_RANGE],
+      RECORD_FILTERS[FROM],
+      RECORD_FILTERS[TO],
+      SHARED_FILTERS[MODULE],
+      RECORD_FILTERS[STATUS],
+      {
+        name: DATE,
+        display_name: FILTER_BY_DATE_DISPLAY_NAME,
+        option_strings_text: [
+          {
+            id: REGISTRATION_DATE,
+            display_name: [MANAGED_REPORTS, PROTECTION_OUTCOMES, FILTER_OPTIONS, REGISTRATION_DATE]
+          },
+          {
+            id: DATE_CLOSURE,
+            display_name: [MANAGED_REPORTS, PROTECTION_OUTCOMES, FILTER_OPTIONS, DATE_CLOSURE]
+          }
+        ],
+        type: SELECT_FIELD
+      }
+    ].map(filter => FieldRecord(filter))
+  },
+  process_quality_total_cases: {
+    ids: PROCESS_QUALITY_TOTAL_CASES_SUBREPORTS,
+    defaultFilterValues: {
+      [GROUPED_BY]: MONTH,
+      [DATE_RANGE]: LAST_MONTH,
+      [STATUS]: [],
+      [DATE]: REGISTRATION_DATE
+    },
+    filters: [
+      RECORD_FILTERS[GROUPED_BY],
+      RECORD_FILTERS[DATE_RANGE],
+      RECORD_FILTERS[FROM],
+      RECORD_FILTERS[TO],
+      SHARED_FILTERS[MODULE],
+      RECORD_FILTERS[STATUS],
+      {
+        name: DATE,
+        display_name: FILTER_BY_DATE_DISPLAY_NAME,
+        option_strings_text: [
+          {
+            id: REGISTRATION_DATE,
+            display_name: [MANAGED_REPORTS, PROCESS_QUALITY_TOTAL_CASES, FILTER_OPTIONS, REGISTRATION_DATE]
+          },
+          {
+            id: DATE_CLOSURE,
+            display_name: [MANAGED_REPORTS, PROCESS_QUALITY_TOTAL_CASES, FILTER_OPTIONS, DATE_CLOSURE]
+          }
+        ],
+        type: SELECT_FIELD
+      }
+    ].map(filter => FieldRecord(filter))
+  },
+  process_quality_average_cases: {
+    ids: PROCESS_QUALITY_AVERAGE_CASES_SUBREPORTS,
+    defaultFilterValues: {
+      [GROUPED_BY]: MONTH,
+      [DATE_RANGE]: LAST_MONTH,
+      [STATUS]: [STATUS_OPEN],
+      [DATE]: REGISTRATION_DATE
+    },
+    filters: [
+      RECORD_FILTERS[GROUPED_BY],
+      RECORD_FILTERS[DATE_RANGE],
+      RECORD_FILTERS[FROM],
+      RECORD_FILTERS[TO],
+      SHARED_FILTERS[MODULE],
+      RECORD_FILTERS[STATUS],
+      {
+        name: DATE,
+        display_name: FILTER_BY_DATE_DISPLAY_NAME,
+        option_strings_text: [
+          {
+            id: REGISTRATION_DATE,
+            display_name: [MANAGED_REPORTS, PROCESS_QUALITY_AVERAGE_CASES, FILTER_OPTIONS, REGISTRATION_DATE]
+          },
+          {
+            id: DATE_CLOSURE,
+            display_name: [MANAGED_REPORTS, PROCESS_QUALITY_AVERAGE_CASES, FILTER_OPTIONS, DATE_CLOSURE]
+          }
+        ],
+        type: SELECT_FIELD
+      }
+    ].map(filter => FieldRecord(filter))
+  },
+  process_quality_successful_referrals: {
+    ids: PROCESS_QUALITY_SUCCESSFUL_REFERRALS_SUBREPORTS,
+    defaultFilterValues: {
+      [GROUPED_BY]: MONTH,
+      [DATE_RANGE]: LAST_MONTH,
+      [STATUS]: [STATUS_OPEN],
+      [DATE]: SERVICE_RESPONSE_DAY_TIME
+    },
+    filters: [
+      RECORD_FILTERS[GROUPED_BY],
+      RECORD_FILTERS[DATE_RANGE],
+      RECORD_FILTERS[FROM],
+      RECORD_FILTERS[TO],
+      SHARED_FILTERS[MODULE],
+      {
+        ...RECORD_FILTERS[STATUS],
+        display_name: [MANAGED_REPORTS, PROCESS_QUALITY_SUCCESSFUL_REFERRALS, FILTER_OPTIONS, CASE_STATUS]
+      },
+      {
+        name: REPORTING_LOCATIONS,
+        type: SELECT_FIELD,
+        display_name: REPORTING_LOCATIONS_DISPLAY_NAME,
+        option_strings_source: LOOKUPS.reporting_locations
+      },
+      {
+        name: SERVICES,
+        type: SELECT_FIELD,
+        display_name: SERVICES_DISPLAY_NAME,
+        option_strings_source: LOOKUPS.service_type
+      },
+      {
+        name: DATE,
+        display_name: FILTER_BY_DATE_DISPLAY_NAME,
+        option_strings_text: [
+          {
+            id: SERVICE_RESPONSE_DAY_TIME,
+            display_name: [
+              MANAGED_REPORTS,
+              PROCESS_QUALITY_SUCCESSFUL_REFERRALS,
+              FILTER_OPTIONS,
+              SERVICE_RESPONSE_DAY_TIME
+            ]
+          },
+          {
+            id: REFERRAL_CREATED_AT,
+            display_name: [MANAGED_REPORTS, PROCESS_QUALITY_SUCCESSFUL_REFERRALS, FILTER_OPTIONS, REFERRAL_CREATED_AT]
+          }
+        ],
+        type: SELECT_FIELD
+      }
+    ].map(filter => FieldRecord(filter))
+  },
+  process_quality_implemented_referrals: {
+    ids: PROCESS_QUALITY_IMPLEMENTED_REFERRALS_SUBREPORTS,
+    defaultFilterValues: {
+      [GROUPED_BY]: MONTH,
+      [DATE_RANGE]: LAST_MONTH,
+      [STATUS]: [STATUS_OPEN],
+      [DATE]: SERVICE_IMPLEMENTED_DAY_TIME
+    },
+    filters: [
+      RECORD_FILTERS[GROUPED_BY],
+      RECORD_FILTERS[DATE_RANGE],
+      RECORD_FILTERS[FROM],
+      RECORD_FILTERS[TO],
+      {
+        name: DATE,
+        display_name: FILTER_BY_DATE_DISPLAY_NAME,
+        option_strings_text: [
+          {
+            id: SERVICE_IMPLEMENTED_DAY_TIME,
+            display_name: [
+              MANAGED_REPORTS,
+              PROCESS_QUALITY_IMPLEMENTED_REFERRALS,
+              FILTER_OPTIONS,
+              SERVICE_IMPLEMENTED_DAY_TIME
+            ]
+          }
+        ],
+        type: SELECT_FIELD
+      },
+      SHARED_FILTERS[MODULE],
+      {
+        ...RECORD_FILTERS[STATUS],
+        display_name: [MANAGED_REPORTS, PROCESS_QUALITY_IMPLEMENTED_REFERRALS, FILTER_OPTIONS, CASE_STATUS]
+      },
+      {
+        name: SERVICES,
+        type: SELECT_FIELD,
+        display_name: SERVICES_DISPLAY_NAME,
+        option_strings_source: LOOKUPS.service_type
+      },
+      {
+        name: REPORTING_LOCATIONS,
+        type: SELECT_FIELD,
+        display_name: REPORTING_LOCATIONS_DISPLAY_NAME,
+        option_strings_source: LOOKUPS.reporting_locations
+      }
+    ].map(filter => FieldRecord(filter))
+  },
+  case_characteristics: {
+    ids: CASE_CHARACTERISTICS_SUBREPORTS,
+    defaultFilterValues: {
+      [GROUPED_BY]: MONTH,
+      [DATE_RANGE]: LAST_MONTH,
+      [STATUS]: [STATUS_OPEN],
+      [DATE]: REGISTRATION_DATE
+    },
+    filters: [
+      RECORD_FILTERS[GROUPED_BY],
+      RECORD_FILTERS[DATE_RANGE],
+      RECORD_FILTERS[FROM],
+      RECORD_FILTERS[TO],
+      SHARED_FILTERS[MODULE],
+      RECORD_FILTERS[STATUS],
+      {
+        name: DATE,
+        display_name: FILTER_BY_DATE_DISPLAY_NAME,
+        option_strings_text: [
+          {
+            id: REGISTRATION_DATE,
+            display_name: [MANAGED_REPORTS, CASE_CHARACTERISTICS, FILTER_OPTIONS, REGISTRATION_DATE]
+          },
+          {
+            id: DATE_CLOSURE,
+            display_name: [MANAGED_REPORTS, CASE_CHARACTERISTICS, FILTER_OPTIONS, DATE_CLOSURE]
+          }
+        ],
+        type: SELECT_FIELD
+      },
+      {
+        name: REPORTING_LOCATIONS,
+        type: SELECT_FIELD,
+        display_name: REPORTING_LOCATIONS_DISPLAY_NAME,
+        option_strings_source: LOOKUPS.reporting_locations
+      }
+    ].map(filter => FieldRecord(filter))
+  },
+  case_management_kpis_report: {
+    ids: CASE_MANAGEMENT_KPIS_SUBREPORTS,
+    defaultFilterValues: {
+      [GROUPED_BY]: MONTH,
+      [DATE_RANGE]: LAST_MONTH,
+      [DATE]: REGISTRATION_DATE
+    },
+    filters: [
+      RECORD_FILTERS[GROUPED_BY],
+      RECORD_FILTERS[DATE_RANGE],
+      RECORD_FILTERS[FROM],
+      RECORD_FILTERS[TO],
+      {
+        name: DATE,
+        display_name: FILTER_BY_DATE_DISPLAY_NAME,
+        option_strings_text: [
+          {
+            id: REGISTRATION_DATE,
+            display_name: [MANAGED_REPORTS, CASE_MANAGEMENT_KPIS_REPORT, FILTER_OPTIONS, REGISTRATION_DATE]
+          }
+        ],
+        type: SELECT_FIELD
+      },
+      RECORD_FILTERS[STATUS],
+      {
+        name: AGE,
+        display_name: FILTER_BY_AGE_DISPLAY_NAME,
+        option_strings_source: OPTION_TYPES.AGE_RANGES,
+        type: SELECT_FIELD
+      },
+      {
+        name: PROTECTION_CONCERNS,
+        type: SELECT_FIELD,
+        display_name: PROTECTION_CONCERNS_DISPLAY_NAME,
+        multi_select: true,
+        option_strings_source: LOOKUPS.protection_concerns
+      }
+    ].map(filter => FieldRecord(filter))
+  },
+  case_management_kpis_service_referrals_report: {
+    ids: CASE_MANAGEMENT_KPIS_SERVICE_REFERRALS_SUBREPORTS,
+    defaultFilterValues: {
+      [GROUPED_BY]: MONTH,
+      [DATE_RANGE]: LAST_MONTH,
+      [STATUS]: [STATUS_OPEN],
+      [DATE]: REGISTRATION_DATE,
+      [SERVICE_IMPLEMENTED]: IMPLEMENTED
+    },
+    filters: [
+      RECORD_FILTERS[GROUPED_BY],
+      RECORD_FILTERS[DATE_RANGE],
+      RECORD_FILTERS[FROM],
+      RECORD_FILTERS[TO],
+      {
+        name: AGE,
+        display_name: FILTER_BY_AGE_DISPLAY_NAME,
+        option_strings_source: OPTION_TYPES.AGE_RANGES,
+        type: SELECT_FIELD
+      },
+      {
+        name: DATE,
+        display_name: FILTER_BY_DATE_DISPLAY_NAME,
+        option_strings_text: [
+          {
+            id: REGISTRATION_DATE,
+            display_name: [
+              MANAGED_REPORTS,
+              CASE_MANAGEMENT_KPIS_SERVICE_REFERRALS_REPORT,
+              FILTER_OPTIONS,
+              REGISTRATION_DATE
+            ]
+          },
+          {
+            id: SERVICE_IMPLEMENTED_DAY_TIME,
+            display_name: [
+              MANAGED_REPORTS,
+              CASE_MANAGEMENT_KPIS_SERVICE_REFERRALS_REPORT,
+              FILTER_OPTIONS,
+              SERVICE_IMPLEMENTED_DAY_TIME
+            ]
+          }
+        ],
+        type: SELECT_FIELD
+      },
+      {
+        name: SERVICE_IMPLEMENTED,
+        display_name: FILTER_BY_SERVICE_IMPLEMENTED_DISPLAY_NAME,
+        option_strings_source: "lookup lookup-service-implemented",
+        type: SELECT_FIELD
+      }
+    ].map(filter => FieldRecord(filter))
+  },
+  distribution_users_role_report: {
+    ids: DISTRIBUTION_USERS_ROLE_SUBREPORTS,
+    defaultFilterValues: {
+      [DISABLED]: "false"
+    },
+    filters: [
+      {
+        name: DISABLED,
+        type: SELECT_FIELD,
+        display_name: ["cases", "filter_by", "enabled_disabled"],
+        option_strings_text: [
+          { id: "false", display_name: ["disabled", "status", "enabled"] },
+          { id: "true", display_name: ["disabled", "status", "disabled"] }
+        ]
+      },
+      {
+        name: USER_GROUP_UNIQUE_ID,
+        type: SELECT_FIELD,
+        display_name: USER_GROUP_DISPLAY_NAME,
+        option_strings_source: OPTION_TYPES.INSIGHTS_USER_GROUP_PERMITTED
+      },
+      {
+        name: AGENCY_UNIQUE_ID,
+        type: SELECT_FIELD,
+        display_name: AGENCY_DISPLAY_NAME,
+        option_strings_source: OPTION_TYPES.AGENCY,
+        option_strings_source_id_key: "unique_id"
+      }
+    ].map(filter => FieldRecord(filter))
   }
 };

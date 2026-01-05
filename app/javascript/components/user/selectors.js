@@ -3,7 +3,7 @@
 import { List, fromJS } from "immutable";
 
 import { SAVING } from "../../config";
-import { MANAGED_REPORT_SCOPE } from "../permissions/constants";
+import { GROUP_PERMISSIONS, MANAGED_REPORT_SCOPE } from "../permissions/constants";
 
 import NAMESPACE from "./namespace";
 import { PERMISSIONS, PERMITTED_FORMS } from "./constants";
@@ -46,6 +46,8 @@ export const getSavingPassword = state => state.getIn([NAMESPACE, "resetPassword
 
 export const getCurrentUserGroupPermission = state => state.getIn([NAMESPACE, "roleGroupPermission"], fromJS([]));
 
+export const getIsIdentifiedUser = state => getCurrentUserGroupPermission(state) === GROUP_PERMISSIONS.IDENTIFIED;
+
 export const getCurrentUserGroupsUniqueIds = state => state.getIn([NAMESPACE, "userGroupUniqueIds"], fromJS([]));
 
 export const getAssignedAgency = state => state.getIn([NAMESPACE, "agencyId"], fromJS([]));
@@ -65,3 +67,5 @@ export const getNotificationSubscription = state => state.getIn([NAMESPACE, "not
 export const getManagedReportScope = state => state.getIn([NAMESPACE, "managedReportScope"], null);
 
 export const getIsManagedReportScopeAll = state => getManagedReportScope(state) === MANAGED_REPORT_SCOPE.ALL;
+
+export const getCurrentUserModules = state => state.getIn([NAMESPACE, "modules"], fromJS([]));

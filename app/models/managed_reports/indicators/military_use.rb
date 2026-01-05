@@ -9,12 +9,11 @@ class ManagedReports::Indicators::MilitaryUse < ManagedReports::SqlReportIndicat
       'military_use_type_of_use'
     end
 
-    # rubocop:disable Metrics/MethodLength
     # rubocop:disable Metrics/AbcSize
     # rubocop:disable Metrics/CyclomaticComplexity
     # rubocop:disable Metrics/PerceivedComplexity
     def sql(current_user, params = {})
-      %{
+      <<~SQL
         select
           "violations"."data" ->>'military_use_type' as name, 'total' as key,
           #{grouped_date_query(params['grouped_by'],
@@ -24,6 +23,8 @@ class ManagedReports::Indicators::MilitaryUse < ManagedReports::SqlReportIndicat
         from violations violations
         inner join incidents incidents
           on incidents.id = violations.incident_id
+          AND incidents.srch_status = 'open'
+          AND incidents.srch_record_state = TRUE
           #{user_scope_query(current_user, 'incidents')&.prepend('and ')}
         where "violations"."data" ->>'military_use_type' is not null
             #{date_range_query(params['incident_date'], 'incidents')&.prepend('and ')}
@@ -31,12 +32,12 @@ class ManagedReports::Indicators::MilitaryUse < ManagedReports::SqlReportIndicat
             #{date_range_query(params['ctfmr_verified_date'], 'violations')&.prepend('and ')}
             #{equal_value_query(params['ctfmr_verified'], 'violations')&.prepend('and ')}
             #{equal_value_query(params['type'], 'violations')&.prepend('and ')}
+            #{equal_value_query(params['has_late_verified_violations'], 'incidents')&.prepend('and ')}
         group by
         #{grouped_date_query(params['grouped_by'], filter_date(params), table_name_for_query(params))&.dup&.+(', ')}
         "violations"."data" ->>'military_use_type'
-      }
+      SQL
     end
-    # rubocop:enable Metrics/MethodLength
     # rubocop:enable Metrics/AbcSize
     # rubocop:enable Metrics/CyclomaticComplexity
     # rubocop:enable Metrics/PerceivedComplexity

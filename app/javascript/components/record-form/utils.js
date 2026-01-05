@@ -17,7 +17,8 @@ import {
   REGISTRY_FROM_CASE,
   RECORD_PATH,
   RECORD_TYPES,
-  FAMILY_FROM_CASE
+  FAMILY_FROM_CASE,
+  CASE_RELATIONSHIPS
 } from "../../config";
 import { displayNameHelper, toServerDateFormat } from "../../libs";
 
@@ -220,9 +221,13 @@ export const constructInitialValues = formMap => {
     : {};
 };
 
-export const getRedirectPath = (mode, params, fetchFromCaseId) => {
+export const getRedirectPath = ({ mode, params, fetchFromCaseId, redirectTo }) => {
   if (fetchFromCaseId) {
     return `/${RECORD_PATH.cases}/${fetchFromCaseId}`;
+  }
+
+  if (redirectTo) {
+    return redirectTo;
   }
 
   return mode.isNew ? "" : `/${params.recordType}/${params.id}`;
@@ -271,7 +276,7 @@ export const buildFormNav = form =>
     i18nName: form.i18nName,
     i18nDescription: form.i18nDescription,
     display_conditions: form.display_conditions,
-    ...([INCIDENT_FROM_CASE, REGISTRY_FROM_CASE, FAMILY_FROM_CASE].includes(form.unique_id)
+    ...([INCIDENT_FROM_CASE, REGISTRY_FROM_CASE, FAMILY_FROM_CASE, CASE_RELATIONSHIPS].includes(form.unique_id)
       ? { recordTypes: [RECORD_TYPES.cases] }
       : {})
   });

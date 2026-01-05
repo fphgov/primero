@@ -27,6 +27,23 @@ const reducer = (state = DEFAULT_STATE, { type, payload }) => {
       return state.setIn(["options", "loading"], true);
     case Actions.FETCH_AGENCIES_SUCCESS:
       return state.setIn(["options", "agencies"], fromJS(payload.data)).setIn(["options", "errors"], false);
+    case Actions.FETCH_USERS_IDENTIFIED_STARTED:
+      return state
+        .setIn(["options", "users", "loading"], true)
+        .setIn(["options", "users", "identified"], fromJS([]))
+        .setIn(["options", "users", "errors"], false);
+    case Actions.FETCH_USERS_IDENTIFIED_SUCCESS:
+      return state
+        .setIn(["options", "users", "loading"], true)
+        .setIn(["options", "users", "identified"], fromJS(payload.data))
+        .setIn(["options", "users", "errors"], false);
+    case Actions.FETCH_USERS_IDENTIFIED_FAILURE:
+      return state
+        .setIn(["options", "users", "loading"], false)
+        .setIn(["options", "users", "identified"], fromJS([]))
+        .setIn(["options", "users", "errors"], true);
+    case Actions.FETCH_USERS_IDENTIFIED_FINISHED:
+      return state.setIn(["options", "users", "loading"], false);
     case Actions.RECORD_FORMS_FAILURE:
       return state.set("errors", true);
     case Actions.RECORD_FORMS_FINISHED:
@@ -66,6 +83,10 @@ const reducer = (state = DEFAULT_STATE, { type, payload }) => {
       return state.set("dataProtectionInitialValues", fromJS(payload));
     case Actions.CLEAR_DATA_PROTECTION_INITIAL_VALUES:
       return state.delete("dataProtectionInitialValues");
+    case Actions.SET_TEMP_INTIAL_VALUES:
+      return state.set("tempInitialValues", fromJS(payload));
+    case Actions.CLEAR_TEMP_INTIAL_VALUES:
+      return state.delete("tempInitialValues");
     default:
       return state;
   }

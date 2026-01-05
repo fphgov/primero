@@ -12,10 +12,11 @@ class ManagedReports::Indicators::IndividualAge < ManagedReports::SqlReportIndic
     # rubocop:disable Metrics/MethodLength
     # rubocop:disable Metrics/AbcSize
     # rubocop:disable Metrics/CyclomaticComplexity
+    # rubocop:disable Metrics/PerceivedComplexity
     def sql(current_user, params = {})
       date_filter = filter_date(params)
 
-      %{
+      <<~SQL
         select
           #{age_ranges_query(field_name: 'individual_age',
                              table_name: 'individual_children', is_json_field: false,
@@ -31,7 +32,9 @@ class ManagedReports::Indicators::IndividualAge < ManagedReports::SqlReportIndic
           from
             violations violations
             inner join incidents incidents
-            on incidents.id = violations.incident_id
+              on incidents.id = violations.incident_id
+              AND incidents.srch_status = 'open'
+              AND incidents.srch_record_state = TRUE
             inner join individual_victims_violations on violations.id = individual_victims_violations.violation_id
             inner join individual_victims on individual_victims.id = individual_victims_violations.individual_victim_id
             #{user_scope_query(current_user, 'incidents')&.prepend('and ')}
@@ -44,15 +47,19 @@ class ManagedReports::Indicators::IndividualAge < ManagedReports::SqlReportIndic
             #{equal_value_query_multiple(params['violation_type'], 'violations', 'data', 'type')&.prepend('and ')}
         ) individual_children
         group by
-          #{age_ranges_query(field_name: 'individual_age',
-                             table_name: 'individual_children', is_json_field: false, module_id: params['module_id'])},
-          name,
-          #{grouped_date_query(params['grouped_by'], date_filter, 'individual_children')}
+          #{age_ranges_query(
+            field_name: 'individual_age',
+            table_name: 'individual_children',
+            is_json_field: false, module_id: params['module_id']
+          )&.+(',')}
+          #{grouped_date_query(params['grouped_by'], date_filter, 'individual_children')&.+(',')}
+          name
         order by name
-      }
+      SQL
     end
     # rubocop:enable Metrics/CyclomaticComplexity
     # rubocop:enable Metrics/AbcSize
     # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/PerceivedComplexity
   end
 end

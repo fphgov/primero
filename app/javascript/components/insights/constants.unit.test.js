@@ -1,7 +1,5 @@
 // Copyright (c) 2014 - 2023 UNICEF. All rights reserved.
 
-import { MODULES } from "../../config";
-
 import * as constants from "./constants";
 
 describe("<Report /> - constants", () => {
@@ -31,9 +29,13 @@ describe("<Report /> - constants", () => {
       "DELETE_MODAL",
       "EXPORT_INSIGHTS_PATH",
       "FILTER_BY_DATE_DISPLAY_NAME",
+      "FILTER_BY_HAS_LATE_VERIFIED_VIOLATIONS_DISPLAY_NAME",
       "FILTER_BY_VERIFICATION_STATUS_DISPLAY_NAME",
       "FILTER_BY_VIOLATION_TYPE_DISPLAY_NAME",
+      "FILTER_BY_AGE_DISPLAY_NAME",
+      "FILTER_BY_SERVICE_IMPLEMENTED_DISPLAY_NAME",
       "GROUPED_BY",
+      "IMPLEMENTED",
       "INSIGHTS_CONFIG",
       "INSIGHTS_EXPORTER_DIALOG",
       "LAST_MONTH",
@@ -85,7 +87,9 @@ describe("<Report /> - constants", () => {
       "FOLLOWUPS_DISPLAY_NAME",
       "SERVICES",
       "SERVICES_DISPLAY_NAME",
-      "SHARED_WORKFLOW_CONFIG"
+      "SHARED_WORKFLOW_CONFIG",
+      "MODULE_ID",
+      "MODULE_ID_NAME"
     ].forEach(property => {
       expect(clone).toHaveProperty(property);
       delete clone[property];
@@ -96,10 +100,29 @@ describe("<Report /> - constants", () => {
 
   it("should have properties for INSIGHTS_CONFIG", () => {
     const clonedInsightsConfig = { ...constants.INSIGHTS_CONFIG };
-    const expectModuleKeys = [MODULES.MRM, MODULES.GBV, MODULES.CP];
 
-    expect(Object.keys(clonedInsightsConfig)).toEqual(expectModuleKeys);
-    expect(Object.keys(clonedInsightsConfig[MODULES.MRM])).toEqual(["violations", "ghn_report", "individual_children"]);
-    expect(Object.keys(clonedInsightsConfig[MODULES.GBV])).toEqual(["gbv_statistics"]);
+    expect(Object.keys(clonedInsightsConfig)).toEqual([
+      "violations",
+      "ghn_report",
+      "individual_children",
+      "gbv_statistics",
+      "protection_concerns_report",
+      "reporting_locations_report",
+      "followups_report",
+      "services_report",
+      "workflow_report",
+      "cases_workflow_report",
+      "violence_type_report",
+      "referrals_transfers_report",
+      "protection_outcomes",
+      "process_quality_total_cases",
+      "process_quality_average_cases",
+      "process_quality_successful_referrals",
+      "process_quality_implemented_referrals",
+      "case_characteristics",
+      "case_management_kpis_report",
+      "case_management_kpis_service_referrals_report",
+      "distribution_users_role_report"
+    ]);
   });
 });

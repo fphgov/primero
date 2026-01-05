@@ -7,6 +7,25 @@ import { PrimeroModuleRecord } from "../../application/records";
 import { DASHBOARD_NAMES } from "./constants";
 import * as selectors from "./selectors";
 
+const caseRisk = {
+  name: "dashboard.case_risk",
+  type: "indicator",
+  stats: {
+    high: {
+      count: 2,
+      query: ["record_state=true", "status=open", "risk_level=high"]
+    },
+    medium: {
+      count: 1,
+      query: ["record_state=true", "status=open", "risk_level=medium"]
+    },
+    none: {
+      count: 0,
+      query: ["record_state=true", "status=open", "risk_level=none"]
+    }
+  }
+};
+
 const workflowTeamCases = {
   name: DASHBOARD_NAMES.WORKFLOW_TEAM,
   type: "indicator",
@@ -65,6 +84,37 @@ const approvalsCasePlanPending = {
 };
 const approvalsClosurePending = {
   name: "dashboard.approvals_closure_pending.primeromodule-cp",
+  type: "indicator",
+  indicators: {
+    approval_closure_pending_group: {
+      count: 1,
+      query: ["record_state=true", "status=open", "approval_status_closure=pending"]
+    }
+  }
+};
+
+const approvalsAssessment = {
+  name: "dashboard.approvals_assessment.primeromodule-cp",
+  type: "indicator",
+  indicators: {
+    "approval_assessment_pending.primeromodule-cp": {
+      count: 5,
+      query: ["record_state=true", "status=open", "approval_status_assessment=pending"]
+    }
+  }
+};
+const approvalsCasePlan = {
+  name: "dashboard.approvals_case_plan.primeromodule-cp",
+  type: "indicator",
+  indicators: {
+    "approval_case_plan.primeromodule-cp": {
+      count: 2,
+      query: ["record_state=true", "status=open", "approval_status_case_plan=pending"]
+    }
+  }
+};
+const approvalsClosure = {
+  name: "dashboard.approvals_closure.primeromodule-cp",
   type: "indicator",
   indicators: {
     approval_closure_pending_group: {
@@ -291,40 +341,46 @@ const initialState = fromJS({
   }),
   records: {
     dashboard: {
-      data: [
-        {
-          name: "dashboard.case_risk",
-          type: "indicator",
-          stats: {
-            high: {
-              count: 2,
-              query: ["record_state=true", "status=open", "risk_level=high"]
-            },
-            medium: {
-              count: 1,
-              query: ["record_state=true", "status=open", "risk_level=medium"]
-            },
-            none: {
-              count: 0,
-              query: ["record_state=true", "status=open", "risk_level=none"]
-            }
-          }
-        },
-        workflowTeamCases,
-        reportingLocation,
-        approvalsAssessmentPending,
-        approvalsCasePlanPending,
-        approvalsClosurePending,
-        protectionConcern,
-        sharedWithMe,
-        sharedWithOthers,
-        groupOverview,
-        caseOverview,
-        sharedWithMyTeam,
-        sharedWithMyTeamOverview,
-        myCasesIncidents,
-        nationalAdminSummary
-      ],
+      overview: {
+        loading: false,
+        errors: false,
+        data: [caseOverview, caseRisk, groupOverview, nationalAdminSummary, myCasesIncidents]
+      },
+      reporting_location: {
+        loading: false,
+        errors: false,
+        data: [reportingLocation]
+      },
+      workflow_team: {
+        loading: false,
+        errors: false,
+        data: [workflowTeamCases]
+      },
+      approvals: {
+        loading: false,
+        errors: false,
+        data: [approvalsAssessment, approvalsCasePlan, approvalsClosure]
+      },
+      approvals_pending: {
+        loading: false,
+        errors: false,
+        data: [approvalsAssessmentPending, approvalsCasePlanPending, approvalsClosurePending]
+      },
+      protection_concerns: {
+        loading: false,
+        errors: false,
+        data: [protectionConcern]
+      },
+      referrals_transfers: {
+        loading: false,
+        errors: false,
+        data: [sharedWithMe, sharedWithOthers, sharedWithMyTeamOverview]
+      },
+      shared_with_my_team: {
+        loading: false,
+        errors: false,
+        data: [sharedWithMyTeam]
+      },
       flags: {
         loading: false,
         errors: false,
@@ -346,49 +402,6 @@ const initialState = fromJS({
 });
 
 describe("<Dashboard /> - Selectors", () => {
-  describe("getCasesByAssessmentLevel", () => {
-    it("should return a list of dashboard", () => {
-      const records = selectors.getCasesByAssessmentLevel(initialState);
-
-      const expected = fromJS({
-        name: DASHBOARD_NAMES.CASE_RISK,
-        type: "indicator",
-        stats: {
-          high: {
-            count: 2,
-            query: ["record_state=true", "status=open", "risk_level=high"]
-          },
-          medium: {
-            count: 1,
-            query: ["record_state=true", "status=open", "risk_level=medium"]
-          },
-          none: {
-            count: 0,
-            query: ["record_state=true", "status=open", "risk_level=none"]
-          }
-        }
-      });
-
-      expect(records).toEqual(expected);
-    });
-  });
-
-  describe("getCasesByAssessmentLevel empty value", () => {
-    it("should return a map when dashboard is empty", () => {
-      const emptyResult = fromJS({});
-
-      const emptyValueInitialState = fromJS({
-        name: DASHBOARD_NAMES.CASE_RISK,
-        type: "indicator",
-        stats: {}
-      });
-
-      const expected = selectors.getCasesByAssessmentLevel(emptyValueInitialState);
-
-      expect(emptyResult).toEqual(expected);
-    });
-  });
-
   describe("getWorkflowTeamCases", () => {
     it("should return list of headers allowed to the user", () => {
       const values = selectors.getWorkflowTeamCases(initialState);
@@ -432,6 +445,30 @@ describe("<Dashboard /> - Selectors", () => {
       const values = selectors.getApprovalsClosurePending(initialState)["primeromodule-cp"];
 
       expect(values).toEqual(fromJS(approvalsClosurePending));
+    });
+  });
+
+  describe("getApprovalsAssessment", () => {
+    it("should return the approvals assessment", () => {
+      const values = selectors.getApprovalsAssessment(initialState)["primeromodule-cp"];
+
+      expect(values).toEqual(fromJS(approvalsAssessment));
+    });
+  });
+
+  describe("getApprovalsCasePlan", () => {
+    it("should return the approvals case plan", () => {
+      const values = selectors.getApprovalsCasePlan(initialState)["primeromodule-cp"];
+
+      expect(values).toEqual(fromJS(approvalsCasePlan));
+    });
+  });
+
+  describe("getApprovalsClosure", () => {
+    it("should return the approvals closure", () => {
+      const values = selectors.getApprovalsClosure(initialState)["primeromodule-cp"];
+
+      expect(values).toEqual(fromJS(approvalsClosure));
     });
   });
 

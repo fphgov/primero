@@ -128,6 +128,7 @@ describe Api::V2::DashboardsController, type: :request do
                   })
     Child.create!(data: { record_state: true, status: 'open', owned_by: 'bar', workflow: 'new' })
     Child.create!(data: { record_state: true, status: 'open', owned_by: 'bar' })
+    Child.create!(data: { record_state: true, status: 'identified', owned_by: 'bar' })
   end
 
   let(:json) { JSON.parse(response.body) }
@@ -363,6 +364,24 @@ describe Api::V2::DashboardsController, type: :request do
       expect(national_admin_summary['indicators']['closed_this_week']['count']).to eq(2)
     end
 
+    it 'lists statistics for the action needed identified cases dashboard' do
+      login_for_test(
+        user_name: 'foo',
+        group_permission: Permission::ALL,
+        permissions: [
+          @permission_case,
+          Permission.new(resource: Permission::DASHBOARD, actions: [Permission::DASH_ACTION_NEEDED_IDENTIFIED])
+        ]
+      )
+
+      get '/api/v2/dashboards'
+
+      expect(response).to have_http_status(200)
+
+      action_needed_identified_dashboard = json['data'].find { |d| d['name'] == 'dashboard.action_needed_identified' }
+      expect(action_needed_identified_dashboard['indicators']['identified']['count']).to eq(1)
+    end
+
     describe 'Test the shared with dashboard', search: true do
       before :each do
         @permission_refer_case = Permission.new(
@@ -550,6 +569,91 @@ describe Api::V2::DashboardsController, type: :request do
 
       after :each do
         clean_data(Alert, User, UserGroup, Role, Incident, Child, Location, SystemSettings, Lookup)
+      end
+    end
+
+    describe 'Violation dashboards', search: true do
+      before do
+        clean_data(Alert, User, UserGroup, Role, Incident, Child, Location, SystemSettings, Lookup)
+
+        @permission_violation_dashboards = Permission.new(
+          resource: Permission::DASHBOARD,
+          actions: [
+            Permission::DASH_VIOLATIONS_CATEGORY_VERIFICATION_STATUS,
+            Permission::DASH_VIOLATIONS_CATEGORY_REGION,
+            Permission::DASH_PERPETRATOR_ARMED_FORCE_GROUP_PARTY_NAMES
+          ]
+        )
+        @role = Role.new(
+          permissions: [@permission_violation_dashboards],
+          modules: [@primero_module],
+          group_permission: Permission::GROUP
+        )
+        @role.save(validate: false)
+        @group_a = UserGroup.create!(name: 'Group_a')
+        @user1 = User.new(user_name: 'user1', role: @role, user_groups: [@group_a])
+        @user1.save(validate: false)
+
+        Location.create!(placename_en: 'Country', location_code: 'CNT', type: 'country')
+        Location.create!(placename_en: 'State', location_code: 'STE', type: 'state', hierarchy_path: 'CNT.STE')
+        Location.create!(placename_en: 'City', location_code: 'CTY',
+                         type: 'city', hierarchy_path: 'CNT.STE.CTY')
+
+        incident1 = Incident.new_with_user(
+          @user1,
+          {
+            'incident_location' => 'CTY',
+            module_id: PrimeroModule::MRM,
+            'killing' => [
+              {
+                'unique_id' => '24bc1267-f748-47b2-a1ce-1f69798592d2',
+                'type' => 'killing',
+                'verified' => 'verified',
+                'ctfmr_verified' => 'verified',
+                'violation_tally' => { 'boys' => 1, 'total' => 1 },
+                'ctfmr_verified_date' => '2025-05-26',
+                'is_late_verification' => false,
+                'verification_date_focal_point' => '2025-05-26'
+              }
+            ],
+            'perpetrators' => [
+              {
+                'unique_id' => '99372fd1-7858-4662-b53e-425e7e1f5f6f',
+                'perpetrator_category' => 'armed_force',
+                'perpetrator_ethnicity' => [],
+                'perpetrator_nationality' => [],
+                'armed_force_group_party_name' => 'armed_force_1',
+                'violations_ids' => ['24bc1267-f748-47b2-a1ce-1f69798592d2']
+              }
+            ]
+          }
+        )
+        incident1.save!
+      end
+
+      it 'lists statistics for violation dashboards' do
+        sign_in(@user1)
+
+        params = {
+          names: {
+            0 => 'dash_violations_category_verification_status',
+            1 => 'dash_violations_category_region',
+            2 => 'dash_perpetrator_armed_force_group_party_names'
+          }
+        }
+
+        get '/api/v2/dashboards', params: params
+
+        expect(response).to have_http_status(200)
+        expect(
+          json['data'][0]['indicators']['violations_category_verification_status']['killing_verified']['count']
+        ).to eq(1)
+        expect(
+          json['data'][1]['indicators']['violations_category_region']['cty']['killing_verified']['count']
+        ).to eq(1)
+        expect(
+          json['data'][2]['indicators']['perpetrator_armed_force_group_party_names']['armed_force_1']['count']
+        ).to eq(1)
       end
     end
   end

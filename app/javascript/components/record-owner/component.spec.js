@@ -87,6 +87,15 @@ describe("<RecordOwner />", () => {
     });
   });
 
+  describe("with assigned_user_names", () => {
+    it("should render the TextField as textarea", () => {
+      const componentProps = { ...rootProps, record: record.set("assigned_user_names", ["user1"]) };
+      const { getByLabelText } = mountedComponent(<RecordOwner {...componentProps} />, rootInitialState);
+
+      expect(getByLabelText("record_information.assigned_user_names").tagName).toBe("TEXTAREA");
+    });
+  });
+
   describe("when record is new", () => {
     const initialState = Map({
       records: fromJS({
@@ -112,7 +121,7 @@ describe("<RecordOwner />", () => {
     });
 
     it("should render RecordOwner and its fields", () => {
-      expect(screen.getAllByTestId("form-section-field")).toHaveLength(12);
+      expect(screen.getAllByTestId("form-section-field")).toHaveLength(13);
     });
   });
 
@@ -156,7 +165,7 @@ describe("<RecordOwner />", () => {
     });
 
     it("should render RecordOwner and its fields", () => {
-      expect(screen.getAllByTestId("form-section-field")).toHaveLength(12);
+      expect(screen.getAllByTestId("form-section-field")).toHaveLength(13);
     });
   });
 });

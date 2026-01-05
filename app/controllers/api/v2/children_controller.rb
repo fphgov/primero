@@ -16,6 +16,15 @@ class Api::V2::ChildrenController < ApplicationApiController
     render 'api/v2/traces/index'
   end
 
+  def identified
+    authorize! :read, model_class
+    @record = model_class.find_by!(srch_identified_by: current_user.user_name)
+    authorize! :read, @record
+    permit_readable_fields
+    select_fields_for_show
+    render 'api/v2/records/show'
+  end
+
   alias select_updated_fields_super select_updated_fields
   def select_updated_fields
     changes = @record.saved_changes_to_record.keys
@@ -40,5 +49,11 @@ class Api::V2::ChildrenController < ApplicationApiController
 
     data = params.require(:data).permit(:family_detail_id).to_h
     @family_params = data.merge(case_id: params.require(:case_id))
+  end
+
+  def record_id
+    return @record_id ||= request.path.split('/')[4] if action_name == 'traces'
+
+    super
   end
 end

@@ -7,6 +7,7 @@ describe("Verifying config constant", () => {
     const permissions = { ...PERMISSIONS.ACTIONS };
 
     [
+      "ACCESS_LOG",
       "ADD_NOTE",
       "ADD_REGISTRY_RECORD",
       "AGENCY_READ",
@@ -19,12 +20,19 @@ describe("Verifying config constant", () => {
       "ASSIGN_WITHIN_AGENCY",
       "ASSIGN_WITHIN_USER_GROUP",
       "ASSIGN",
+      "ATTRIBUTE",
       "CASE_FROM_FAMILY",
+      "CASE_MANAGEMENT_KPIS_REPORT",
       "CHANGE_LOG",
       "CLOSE",
       "CONSENT_OVERRIDE",
       "COPY",
+      "CREATE_CASE_FROM_REFERRAL",
       "CREATE",
+      "DASH_ACTION_NEEDED_IDENTIFIED",
+      "DASH_ACTION_NEEDED_NEW_REFERRALS",
+      "DASH_ACTION_NEEDED_NEW_UPDATED",
+      "DASH_ACTION_NEEDED_TRANSFER_AWAITING_ACCEPTANCE",
       "DASH_APPROVALS_ACTION_PLAN_PENDING",
       "DASH_APPROVALS_ACTION_PLAN",
       "DASH_APPROVALS_ASSESSMENT_PENDING",
@@ -37,9 +45,6 @@ describe("Verifying config constant", () => {
       "DASH_APPROVALS_GBV_CLOSURE",
       "DASH_CASE_INCIDENT_OVERVIEW",
       "DASH_CASE_OVERVIEW",
-      "DASH_ACTION_NEEDED_NEW_UPDATED",
-      "DASH_ACTION_NEEDED_NEW_REFERRALS",
-      "DASH_ACTION_NEEDED_TRANSFER_AWAITING_ACCEPTANCE",
       "DASH_CASE_RISK",
       "DASH_CASES_BY_SOCIAL_WORKER",
       "DASH_CASES_BY_TASK_OVERDUE_ASSESSMENT",
@@ -64,7 +69,9 @@ describe("Verifying config constant", () => {
       "DASH_WORKFLOW_TEAM",
       "DASH_WORKFLOW",
       "DELETE",
+      "DISABLE_MULTIPLE",
       "DISPLAY_VIEW_PAGE",
+      "DISTRIBUTION_USERS_ROLE_REPORT",
       "ENABLE_DISABLE_RECORD",
       "EXPORT_CASE_PDF",
       "EXPORT_CSV",
@@ -79,13 +86,13 @@ describe("Verifying config constant", () => {
       "EXPORT_PHOTO_WALL",
       "EXPORT_UNHCR",
       "FIND_TRACING_MATCH",
-      "FLAG",
       "FLAG_RESOLVE_ANY",
+      "FLAG",
+      "FLAG_UPDATE",
       "GBV_STATISTICS",
       "GROUP_READ",
       "INCIDENT_DETAILS_FROM_CASE",
       "INCIDENT_FROM_CASE",
-      "LINK_INCIDENT_TO_CASE",
       "KPI_ASSESSMENT_STATUS",
       "KPI_AVERAGE_FOLLOWUP_MEETINGS_PER_CASE",
       "KPI_AVERAGE_REFERRALS",
@@ -102,14 +109,18 @@ describe("Verifying config constant", () => {
       "KPI_SUPERVISOR_TO_CASEWORKER_RATIO",
       "KPI_TIME_FROM_CASE_OPEN_TO_CLOSE",
       "LINK_FAMILY_RECORD",
+      "LINK_INCIDENT_TO_CASE",
       "MANAGE",
       "MARK_FOR_OFFLINE",
+      "PROTECTION_OUTCOMES",
       "READ",
       "RECEIVE_REFERRAL",
+      "RECEIVE_REFERRAL_DIFFERENT_MODULE",
       "RECEIVE_TRANSFER",
       "REFERRAL_FROM_SERVICE",
       "REFERRAL",
       "REFERRALS_TRANSFERS_REPORT",
+      "REMOVE_ALERT",
       "REMOVE_ASSIGNED_USERS",
       "REOPEN",
       "REQUEST_APPROVAL_ACTION_PLAN",
@@ -119,17 +130,19 @@ describe("Verifying config constant", () => {
       "REQUEST_APPROVAL_GBV_CLOSURE",
       "REQUEST_TRANSFER",
       "SEARCH_OWNED_BY_OTHERS",
+      "SELF_APPROVE",
       "SERVICES_SECTION_FROM_CASE",
-      "WORKFLOW_REPORT",
       "SYNC_EXTERNAL",
       "TRANSFER",
+      "UPDATE_CASE_RELATIONSHIPS",
       "VERIFY_MRM",
+      "VIEW_CASE_RELATIONSHIPS",
       "VIEW_FAMILY_RECORD",
       "VIEW_INCIDENT_FROM_CASE",
       "VIEW_REGISTRY_RECORD",
       "VIOLATIONS",
-      "WRITE",
-      "REMOVE_ALERT"
+      "WORKFLOW_REPORT",
+      "WRITE"
     ].forEach(property => {
       expect(permissions).toHaveProperty(property);
       expect(typeof permissions[property]).toBe("string");
@@ -371,7 +384,7 @@ describe("Verifying config constant", () => {
   it("should have GROUP_PERMISSIONS", () => {
     const groupPermissions = { ...PERMISSIONS.GROUP_PERMISSIONS };
 
-    ["AGENCY", "ALL", "GROUP", "SELF"].forEach(property => {
+    ["AGENCY", "ALL", "GROUP", "SELF", "IDENTIFIED"].forEach(property => {
       expect(groupPermissions).toHaveProperty(property);
       expect(typeof groupPermissions[property]).toBe("string");
       delete groupPermissions[property];
@@ -431,6 +444,24 @@ describe("Verifying config constant", () => {
       PERMISSIONS.ACTIONS.REQUEST_APPROVAL_CLOSURE,
       PERMISSIONS.ACTIONS.REQUEST_APPROVAL_ACTION_PLAN,
       PERMISSIONS.ACTIONS.REQUEST_APPROVAL_GBV_CLOSURE
+    ].forEach(element => {
+      expect(permissions).toEqual(expect.arrayContaining([element]));
+      permissions.splice(permissions.indexOf(element), 1);
+    });
+    expect(Object.keys(permissions)).toHaveLength(0);
+  });
+
+  it("should have SHOW_REFERRALS", () => {
+    const permissions = [...PERMISSIONS.SHOW_REFERRALS];
+
+    expect(Array.isArray(permissions)).toBe(true);
+    [
+      PERMISSIONS.ACTIONS.MANAGE,
+      PERMISSIONS.ACTIONS.REFERRAL_FROM_SERVICE,
+      PERMISSIONS.ACTIONS.REMOVE_ASSIGNED_USERS,
+      PERMISSIONS.ACTIONS.REFERRAL,
+      PERMISSIONS.ACTIONS.RECEIVE_REFERRAL,
+      PERMISSIONS.ACTIONS.RECEIVE_REFERRAL_DIFFERENT_MODULE
     ].forEach(element => {
       expect(permissions).toEqual(expect.arrayContaining([element]));
       permissions.splice(permissions.indexOf(element), 1);

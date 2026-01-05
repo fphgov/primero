@@ -1,31 +1,35 @@
 // Copyright (c) 2014 - 2023 UNICEF. All rights reserved.
 
 import { useMemo } from "react";
-import PropTypes from "prop-types";
 
 import { useMemoizedSelector } from "../../../../../libs";
 import {
+  getActionNeededIdentified,
   getActionNeededNewReferrals,
   getActionNeededNewUpdated,
-  getActionNeededTransferAwaitingAcceptance
+  getActionNeededTransferAwaitingAcceptance,
+  getDashboardGroupHasData,
+  getIsDashboardGroupLoading
 } from "../../selectors";
-import { DASHBOARD_TYPES } from "../../constants";
+import { DASHBOARD_GROUP, DASHBOARD_TYPES } from "../../constants";
 import Permission, { RESOURCES, ACTIONS } from "../../../../permissions";
 import { OptionsBox } from "../../../../dashboard";
 import { useI18n } from "../../../../i18n";
 import DashboardColumns from "../../../../dashboard/dashboard-columns";
+import { ACTION_NEEDED_DASHBOARD } from "../../../../permissions/constants";
+import useSystemStrings, { DASHBOARD } from "../../../../application/use-system-strings";
 
-function Component({ loadingIndicator }) {
+function Component() {
   const i18n = useI18n();
 
+  const { label } = useSystemStrings(DASHBOARD);
+  const loading = useMemoizedSelector(state => getIsDashboardGroupLoading(state, DASHBOARD_GROUP.action_needed));
+  const hasData = useMemoizedSelector(state => getDashboardGroupHasData(state, DASHBOARD_GROUP.action_needed));
   const actionNeededNewUpdated = useMemoizedSelector(state => getActionNeededNewUpdated(state));
+  const actionNeededIdentified = useMemoizedSelector(state => getActionNeededIdentified(state));
   const actionNeededNewReferrals = useMemoizedSelector(state => getActionNeededNewReferrals(state));
   const actionNeededTransferAwaitingAcceptance = useMemoizedSelector(state =>
     getActionNeededTransferAwaitingAcceptance(state)
-  );
-
-  const actionNeededHasData = Boolean(
-    actionNeededNewUpdated.size || actionNeededNewReferrals.size || actionNeededTransferAwaitingAcceptance.size
   );
 
   const columns = useMemo(
@@ -36,7 +40,17 @@ function Component({ loadingIndicator }) {
           actions: ACTIONS.DASH_ACTION_NEEDED_NEW_UPDATED,
           options: {
             data: actionNeededNewUpdated,
-            title: i18n.t("dashboard.action_needed.cases")
+            title: label("dashboard.action_needed.cases")
+          }
+        }
+      ],
+      [
+        {
+          type: DASHBOARD_TYPES.TOTAL_BOX,
+          actions: ACTIONS.DASH_ACTION_NEEDED_IDENTIFIED,
+          options: {
+            data: actionNeededIdentified,
+            title: label("dashboard.action_needed.cases")
           }
         }
       ],
@@ -61,21 +75,12 @@ function Component({ loadingIndicator }) {
         }
       ]
     ],
-    [actionNeededHasData]
-  );
-
-  const dashboardActions = useMemo(
-    () =>
-      columns
-        .flat()
-        .map(dashboard => dashboard.actions)
-        .flat(),
-    [columns.length]
+    [hasData, i18n.locale]
   );
 
   return (
-    <Permission resources={RESOURCES.dashboards} actions={dashboardActions}>
-      <OptionsBox title={i18n.t("dashboard.action_needed.header")} hasData={actionNeededHasData} {...loadingIndicator}>
+    <Permission resources={RESOURCES.dashboards} actions={ACTION_NEEDED_DASHBOARD}>
+      <OptionsBox title={i18n.t("dashboard.action_needed.header")} loading={loading} hasData={hasData && !loading}>
         <DashboardColumns columns={columns} keepRows />
       </OptionsBox>
     </Permission>
@@ -83,9 +88,5 @@ function Component({ loadingIndicator }) {
 }
 
 Component.displayName = "DashboardActionNeeded";
-
-Component.propTypes = {
-  loadingIndicator: PropTypes.object
-};
 
 export default Component;
