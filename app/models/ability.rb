@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2014 - 2023 UNICEF. All rights reserved.
-
 # TODO: Refactor this!!! Write some tests!
 
 # Class for Ability
@@ -26,6 +24,7 @@ class Ability
     baseline_permissions
     configure_record_attachments
     configure_flags
+    configure_associated_family
   end
   # rubocop:enable Metrics/MethodLength
 
@@ -118,9 +117,17 @@ class Ability
     end
   end
 
-  def metadata_permissions
-    [FormSection, Field, Location, Lookup, PrimeroProgram, PrimeroModule].each do |resource|
-      can :manage, resource
+  def metadata_permissions(permission)
+    actions = permission.action_symbols
+
+    if actions.include?(Permission::MANAGE_RESTRICTED.to_sym)
+      [FormSection, Field, Lookup].each do |resource|
+        can %i[read write], resource
+      end
+    else
+      [FormSection, Field, Location, Lookup, PrimeroProgram, PrimeroModule].each do |resource|
+        can :manage, resource
+      end
     end
   end
 
@@ -259,7 +266,7 @@ class Ability
     when Permission::AGENCY
       agency_permissions(permission)
     when Permission::METADATA
-      metadata_permissions
+      metadata_permissions(permission)
     when Permission::SYSTEM
       system_permissions
     when Permission::TRACING_REQUEST
@@ -277,6 +284,14 @@ class Ability
     [Child, TracingRequest, Incident, RegistryRecord, Family].each do |model|
       configure_flag(model)
       resolve_flag(model)
+    end
+  end
+
+  def configure_associated_family
+    return unless user.permission_by_permission_type?(Permission::FAMILY, Permission::SEARCH_AND_SELECT_FAMILY_RECORD)
+
+    can(:read, Family) do |instance|
+      user.permitted_to_access_record?(instance)
     end
   end
 end

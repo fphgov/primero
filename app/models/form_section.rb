@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2014 - 2023 UNICEF. All rights reserved.
-
 # A form is a collection of fields. Forms describe how a user may interact with a record.
 # rubocop:disable Metrics/ClassLength
 class FormSection < ApplicationRecord
@@ -52,6 +50,7 @@ class FormSection < ApplicationRecord
   validate :validate_parent_form_changed, on: :update
   validates :name_en, presence: { message: 'errors.models.form_section.presence_of_name' }
   validates :unique_id, presence: true, uniqueness: { message: 'errors.models.form_section.unique_id' }
+  validate :validate_unique_id_format
 
   after_initialize :defaults, unless: :persisted?
   before_validation :calculate_fields_order, :generate_unique_id
@@ -72,12 +71,18 @@ class FormSection < ApplicationRecord
   class << self
     def permitted_api_params
       [
-        'id', 'unique_id', { 'name' => {} }, { 'help_text' => {} }, { 'description' => {} }, 'parent_form',
+        'id', 'unique_id', { 'name' => {} }, { 'description' => {} }, 'parent_form',
         'visible', 'order', 'order_form_group', 'order_subform', 'form_group_keyed', 'form_group_id', 'is_nested',
-        'is_first_tab', 'initial_subforms', 'subform_prevent_item_removal', 'subform_append_only',
-        'subform_header_links', 'display_help_text_view', 'shared_subform', 'shared_subform_group',
-        'is_summary_section', 'hide_subform_placeholder', 'mobile_form', { 'collapsed_field_names' => [] },
+        'initial_subforms', 'subform_prevent_item_removal', 'subform_append_only',
+        'hide_subform_placeholder', 'mobile_form', { 'collapsed_field_names' => [] },
         'display_conditions', { 'display_conditions' => {} }
+      ]
+    end
+
+    def permitted_api_restricted_params
+      [
+        { 'name' => {} }, { 'description' => {} }, 'mobile_form', 'visible', 'order', 'order_form_group',
+        'order_subform', 'form_group_id'
       ]
     end
 
@@ -345,7 +350,7 @@ class FormSection < ApplicationRecord
 
   def touch_roles
     roles_to_touch = is_nested? ? parent_roles : roles
-    roles_to_touch.touch_all
+    Role.where(id: roles_to_touch.pluck(:id).uniq).touch_all
   end
 end
 # rubocop:enable Metrics/ClassLength

@@ -1,5 +1,3 @@
-// Copyright (c) 2014 - 2023 UNICEF. All rights reserved.
-
 import {
   ENABLED_FOR_ONE_MANY,
   ENABLED_FOR_ONE,
@@ -87,7 +85,7 @@ export default ({
         enabledFor: ENABLED_FOR_ONE_MANY_ALL,
         name: `${i18n.t("buttons.reassign")}`,
         recordListAction: true,
-        recordType: [RECORD_PATH.cases, RECORD_PATH.incidents]
+        recordType: [RECORD_PATH.cases, RECORD_PATH.incidents, RECORD_PATH.families]
       },
       {
         action: () => handleDialogClick(TRANSFER_DIALOG),

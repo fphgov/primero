@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2014 - 2023 UNICEF. All rights reserved.
-
 # This represents the authorizations a user is entitled to
 # Primero business objects by way of the role granted to the user.
 # A permission is usually a pairing of the business object (case, incident, etc.)
@@ -19,6 +17,7 @@ class Permission < ValueObject
   VERIFY_MRM = 'verify_mrm'
   READ = 'read'
   WRITE = 'write'
+  MANAGE_RESTRICTED = 'manage_restricted'
   ENABLE_DISABLE_RECORD = 'enable_disable_record'
   FLAG = 'flag'
   FLAG_RESOLVE_ANY = 'resolve_any_flag'
@@ -41,6 +40,7 @@ class Permission < ValueObject
   TRACING_REQUEST = 'tracing_request'
   POTENTIAL_MATCH = 'potential_match'
   REGISTRY_RECORD = 'registry_record'
+  SEARCH_AND_SELECT_FAMILY_RECORD = 'search_and_select_family_record'
   FAMILY = 'family'
   DUPLICATE = 'duplicate'
   USER = 'user'
@@ -240,7 +240,7 @@ class Permission < ValueObject
     FAMILY => [
       READ, CREATE, WRITE, ENABLE_DISABLE_RECORD, FLAG, FLAG_RESOLVE_ANY, FLAG_UPDATE, REOPEN, CLOSE, EXPORT_LIST_VIEW,
       EXPORT_CSV, EXPORT_EXCEL, EXPORT_PDF, EXPORT_JSON, EXPORT_CUSTOM, ACCESS_LOG, SYNC_MOBILE, CASE_FROM_FAMILY,
-      CHANGE_LOG, MANAGE
+      SEARCH_OWNED_BY_OTHERS, SEARCH_AND_SELECT_FAMILY_RECORD, DISPLAY_VIEW_PAGE, ASSIGN, CHANGE_LOG, MANAGE
     ],
     ROLE => [CREATE, READ, WRITE, ASSIGN, COPY, MANAGE, DELETE],
     USER => [CREATE, READ, AGENCY_READ, WRITE, DISABLE_MULTIPLE, MANAGE],
@@ -256,7 +256,7 @@ class Permission < ValueObject
       REPORTING_LOCATIONS_REPORT, CASE_MANAGEMENT_KPIS_REPORT, CASE_MANAGEMENT_KPIS_SERVICE_REFERRALS_REPORT,
       DISTRIBUTION_USERS_ROLE_REPORT
     ],
-    METADATA => [MANAGE],
+    METADATA => [MANAGE, MANAGE_RESTRICTED],
     POTENTIAL_MATCH => [READ, VIEW_AUDIO, VIEW_PHOTO, MANAGE],
     DUPLICATE => [READ],
     SYSTEM => [MANAGE],

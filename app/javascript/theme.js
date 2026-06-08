@@ -1,5 +1,3 @@
-// Copyright (c) 2014 - 2023 UNICEF. All rights reserved.
-
 import mapKeys from "lodash/mapKeys";
 import kebabCase from "lodash/kebabCase";
 import { alpha } from "@mui/material";
@@ -62,6 +60,7 @@ const colors = {
   greenLight: "#E6EED3", // u,
   redMedium: "#E7712D",
   redLow: "#F7D0BA",
+  tiaMaria: "#C2410C",
   forgotPasswordLink: "var(--c-blue)",
   networkIndicatorBorder: "var(--c-solid-green)",
   navListIcon: "var(--c-dark-grey))",
@@ -94,6 +93,25 @@ const drawerWidth = "240px";
 const spacing = [1, 2, 3, 4];
 
 const components = {
+  MuiPickersSectionList: {
+    styleOverrides: {
+      root: {
+        direction: "inherit"
+      },
+      sectionContent: {
+        direction: "inherit"
+      }
+    }
+  },
+  MuiPickersArrowSwitcher: {
+    styleOverrides: {
+      button: {
+        '[dir="rtl"] &': {
+          transform: "scaleX(-1)"
+        }
+      }
+    }
+  },
   MuiCssBaseline: {
     styleOverrides: {
       "#root": {
@@ -169,6 +187,9 @@ const components = {
           opacity: 1,
           WebkitTextFillColor: "var(--c-black)"
         }
+      },
+      multiline: {
+        padding: "0 !important"
       }
     }
   },
@@ -241,6 +262,32 @@ const components = {
       contained: {
         marginLeft: 0,
         marginRight: 0
+      }
+    }
+  },
+  MuiPickersOutlinedInput: {
+    styleOverrides: {
+      root: {
+        "&.Mui-disabled *": {
+          color: "inherit !important"
+        },
+        "&.Mui-focused:not(.Mui-error)": {
+          borderColor: colors.blue,
+          boxShadow: `${alpha(colors.blue, 0.25)} 0 0 0 0.2rem`
+        }
+      },
+      sectionsContainer: {
+        padding: "8.5px 0"
+      },
+      notchedOutline: {
+        top: "0",
+        "&:focus, &:active": {
+          boxShadow: `${alpha(colors.blue, 0.25)} 0 0 0 0.2rem`
+        },
+        borderColor: "var(--c-black)",
+        legend: {
+          display: "none"
+        }
       }
     }
   },
@@ -399,7 +446,7 @@ const components = {
         }
       },
       outlinedPrimary: {
-        "&:hover, &:active, &focus": {
+        "&:hover, &:active, &:focus": {
           borderColor: "var(--c-blue-hover)",
           color: "var(--c-blue-hover)",
           "&.Mui-disabled": {
@@ -434,6 +481,11 @@ const components = {
           width: "16px",
           height: "16px"
         }
+      },
+      inputRoot: {
+        padding: 0,
+        paddingLeft: "var(--sp-1)",
+        paddingTop: "2px"
       }
     }
   },
@@ -494,7 +546,7 @@ const components = {
       root: {
         display: "block",
         cursor: "pointer",
-        "&:hover, &:active, &focus": {
+        "&:hover, &:active, &:focus": {
           color: "var(--c-blue-hover)"
         }
       }
@@ -510,7 +562,6 @@ const components = {
   MuiOutlinedInput: {
     styleOverrides: {
       root: {
-        // padding: 0,
         fontSize: "var(--fs-16)",
         background: "var(--c-white)",
         "&.Mui-focused": {
@@ -538,6 +589,9 @@ const components = {
         "& legend": {
           display: "none"
         }
+      },
+      input: {
+        padding: "8.5px 14px"
       }
     }
   },
@@ -548,6 +602,11 @@ const components = {
     }
   },
   MuiFormControl: {
+    styleOverrides: {
+      root: {
+        margin: "16px 0px 8px"
+      }
+    },
     defaultProps: {
       margin: "normal"
     }
