@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2014 - 2023 UNICEF. All rights reserved.
-
 # Service that allow users to remove data and handling referential integrity
 class DataRemovalService
-  RECORD_MODELS = [Child, Incident, TracingRequest].freeze
+  RECORD_MODELS = [Child, Incident, TracingRequest, Family, RegistryRecord].freeze
   DATA_MODELS = [
-    Trace, Flag, Alert, Attachment, AuditLog, BulkExport, RecordHistory, SavedSearch, Transition, Violation,
+    Trace, Flag, Alert, Attachment, Signature, AuditLog, BulkExport, RecordHistory, SavedSearch, Transition, Violation,
     SearchableIdentifier
   ].freeze
   METADATA_MODELS = [
@@ -53,7 +51,11 @@ class DataRemovalService
 
     def remove_config(args = {})
       metadata_models = args[:include_users] == true ? [User] : []
-      metadata_models += args[:metadata].present? ? metadata_models_to_delete(args[:metadata]) : METADATA_MODELS
+      metadata_models += if args[:metadata].present?
+                           metadata_models_to_delete(args[:metadata])
+                         else
+                           METADATA_MODELS - [PrimeroConfiguration]
+                         end
       metadata_models.each { |model| ModelDeletionService.new(model_class: model).delete_all! }
     end
 
