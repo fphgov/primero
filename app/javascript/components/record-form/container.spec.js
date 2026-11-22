@@ -1,7 +1,7 @@
 import { fromJS, Map, List, OrderedMap } from "immutable";
 
 import { PrimeroModuleRecord } from "../application/records";
-import { mountedComponent, screen } from "../../test-utils";
+import { fireEvent, mountedComponent, screen, waitFor } from "../../test-utils";
 import { MANAGE } from "../permissions";
 import { MODES } from "../../config";
 
@@ -762,6 +762,89 @@ describe("<RecordForms /> - Component", () => {
 
         expect(screen.getByTestId("record-owner-form")).toBeInTheDocument();
         expect(screen.getByTestId("record-form-title")).toHaveTextContent("forms.record_types.record_information");
+      });
+    });
+  });
+
+  describe("when an incident is saved with overridden incident labels", () => {
+    const incident = {
+      id: "e25c5cb1-1257-472e-b2ec-05f568a3b51e",
+      short_id: "abc1234",
+      module_id: "primeromodule-cp",
+      description: "Some description"
+    };
+
+    const initialState = fromJS({
+      records: Map({
+        incidents: Map({
+          data: List([Map(incident)]),
+          metadata: Map({ per: 20, page: 1, total: 1 })
+        })
+      }),
+      forms: Map({
+        selectedForm: "incident_details",
+        selectedRecord: incident,
+        formSections: OrderedMap({
+          1: FormSectionRecord({
+            id: 1,
+            name: { en: "Incident Details" },
+            unique_id: "incident_details",
+            is_first_tab: true,
+            visible: true,
+            is_nested: false,
+            module_ids: ["primeromodule-cp"],
+            parent_form: "incident",
+            fields: [1]
+          })
+        }),
+        fields: OrderedMap({
+          1: FieldRecord({
+            id: 1,
+            name: "description",
+            type: "text_field",
+            editable: true,
+            visible: true,
+            display_name: { en: "Description" }
+          })
+        }),
+        loading: false,
+        errors: false
+      }),
+      user: fromJS({
+        modules: ["primeromodule-cp"],
+        permittedForms: { incident_details: "rw" }
+      }),
+      application: fromJS({
+        modules: [
+          PrimeroModuleRecord({
+            unique_id: "primeromodule-cp",
+            field_labels: {
+              "incident.messages.update_success": { en: "Monitoring Report %{record_id} was successfully updated." }
+            }
+          })
+        ]
+      })
+    });
+
+    it("uses the overridden update message", async () => {
+      const { container, store } = mountedComponent(
+        <RecordForms mode={MODES.edit} />,
+        initialState,
+        {},
+        ["/incidents/e25c5cb1-1257-472e-b2ec-05f568a3b51e/edit"],
+        {},
+        "/:recordType(cases|incidents|tracing_requests)/:id/edit"
+      );
+
+      fireEvent.submit(container.querySelector("form"));
+
+      await waitFor(() => {
+        const messages = store
+          .getActions()
+          .flatMap(action => action.api?.successCallback || [])
+          .map(callback => callback.payload?.message);
+
+        expect(messages).toContain("Monitoring Report abc1234 was successfully updated.");
       });
     });
   });

@@ -22,6 +22,7 @@ class Ability
     initialize_permissions(user)
     configure_exports
     baseline_permissions
+    configure_record_transitions
     configure_record_attachments
     configure_flags
     configure_associated_family
@@ -185,8 +186,42 @@ class Ability
       PermittedAttachmentService.permitted_to_read?(user, instance, @permitted_form_fields_service)
     end
 
-    can(%i[create destroy], Attachment) do |instance|
+    can(%i[create destroy write], Attachment) do |instance|
       PermittedAttachmentService.permitted_to_write?(user, instance, @permitted_form_fields_service)
+    end
+  end
+
+  def configure_record_transitions
+    # This is only relevant for updates to ongoing transitions
+    [Assign, Transfer, TransferRequest].each do |transition_class|
+      can(:update, transition_class) do |instance|
+        can?(:read, instance.record)
+      end
+    end
+
+    configure_referral_update
+    configure_referral_destroy
+  end
+
+  def configure_referral_destroy
+    can(:destroy, Referral) do |instance|
+      if can?(:remove_assigned_users, instance.record)
+        (instance.remote? || !instance.recipient?(user)) && user.permitted_to_access_referral?(instance)
+      else
+        false
+      end
+    end
+  end
+
+  def configure_referral_update
+    can(:update, Referral) do |instance|
+      if instance.remote?
+        instance.in_progress? && can?(:accept_or_reject_referral, instance.record) &&
+          user.permitted_to_access_referral?(instance)
+      else
+        instance.recipient?(user) && user.permitted_to_access_referral?(instance) &&
+          can?(:receive_referral, instance.record)
+      end
     end
   end
 

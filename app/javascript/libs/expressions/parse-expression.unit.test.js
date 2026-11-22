@@ -224,4 +224,36 @@ describe("parseExpression", () => {
       expect(decimalOperator.evaluate({ a: "2", b: "3" })).toEqual(2.5);
     });
   });
+
+  describe("when is a not_blank expression", () => {
+    const expression = parseExpression({ not_blank: ["a", "b"] });
+
+    it("returns a not_blank expression", () => {
+      expect(expression.operator).toBe(COMPARISON_OPERATORS.NOT_BLANK);
+    });
+
+    it("evaluates to true", () => {
+      expect(expression.evaluate({ a: "x", b: "y" })).toBe(true);
+    });
+
+    it("evaluates to false", () => {
+      expect(expression.evaluate({ a: "x" })).toBe(false);
+    });
+  });
+
+  describe("when a not_blank expression is nested", () => {
+    it("evaluates inside an and expression", () => {
+      const expression = parseExpression({ and: [{ not_blank: ["a"] }, { gt: { age: 17 } }] });
+
+      expect(expression.evaluate({ a: "x", age: 18 })).toBe(true);
+      expect(expression.evaluate({ a: "x", age: 17 })).toBe(false);
+    });
+
+    it("evaluates inside a not expression", () => {
+      const expression = parseExpression({ not: { not_blank: ["a", "b"] } });
+
+      expect(expression.evaluate({ a: "x" })).toBe(true);
+      expect(expression.evaluate({ a: "x", b: "y" })).toBe(false);
+    });
+  });
 });

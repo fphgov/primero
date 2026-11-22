@@ -15,9 +15,12 @@ describe("<UsersList /> - constants", () => {
       "ACTION_IDS",
       "ACTION_NAMES",
       "DISABLE_DIALOG_NAME",
+      "SEND_EMAIL_DIALOG_NAME",
       "USERS_ABILITIES",
       "USERS_DIALOG",
-      "ROLE_ID"
+      "ROLE_ID",
+      "LOCATION",
+      "FILTER_BY_AGENCY"
     ].forEach(property => {
       expect(clone).toHaveProperty(property);
       delete clone[property];

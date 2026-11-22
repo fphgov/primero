@@ -1,10 +1,10 @@
 # -------------------------------------------------------------------- BUILD STAGE
 ARG BUILD_REGISTRY
-ARG RUBY_VERSION=3.4.9
-ARG ALPINE_VERSION=alpine3.23
+ARG RUBY_VERSION=3.4.11
+ARG ALPINE_VERSION=alpine3.24
 FROM ${BUILD_REGISTRY}ruby:${RUBY_VERSION}-${ALPINE_VERSION} AS build-env
 
-ENV NODE_VERSION=24.17
+ENV NODE_VERSION=24
 ENV BUILD_PACKAGES="bash curl wget curl-dev build-base git"
 ENV PYTHON_PACKAGES="python3 py3-pip"
 ENV BUILD_DEP_PACKAGES="postgresql-dev yaml-dev"
@@ -106,7 +106,7 @@ FROM ${BUILD_REGISTRY}ruby:${RUBY_VERSION}-${ALPINE_VERSION}
 ENV BUILD_PACKAGES=bash
 ENV RUNTIME_PACKAGES="libpq gettext libintl vips libsodium-dev p7zip tini curl"
 ENV WORKER_PACKAGES="libreoffice font-noto font-noto-cjk font-noto-emoji font-noto-extra font-dejavu"
-ENV SECURITY_UPDATED_PACKAGES="openssl=3.5.7-r0"
+ENV SECURITY_UPDATED_PACKAGES="openssl=3.5.9-r0 zlib=1.4-r0"
 
 ARG APP_UID
 ARG APP_GID

@@ -12,7 +12,8 @@ import {
   NOTES_DIALOG,
   OPEN_CLOSE_DIALOG,
   TRANSFER_DIALOG,
-  EXPORT_DIALOG
+  EXPORT_DIALOG,
+  MARK_FOR_OFFLINE_DIALOG
 } from "./constants";
 
 describe("<RecordActions />", () => {
@@ -287,6 +288,59 @@ describe("<RecordActions />", () => {
     });
   });
 
+  describe("when the current user has a pending transfer", () => {
+    const pendingState = defaultState.setIn(["user", "username"], "user_1");
+    const pendingProps = { ...props, record: fromJS({ status: "open", transferred_to_users: ["user_1"] }) };
+
+    it("disables the actions menu button", () => {
+      mountedComponent(<RecordActions {...pendingProps} />, pendingState);
+
+      expect(screen.getByRole("button")).toBeDisabled();
+    });
+
+    it("labels the actions menu button with the transfer restriction tooltip", () => {
+      mountedComponent(<RecordActions {...pendingProps} />, pendingState);
+
+      expect(screen.getByLabelText("transfer.pending_restriction")).toBeInTheDocument();
+    });
+  });
+
+  describe("when the current user has no pending transition", () => {
+    it("enables the actions menu button", () => {
+      mountedComponent(<RecordActions {...props} />, defaultState.setIn(["user", "username"], "user_1"));
+
+      expect(screen.getByRole("button")).not.toBeDisabled();
+    });
+  });
+
+  describe("when a selected record has a pending transition for the current user", () => {
+    const listProps = {
+      recordType: "cases",
+      mode: { isShow: false },
+      showListActions: true,
+      currentPage: 0,
+      selectedRecords: { 0: [0] }
+    };
+    const pendingListState = defaultStateWithDialog(MARK_FOR_OFFLINE_DIALOG)
+      .setIn(["user", "username"], "user_1")
+      .setIn(["records", "cases", "data", 0, "referred_users_pending"], fromJS(["user_1"]));
+
+    it("shows the pending transition message in the action dialog", () => {
+      mountedComponent(<RecordActions {...listProps} />, pendingListState);
+
+      expect(screen.getByText("case.messages.pending_transition_excluded")).toBeInTheDocument();
+    });
+
+    it("does not show the message when no selected record is pending", () => {
+      mountedComponent(
+        <RecordActions {...listProps} />,
+        defaultStateWithDialog(MARK_FOR_OFFLINE_DIALOG).setIn(["user", "username"], "user_1")
+      );
+
+      expect(screen.queryByText("case.messages.pending_transition_excluded")).not.toBeInTheDocument();
+    });
+  });
+
   describe("Component ToggleOpen", () => {
     it("renders ToggleOpen", () => {
       mountedComponent(<RecordActions {...props} />, defaultStateWithDialog(OPEN_CLOSE_DIALOG));
@@ -510,6 +564,39 @@ describe("<RecordActions />", () => {
         );
         fireEvent.click(screen.getByRole("button"));
         expect(screen.getByRole("menuitem", { name: /actions.incident_from_case/i })).toBeInTheDocument();
+      });
+
+      it("renders MenuItem with the overridden Create Incident label", () => {
+        mountedComponent(
+          <RecordActions {...props} />,
+          fromJS({
+            application: {
+              modules: [
+                PrimeroModuleRecord({
+                  unique_id: "primeromodule-cp",
+                  name: "CP",
+                  field_labels: { "actions.incident_from_case": { en: "Create Monitoring Report" } }
+                })
+              ]
+            },
+            records: {
+              cases: {
+                filters: {
+                  id_search: true
+                }
+              }
+            },
+            user: {
+              modules: ["primeromodule-cp"],
+              permissions: {
+                cases: [ACTIONS.MANAGE]
+              }
+            },
+            forms
+          })
+        );
+        fireEvent.click(screen.getByRole("button"));
+        expect(screen.getByRole("menuitem", { name: "Create Monitoring Report" })).toBeInTheDocument();
       });
     });
 

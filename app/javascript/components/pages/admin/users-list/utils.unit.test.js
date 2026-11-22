@@ -2,7 +2,7 @@ import { fromJS } from "immutable";
 
 import { FILTER_TYPES } from "../../../index-filters";
 
-import { DISABLED, AGENCY, USER_GROUP, ACTION_IDS } from "./constants";
+import { DISABLED, AGENCY, USER_GROUP, ACTION_IDS, FILTER_BY_AGENCY } from "./constants";
 import * as helper from "./utils";
 
 describe("<AuditLogs /> - Helpers", () => {
@@ -42,6 +42,7 @@ describe("<AuditLogs /> - Helpers", () => {
         {
           name: "cases.filter_by.agency",
           field_name: AGENCY,
+          clearDependentValues: [USER_GROUP, FILTER_BY_AGENCY],
           options: [
             {
               id: 1,
@@ -63,8 +64,12 @@ describe("<AuditLogs /> - Helpers", () => {
           field_name: USER_GROUP,
           multiple: true,
           name: "cases.filter_by.user_group",
+          filterFn: expect.any(Function),
           options: [],
-          type: FILTER_TYPES.MULTI_SELECT
+          toggleName: FILTER_BY_AGENCY,
+          toggleLabel: "users.filters.filter_by_agency",
+          type: FILTER_TYPES.MULTI_SELECT,
+          watchedInputs: [AGENCY, FILTER_BY_AGENCY]
         },
         {
           field_name: "last_date",
@@ -86,6 +91,13 @@ describe("<AuditLogs /> - Helpers", () => {
             ]
           },
           type: "dates"
+        },
+        {
+          field_name: "location",
+          multiple: true,
+          name: "cases.filter_by.location",
+          option_strings_source: "Location",
+          type: "multi_select"
         }
       ];
 
@@ -93,7 +105,7 @@ describe("<AuditLogs /> - Helpers", () => {
         agency: false
       };
 
-      expect(helper.getFilters(i18n, options, null, filterPermission)).toEqual(expected);
+      expect(helper.getFilters(i18n, options, null, filterPermission)).toStrictEqual(expected);
     });
   });
 
@@ -137,6 +149,45 @@ describe("<AuditLogs /> - Helpers", () => {
       result[0].action();
 
       expect(handleDialogClick).toHaveBeenCalledWith("DisableDialog", "disable");
+    });
+
+    it("should return the send email action when canSendEmailMultiple is true", () => {
+      const i18n = { t: value => value };
+      const handleDialogClick = jest.fn();
+      const expected = [
+        {
+          id: ACTION_IDS.sendEmail,
+          name: "users.send_email_title",
+          disableOffline: true,
+          condition: true,
+          action: expect.any(Function)
+        }
+      ];
+
+      const result = helper.buildActionList({
+        i18n,
+        handleDialogClick,
+        canDisableMultiple: false,
+        canSendEmailMultiple: true
+      });
+
+      expect(result).toEqual(expected);
+    });
+
+    it("should call handleDialogClick with the send email dialog when the action is executed", () => {
+      const i18n = { t: value => value };
+      const handleDialogClick = jest.fn();
+
+      const result = helper.buildActionList({
+        i18n,
+        handleDialogClick,
+        canDisableMultiple: false,
+        canSendEmailMultiple: true
+      });
+
+      result[0].action();
+
+      expect(handleDialogClick).toHaveBeenCalledWith("SendEmailDialog", "send_email");
     });
   });
 });

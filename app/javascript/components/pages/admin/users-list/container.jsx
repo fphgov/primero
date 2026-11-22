@@ -37,12 +37,14 @@ import {
   USERS_DIALOG,
   ACTION_IDS,
   USERS_ABILITIES,
-  ROLE_ID
+  ROLE_ID,
+  LOCATION
 } from "./constants";
 import { agencyBodyRender, buildObjectWithIds, getFilters, buildActionList, roleBodyRender } from "./utils";
 import AlertMaxUser from "./components/alert-max-user";
 import NewUserBtn from "./components/new-user-button";
 import DisableDialog from "./components/disable-dialog";
+import SendEmailDialog from "./components/send-email-dialog";
 import css from "./styles.css";
 
 function Container() {
@@ -50,7 +52,7 @@ function Container() {
   const dispatch = useDispatch();
   const [selectedRecords, setSelectedRecords] = useState({});
   const { maximumUsers, maximumUsersWarning } = useApp();
-  const { canAddUsers, canDisableMultiple } = usePermissions(NAMESPACE, USERS_ABILITIES);
+  const { canAddUsers, canDisableMultiple, canSendEmailMultiple } = usePermissions(NAMESPACE, USERS_ABILITIES);
   const canListAgencies = usePermissions(RESOURCES.agencies, READ_RECORDS);
   const { setDialog } = useDialog(USERS_DIALOG);
   const recordType = "users";
@@ -127,7 +129,7 @@ function Container() {
   };
 
   const filterProps = {
-    clearFields: [AGENCY, DISABLED, USER_GROUP, LAST_DATE, ROLE_ID],
+    clearFields: [AGENCY, DISABLED, USER_GROUP, LAST_DATE, ROLE_ID, LOCATION],
     filters: getFilters(i18n, enabledAgencies, filterUserGroups, filterPermission, roles),
     defaultFilters,
     initialFilters: DEFAULT_FILTERS,
@@ -146,10 +148,12 @@ function Container() {
     }
   };
 
-  const actions = buildActionList({ i18n, handleDialogClick, canDisableMultiple });
+  const actions = buildActionList({ i18n, handleDialogClick, canDisableMultiple, canSendEmailMultiple });
 
   const disabledCondition = action =>
-    [ACTION_IDS.disable].includes(action.id) ? isEmpty(Object.values(selectedRecords).flat()) : false;
+    [ACTION_IDS.disable, ACTION_IDS.sendEmail].includes(action.id)
+      ? isEmpty(Object.values(selectedRecords).flat())
+      : false;
 
   useEffect(() => {
     dispatch(setUsersFilters({ data: defaultFilters }));
@@ -178,6 +182,12 @@ function Container() {
           </div>
           <div>
             <DisableDialog
+              selectedRecords={selectedRecords}
+              recordType={recordType}
+              filters={currentFilters}
+              setSelectedRecords={setSelectedRecords}
+            />
+            <SendEmailDialog
               selectedRecords={selectedRecords}
               recordType={recordType}
               filters={currentFilters}

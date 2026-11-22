@@ -1,8 +1,19 @@
 import { fromJS } from "immutable";
 
 import { FILTER_TYPES } from "../../../index-filters";
+import { LOOKUPS } from "../../../../config";
 
-import { AGENCY, DISABLED, USER_GROUP, LAST_DATE, DISABLE_DIALOG_NAME, ACTION_NAMES, ACTION_IDS } from "./constants";
+import {
+  AGENCY,
+  DISABLED,
+  USER_GROUP,
+  LAST_DATE,
+  DISABLE_DIALOG_NAME,
+  SEND_EMAIL_DIALOG_NAME,
+  ACTION_NAMES,
+  ACTION_IDS,
+  FILTER_BY_AGENCY
+} from "./constants";
 
 const searchableAgencies = (data, i18n) => {
   return data.reduce(
@@ -15,9 +26,24 @@ const searchableRoles = data => {
   return data?.reduce((acc, role) => [...acc, { id: role.get("id"), display_name: role.get("name") }], []);
 };
 
-const userGroupOptions = data => {
+const userGroupOptions = (data, agencies) => {
   return data
-    ? data.reduce((acc, group) => [...acc, { id: group.get("unique_id"), display_name: group.get("name") }], [])
+    ? data.reduce(
+        (acc, group) => [
+          ...acc,
+          {
+            id: group.get("unique_id"),
+            display_name: group.get("name"),
+            agency_unique_ids: group
+              .get("agency_unique_ids")
+              .reduce(
+                (prev, uniqueID) => [...prev, agencies.find(agency => agency.get("unique_id") === uniqueID)?.get("id")],
+                []
+              )
+          }
+        ],
+        []
+      )
     : [];
 };
 
@@ -38,6 +64,7 @@ export const getFilters = (i18n, filterAgencies, filterUserGroups, filterPermiss
     name: "cases.filter_by.agency",
     field_name: AGENCY,
     options: searchableAgencies(filterAgencies, i18n),
+    clearDependentValues: [USER_GROUP, FILTER_BY_AGENCY],
     type: FILTER_TYPES.MULTI_SELECT,
     multiple: true,
     permitted_filter: filterPermission?.agency
@@ -52,8 +79,22 @@ export const getFilters = (i18n, filterAgencies, filterUserGroups, filterPermiss
   {
     name: "cases.filter_by.user_group",
     field_name: USER_GROUP,
-    options: userGroupOptions(filterUserGroups),
+    options: userGroupOptions(filterUserGroups, filterAgencies),
+    watchedInputs: [AGENCY, FILTER_BY_AGENCY],
+    filterFn: (options, watchedValues) => {
+      if (watchedValues?.[AGENCY]?.length && watchedValues?.[FILTER_BY_AGENCY]) {
+        return options.filter(option => {
+          return option.agency_unique_ids.some(
+            id => watchedValues[AGENCY].includes(id) || watchedValues[AGENCY].includes(String(id))
+          );
+        });
+      }
+
+      return options;
+    },
     type: FILTER_TYPES.MULTI_SELECT,
+    toggleName: FILTER_BY_AGENCY,
+    toggleLabel: i18n.t("users.filters.filter_by_agency"),
     multiple: true
   },
   {
@@ -67,6 +108,13 @@ export const getFilters = (i18n, filterAgencies, filterUserGroups, filterPermiss
         { id: "last_case_updated", display_name: i18n.t("users.filters.date_last_case_updated") }
       ]
     }
+  },
+  {
+    name: "cases.filter_by.location",
+    field_name: "location",
+    option_strings_source: LOOKUPS.locations,
+    type: FILTER_TYPES.MULTI_SELECT,
+    multiple: true
   }
 ];
 
@@ -83,7 +131,7 @@ export const buildObjectWithIds = elems =>
     fromJS({})
   );
 
-export const buildActionList = ({ i18n, handleDialogClick, canDisableMultiple }) => {
+export const buildActionList = ({ i18n, handleDialogClick, canDisableMultiple, canSendEmailMultiple }) => {
   const actions = [
     {
       id: ACTION_IDS.disable,
@@ -91,6 +139,13 @@ export const buildActionList = ({ i18n, handleDialogClick, canDisableMultiple })
       disableOffline: true,
       condition: canDisableMultiple,
       action: () => handleDialogClick(DISABLE_DIALOG_NAME, ACTION_NAMES.disable)
+    },
+    {
+      id: ACTION_IDS.sendEmail,
+      name: i18n.t("users.send_email_title"),
+      disableOffline: true,
+      condition: canSendEmailMultiple,
+      action: () => handleDialogClick(SEND_EMAIL_DIALOG_NAME, ACTION_NAMES.sendEmail)
     }
   ];
 

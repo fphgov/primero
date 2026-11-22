@@ -61,6 +61,7 @@ export default ({
   hasServiceSubform,
   i18n,
   isIdSearch,
+  label = key => i18n.t(key),
   isShow,
   openState,
   record,
@@ -69,7 +70,7 @@ export default ({
   showListActions,
   handleCreateIncident
 }) => {
-  const formRecordType = i18n.t(`forms.record_types.${RECORD_TYPES[recordType]}`);
+  const formRecordType = label(`forms.record_types.${RECORD_TYPES[recordType]}`);
 
   return {
     actions: [
@@ -103,7 +104,7 @@ export default ({
         condition: Boolean(hasIncidentSubform) && showListActions && canAddIncident,
         disableOffline: true,
         enabledFor: ENABLED_FOR_ONE,
-        name: i18n.t("actions.incident_details_from_case"),
+        name: label("actions.incident_details_from_case"),
         recordListAction: true,
         recordType: RECORD_PATH.cases,
         showOnSearchResultPage: true,
@@ -117,7 +118,7 @@ export default ({
         disableOffline: false,
         enabledFor: ENABLED_FOR_ONE,
         enabledOnSearch: false,
-        name: i18n.t("actions.incident_from_case"),
+        name: label("actions.incident_from_case"),
         recordListAction: false,
         recordType: RECORD_PATH.cases
       },
@@ -206,7 +207,7 @@ export default ({
         disableOffline: true,
         enabledFor: ENABLED_FOR_ONE_MANY_ALL,
         id: LINK_INCIDENT_TO_CASE_DIALOG,
-        name: i18n.t("incident.link_incident_to_case"),
+        name: label("incident.link_incident_to_case"),
         recordListAction: true,
         recordType: RECORD_PATH.incidents
       },

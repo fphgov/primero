@@ -267,18 +267,22 @@ class User < ApplicationRecord
         scope = scope.with_audit_date_between(
           action: config[:action],
           record_type: config[:record_type],
-          from: Time.zone.parse(filters.dig(last_date, 'from')),
-          to: Time.zone.parse(filters.dig(last_date, 'to'))
+          from: parse_date_filter(filters.dig(last_date, 'from')),
+          to: parse_date_filter(filters.dig(last_date, 'to'))
         )
       end
       scope
     end
 
+    def parse_date_filter(value)
+      value.is_a?(String) ? Time.zone.parse(value) : value
+    end
+
     def build_self_registration_user(params, stream)
       new(
         params.except(:data_processing_consent_provided).merge(
-          role_unique_id: stream['role'],
-          user_group_unique_ids: stream['user_groups'],
+          role_unique_id: stream.role,
+          user_group_unique_ids: stream.user_groups,
           unverified: true,
           user_name: params[:email]
         )
@@ -291,14 +295,14 @@ class User < ApplicationRecord
 
       user = build_self_registration_user(params, stream)
       user.data_processing_consent_provided_on = DateTime.now if params[:data_processing_consent_provided]
-      user.agency = Agency.find_by(unique_id: stream['agency'])
+      user.agency = Agency.find_by(unique_id: stream.agency)
       user.self_registered = true
       user
     end
 
     def registration_stream(unique_id)
       SystemSettings.current&.registration_streams&.find do |stream|
-        stream['unique_id'] == unique_id
+        stream.unique_id == unique_id
       end
     end
 
@@ -710,6 +714,35 @@ class User < ApplicationRecord
     return identified_permits_access?(record) if group_permission? Permission::IDENTIFIED
 
     record&.associated_user_names&.include?(user_name)
+  end
+
+  def permitted_to_access_referral?(referral)
+    return true if referral.record.owner?(self)
+    return referral.sender?(self) || scope_permits_referral?(referral) if can_view_referrals?
+
+    !referral.remote? && referral.recipient?(self) && [
+      Transition::STATUS_INPROGRESS, Transition::STATUS_ACCEPTED
+    ].include?(referral.status)
+  end
+
+  def scope_permits_referral?(referral)
+    case role.group_permission
+    when Permission::SELF then referral.recipient?(self)
+    when Permission::AGENCY then agency_permits_referral?(referral)
+    when Permission::GROUP then group_permits_referral?(referral)
+    when Permission::ALL then true
+    else
+      false
+    end
+  end
+
+  def group_permits_referral?(referral)
+    referral.record.owned_by_any_groups?(user_group_unique_ids) ||
+      User.by_user_group(user_group_ids).exists?(user_name: referral.transitioned_to)
+  end
+
+  def agency_permits_referral?(referral)
+    agency_id == referral.record.owner.agency_id || referral.transitioned_to_agency == agency.unique_id
   end
 
   def agency_permits_access?(record)

@@ -4,6 +4,7 @@ import { createElement } from "react";
 
 import { RECORD_TYPES, MODULES } from "../../config";
 import { useI18n } from "../i18n";
+import useSystemStrings, { ACTION_BUTTON } from "../application/use-system-strings";
 import { getFiltersValueByRecordType } from "../index-filters/selectors";
 import { getMetadata } from "../record-list/selectors";
 import { useApp } from "../application";
@@ -13,7 +14,7 @@ import { useDialog } from "../action-dialog";
 import useMemoizedSelector from "../../libs/use-memoized-selector";
 import useIncidentFromCase from "../records/use-incident-form-case";
 import { getRecordFormsByUniqueIdWithFallback, getServicesRecordForm } from "../record-form/selectors";
-import { selectRecordsByIndexes } from "../records";
+import { getPendingTransitionIds, selectRecordsByIndexes, usePendingTransition } from "../records";
 import { currentUser } from "../user";
 
 import { INCIDENT_SUBFORM, INCIDENTS_SUBFORM_NAME } from "./add-incident/constants";
@@ -50,6 +51,7 @@ function Container({
   showListActions
 }) {
   const i18n = useI18n();
+  const { label } = useSystemStrings(ACTION_BUTTON);
   const { approvalsLabels } = useApp();
   const { currentDialog, dialogClose, dialogOpen, pending, setDialog, setDialogPending } = useDialog([
     APPROVAL_DIALOG,
@@ -94,6 +96,8 @@ function Container({
     })
   );
   const user = useMemoizedSelector(state => currentUser(state));
+  const { hasPendingTransition, tooltip: pendingTransitionTooltip } = usePendingTransition(record);
+  const pendingTransitionIds = getPendingTransitionIds(selectedRecordsFromList, user);
 
   const handleDialogClick = dialog => {
     setDialog({ dialog, open: true });
@@ -185,6 +189,7 @@ function Container({
     i18n,
     isIdSearch,
     isShow: mode.isShow,
+    label,
     openState,
     record,
     recordType,
@@ -201,7 +206,13 @@ function Container({
 
   return (
     <>
-      <Menu showMenu={showMenu} actions={actions} disabledCondition={disabledCondition} />
+      <Menu
+        showMenu={showMenu}
+        actions={actions}
+        disabledCondition={disabledCondition}
+        disabled={hasPendingTransition}
+        tooltip={pendingTransitionTooltip}
+      />
       {ability &&
         createElement(component, {
           ...props,
@@ -215,6 +226,7 @@ function Container({
           selectedRecords,
           clearSelectedRecords,
           selectedRowsIndex,
+          pendingTransitionIds,
           setPending: setDialogPending,
           userPermissions: permittedAbilities,
           mode,

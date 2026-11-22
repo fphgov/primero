@@ -46,11 +46,7 @@ describe("<UsersList />", () => {
   });
 
   it("renders FormFilters", () => {
-    expect(screen.getAllByTestId("select-filter").length).toBe(2);
-  });
-
-  it("renders CustomToolbar as label", () => {
-    expect(screen.getAllByTestId("select-filter").length).toBe(2);
+    expect(screen.getAllByTestId("select-filter").length).toBe(3);
   });
 
   it("should NOT render warning to list user", () => {
@@ -239,7 +235,7 @@ describe("<UsersList />", () => {
 
     it("should render Menu component without errors", () => {
       expect(screen.getAllByText("users.label")).toBeTruthy();
-      expect(screen.getByRole("button", { name: "more" })).toBeInTheDocument();
+      expect(screen.getAllByRole("button", { name: "more" }).length).toBeGreaterThan(0);
     });
   });
 });

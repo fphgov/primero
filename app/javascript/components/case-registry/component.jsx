@@ -9,6 +9,7 @@ import { READ_REGISTRY_RECORD, RESOURCES, WRITE_REGISTRY_RECORD, usePermissions 
 import { useI18n } from "../i18n";
 import CaseLinkedRecord from "../case-linked-record";
 import { useApp } from "../application";
+import useSystemStrings, { NAVIGATION } from "../application/use-system-strings";
 import { getRegistryTypes } from "../application/selectors";
 import { fetchRecord, selectRecord } from "../records";
 
@@ -26,6 +27,7 @@ function Component({ handleToggleNav, mobileDisplay, mode, primeroModule, record
   const dispatch = useDispatch();
   const i18n = useI18n();
   const { online } = useApp();
+  const { label } = useSystemStrings(NAVIGATION);
   const registryType = useMemoizedSelector(state => getRegistryTypes(state, "farmer"));
   const { writeRegistryRecord, writeReadRegistryRecord } = usePermissions(RESOURCES.cases, {
     writeRegistryRecord: WRITE_REGISTRY_RECORD,
@@ -35,9 +37,10 @@ function Component({ handleToggleNav, mobileDisplay, mode, primeroModule, record
   const registryRecord = useMemoizedSelector(state =>
     selectRecord(state, { isEditOrShow: true, recordType: RECORD_PATH.registry_records, id: registryId })
   );
-  const searchTitle = i18n.t(`${recordType}.search_for`, { record_type: i18n.t("navigation.registry_records") });
+  const registryLabel = label("navigation.registry_records");
+  const searchTitle = i18n.t(`${recordType}.search_for`, { record_type: registryLabel });
   const searchTitleNoForm = i18n.t(`${recordType}.search_for`, {
-    record_type: registryType.getIn(["display_text", i18n.locale], "")
+    record_type: registryType.getIn(["display_text", i18n.locale]) || registryLabel
   });
 
   useEffect(() => {

@@ -388,6 +388,40 @@ describe Api::V2::ChildrenController, type: :request do
       expect(json['data'].find { |r| r['name'] == @case1.name }['flag_count']).to eq(1)
     end
 
+    it 'returns the pending transition fields for the short form when the user can receive them' do
+      @case1.update_column(
+        :data, @case1.data.merge('referred_users_pending' => %w[faketest], 'transferred_to_users' => %w[faketest])
+      )
+
+      login_for_test(
+        permissions: [
+          Permission.new(
+            resource: Permission::CASE,
+            actions: [Permission::READ, Permission::RECEIVE_REFERRAL, Permission::RECEIVE_TRANSFER]
+          )
+        ]
+      )
+      get '/api/v2/cases?fields=short'
+
+      expect(response).to have_http_status(200)
+      case1_data = json['data'].find { |r| r['id'] == @case1.id }
+      expect(case1_data['referred_users_pending']).to eq(%w[faketest])
+      expect(case1_data['transferred_to_users']).to eq(%w[faketest])
+    end
+
+    it 'does not return the pending transition fields for the short form when the user cannot receive them' do
+      @case1.update_column(
+        :data, @case1.data.merge('referred_users_pending' => %w[faketest], 'transferred_to_users' => %w[faketest])
+      )
+
+      login_for_test
+      get '/api/v2/cases?fields=short'
+
+      expect(response).to have_http_status(200)
+      case1_data = json['data'].find { |r| r['id'] == @case1.id }
+      expect(case1_data.keys).not_to include('referred_users_pending', 'transferred_to_users')
+    end
+
     it 'returns alert_count for the short form ' do
       @case1.add_alert(alert_for: 'transfer_request', date: Date.today, form_sidebar_id: 'transfer_request')
 
@@ -444,6 +478,29 @@ describe Api::V2::ChildrenController, type: :request do
       )
       expect(json['data'].map { |elem| elem['urgent_protection_concern'] }).to all(be_falsey)
       expect(response).to have_http_status(200)
+    end
+
+    it 'Filter by location_current not_null' do
+      login_for_test(permitted_field_names: ['location_current'])
+      get '/api/v2/cases?location_current=not_null'
+
+      expect(response).to have_http_status(200)
+      expect(json['data'].count).to eq(3)
+      expect(json['data'].map { |elem| elem['id'] }).to match_array([@case1.id, @case2.id, @case3.id])
+    end
+
+    it 'Filter by location_current is_null' do
+      login_for_test(permitted_field_names: ['location_current'])
+      get '/api/v2/cases?location_current=is_null'
+
+      expect(response).to have_http_status(200)
+      expect(json['data'].count).to eq(9)
+      expect(json['data'].map { |elem| elem['id'] }).to match_array(
+        [
+          @case4.id, @case5.id, @case6.id, @case7.id, @case8.id,
+          @case9.id, @case10.id, @case11.id, @identified_case.id
+        ]
+      )
     end
 
     it 'returns an empty response for an invalid filter and logs the error' do
@@ -948,6 +1005,20 @@ describe Api::V2::ChildrenController, type: :request do
       expect(case1.data['sex']).to eq('female')
     end
 
+    context 'when the user has a pending referral or transfer for the record' do
+      before do
+        @case1.update_column(:data, @case1.data.merge('referred_users_pending' => %w[faketest]))
+      end
+
+      it 'returns 403 and does not update the record' do
+        login_for_test
+        patch "/api/v2/cases/#{@case1.id}", params: { data: { age: 99 } }, as: :json
+
+        expect(response).to have_http_status(403)
+        expect(@case1.reload.data['age']).not_to eq(99)
+      end
+    end
+
     it 'does not update the id of the record and returns 200' do
       login_for_test
       params = { data: { id: '47e3e51c-7049-4aff-bd3e-ded1b1c5477f' } }
@@ -1088,11 +1159,11 @@ describe Api::V2::ChildrenController, type: :request do
       it 'updates the subforms if cannot update the record' do
         login_for_test(
           permitted_fields: [],
-          group_permission: Permission::SELF,
+          group_permission: Permission::ALL,
           permissions: [
             Permission.new(
               resource: Permission::CASE,
-              actions: [Permission::SERVICES_SECTION_FROM_CASE]
+              actions: [Permission::SERVICES_SECTION_FROM_CASE, Permission::READ]
             )
           ]
         )
@@ -1114,12 +1185,12 @@ describe Api::V2::ChildrenController, type: :request do
       it 'updates the subforms if cannot read/write cases' do
         login_for_test(
           permitted_fields: [],
-          group_permission: Permission::SELF,
+          group_permission: Permission::ALL,
           permissions: [
             Permission.new(
               resource: Permission::CASE,
               actions: [
-                Permission::SERVICES_SECTION_FROM_CASE
+                Permission::SERVICES_SECTION_FROM_CASE, Permission::READ
               ]
             )
           ]
@@ -1140,7 +1211,15 @@ describe Api::V2::ChildrenController, type: :request do
       end
 
       it 'returns 403 if the user is not authorized' do
-        login_for_test(group_permission: Permission::SELF)
+        login_for_test(
+          group_permission: Permission::ALL,
+          permissions: [
+            Permission.new(
+              resource: Permission::CASE,
+              actions: [Permission::READ]
+            )
+          ]
+        )
         params = {
           data: { services_section: [{ service_type: 'test-type' }] },
           record_action: Permission::SERVICES_SECTION_FROM_CASE
@@ -1153,14 +1232,119 @@ describe Api::V2::ChildrenController, type: :request do
       end
     end
 
+    describe 'when a user adds incident details on a record owned by someone else' do
+      let(:incident_details_field) do
+        Field.new(
+          name: 'incident_details',
+          type: Field::SUBFORM,
+          subform: FormSection.new(
+            fields: [Field.new(name: 'description', type: Field::TEXT_AREA)]
+          )
+        )
+      end
+
+      let(:incident_details_permissions) do
+        [
+          Permission.new(
+            resource: Permission::CASE,
+            actions: [Permission::INCIDENT_DETAILS_FROM_CASE, Permission::SEARCH_OWNED_BY_OTHERS]
+          )
+        ]
+      end
+
+      before do
+        @case1.update!(owned_by: @user.user_name)
+        login_for_test(
+          group_permission: Permission::SELF,
+          permissions: incident_details_permissions,
+          permitted_fields: [incident_details_field]
+        )
+      end
+
+      it 'updates incident details without granting general record update access' do
+        params = {
+          data: { incident_details: [{ unique_id: @incident1.id, description: 'Updated incident' }] },
+          record_action: Permission::INCIDENT_DETAILS_FROM_CASE
+        }
+
+        patch "/api/v2/cases/#{@case1.id}", params:, as: :json
+
+        expect(response).to have_http_status(200)
+        expect(@incident1.reload.description).to eq('Updated incident')
+      end
+
+      it 'does not allow updating other case fields' do
+        patch "/api/v2/cases/#{@case1.id}", params: { data: { name: 'Updated case' } }, as: :json
+
+        expect(response).to have_http_status(403)
+        expect(@case1.reload.name).to eq('Test1')
+      end
+    end
+
+    describe 'when a user adds services to a record owned by someone else' do
+      let(:services_permissions) do
+        [
+          Permission.new(
+            resource: Permission::CASE,
+            actions: [Permission::SERVICES_SECTION_FROM_CASE, Permission::SEARCH_OWNED_BY_OTHERS]
+          )
+        ]
+      end
+
+      before do
+        @case1.update!(owned_by: @user.user_name)
+        login_for_test(group_permission: Permission::SELF, permissions: services_permissions)
+      end
+
+      it 'updates the services section without granting general record update access' do
+        params = {
+          data: { services_section: [{ service_type: 'test-type' }] },
+          record_action: Permission::SERVICES_SECTION_FROM_CASE
+        }
+
+        patch "/api/v2/cases/#{@case1.id}", params:, as: :json
+
+        expect(response).to have_http_status(200)
+        expect(@case1.reload.data['services_section'].first['service_type']).to eq('test-type')
+      end
+
+      it 'does not allow updating other case fields' do
+        patch "/api/v2/cases/#{@case1.id}", params: { data: { name: 'Updated case' } }, as: :json
+
+        expect(response).to have_http_status(403)
+        expect(@case1.reload.name).to eq('Test1')
+      end
+
+      it 'does not allow updating if missing SERVICES_SECTION_FROM_CASE permissions' do
+        login_for_test(group_permission: Permission::SELF,
+                       permissions: [Permission.new(resource: Permission::CASE,
+                                                    actions: [Permission::SEARCH_OWNED_BY_OTHERS])])
+        patch "/api/v2/cases/#{@case1.id}", params: { data: { services_section: [{ service_type: 'test-type' }] },
+                                                      record_action: Permission::SERVICES_SECTION_FROM_CASE },
+                                            as: :json
+
+        expect(response).to have_http_status(403)
+      end
+
+      it 'does not allow updating if missing SEARCH_OWNED_BY_OTHERS permissions' do
+        login_for_test(group_permission: Permission::SELF,
+                       permissions: [Permission.new(resource: Permission::CASE,
+                                                    actions: [Permission::SERVICES_SECTION_FROM_CASE])])
+        patch "/api/v2/cases/#{@case1.id}", params: { data: { services_section: [{ service_type: 'test-type' }] } },
+                                            as: :json
+
+        expect(response).to have_http_status(403)
+      end
+    end
+
     describe 'when a user closes a case that cannot be updated' do
       it 'close the case if he is authorized to close cases' do
         login_for_test(
-          group_permission: Permission::SELF,
+          group_permission: Permission::ALL,
           permissions: [
             Permission.new(
               resource: Permission::CASE,
-              actions: [Permission::CLOSE]
+              actions: [Permission::CLOSE, Permission::READ]
             )
           ]
         )
@@ -1174,7 +1358,15 @@ describe Api::V2::ChildrenController, type: :request do
       end
 
       it 'returns 403 if the user is not authorized' do
-        login_for_test(group_permission: Permission::SELF)
+        login_for_test(
+          group_permission: Permission::ALL,
+          permissions: [
+            Permission.new(
+              resource: Permission::CASE,
+              actions: [Permission::READ]
+            )
+          ]
+        )
 
         params = { data: { status: 'closed' }, record_action: Permission::CLOSE }
 
@@ -1195,11 +1387,11 @@ describe Api::V2::ChildrenController, type: :request do
 
       it 'reopens the case if he is authorized to reopen cases' do
         login_for_test(
-          group_permission: Permission::SELF,
+          group_permission: Permission::ALL,
           permissions: [
             Permission.new(
               resource: Permission::CASE,
-              actions: [Permission::REOPEN]
+              actions: [Permission::REOPEN, Permission::READ]
             )
           ]
         )
@@ -1213,7 +1405,15 @@ describe Api::V2::ChildrenController, type: :request do
       end
 
       it 'returns 403 if the user is not authorized' do
-        login_for_test(group_permission: Permission::SELF)
+        login_for_test(
+          group_permission: Permission::ALL,
+          permissions: [
+            Permission.new(
+              resource: Permission::CASE,
+              actions: [Permission::READ]
+            )
+          ]
+        )
 
         params = { data: { status: 'open', case_reopened: true }, record_action: Permission::REOPEN }
 
@@ -1228,11 +1428,11 @@ describe Api::V2::ChildrenController, type: :request do
     describe 'when a user disables a case that cannot update' do
       it 'disables the case if he is authorized to disable cases' do
         login_for_test(
-          group_permission: Permission::SELF,
+          group_permission: Permission::ALL,
           permissions: [
             Permission.new(
               resource: Permission::CASE,
-              actions: [Permission::ENABLE_DISABLE_RECORD]
+              actions: [Permission::ENABLE_DISABLE_RECORD, Permission::READ]
             )
           ]
         )
@@ -1246,7 +1446,15 @@ describe Api::V2::ChildrenController, type: :request do
       end
 
       it 'returns 403 if the user is not authorized' do
-        login_for_test(group_permission: Permission::SELF)
+        login_for_test(
+          group_permission: Permission::ALL,
+          permissions: [
+            Permission.new(
+              resource: Permission::CASE,
+              actions: [Permission::READ]
+            )
+          ]
+        )
 
         params = { data: { record_state: false }, record_action: Permission::ENABLE_DISABLE_RECORD }
 
@@ -1475,8 +1683,10 @@ describe Api::V2::ChildrenController, type: :request do
     end
 
     describe 'referral authorizations' do
-      context 'when a record was referred' do
+      context 'when the referral was accepted' do
         it 'updates permitted fields based on the authorized roles' do
+          @referral1.accept!
+          @case11.reload
           sign_in(@user_referral)
 
           params = { data: { field_a: 'new value for field_a' } }
@@ -1487,6 +1697,34 @@ describe Api::V2::ChildrenController, type: :request do
           expect(json['data']['id']).to eq(@case11.id)
           expect(json['data']['field_a']).to eq('new value for field_a')
           expect(json['data']['permitted_forms']).to eq({ 'form_a' => 'rw' })
+        end
+      end
+
+      context 'when the recipient resolves the referral' do
+        it 'can accept it and update the record afterwards' do
+          sign_in(@user_referral)
+
+          patch(
+            "/api/v2/cases/#{@case11.id}/referrals/#{@referral1.id}",
+            params: { data: { status: Transition::STATUS_ACCEPTED } }
+          )
+          expect(response).to have_http_status(200)
+
+          patch "/api/v2/cases/#{@case11.id}", params: { data: { field_a: 'new value for field_a' } }, as: :json
+
+          expect(response).to have_http_status(200)
+          expect(@case11.reload.data['field_a']).to eq('new value for field_a')
+        end
+      end
+
+      context 'when the referral is still pending' do
+        it 'returns 403 and does not update the record' do
+          sign_in(@user_referral)
+
+          patch "/api/v2/cases/#{@case11.id}", params: { data: { field_a: 'new value' } }, as: :json
+
+          expect(response).to have_http_status(403)
+          expect(@case11.reload.data['field_a']).to eq('value for field_a')
         end
       end
     end
@@ -1563,7 +1801,9 @@ describe Api::V2::ChildrenController, type: :request do
   describe 'DELETE /api/v2/cases/:id' do
     it 'successfully deletes a record with a code of 200' do
       login_for_test(
-        permissions: [Permission.new(resource: Permission::CASE, actions: [Permission::ENABLE_DISABLE_RECORD])]
+        permissions: [Permission.new(resource: Permission::CASE,
+                                     actions: [Permission::ENABLE_DISABLE_RECORD,
+                                               Permission::READ])]
       )
       delete "/api/v2/cases/#{@case1.id}"
 
@@ -1575,7 +1815,12 @@ describe Api::V2::ChildrenController, type: :request do
     end
 
     it "returns 403 if user isn't authorized to disable records" do
-      login_for_test(permissions: [])
+      login_for_test(permissions: [
+                       Permission.new(
+                         resource: Permission::CASE,
+                         actions: [Permission::READ]
+                       )
+                     ])
       delete "/api/v2/cases/#{@case1.id}"
 
       expect(response).to have_http_status(403)
@@ -1639,7 +1884,12 @@ describe Api::V2::ChildrenController, type: :request do
 
   describe 'POST /api/v2/cases/:id/family' do
     it 'creates a new child linked to a family when there is no family record' do
-      login_for_test(permissions: [Permission.new(resource: Permission::CASE, actions: [Permission::CASE_FROM_FAMILY])])
+      login_for_test(
+        group_permission: Permission::ALL,
+        permissions: [
+          Permission.new(resource: Permission::CASE, actions: [Permission::READ, Permission::CASE_FROM_FAMILY])
+        ]
+      )
 
       params = { data: { family_detail_id: @member_unique_id3 } }
 
@@ -1663,7 +1913,12 @@ describe Api::V2::ChildrenController, type: :request do
     end
 
     it 'creates a new child linked to a family when there is a family record' do
-      login_for_test(permissions: [Permission.new(resource: Permission::CASE, actions: [Permission::CASE_FROM_FAMILY])])
+      login_for_test(
+        group_permission: Permission::ALL,
+        permissions: [Permission.new(resource: Permission::CASE,
+                                     actions: [Permission::READ,
+                                               Permission::CASE_FROM_FAMILY])]
+      )
 
       params = { data: { family_detail_id: @member_unique_id5 } }
 
@@ -1688,10 +1943,11 @@ describe Api::V2::ChildrenController, type: :request do
 
     it 'creates a new child and returns the family data if a user has the view_family_record permission' do
       login_for_test(
+        group_permission: Permission::ALL,
         permissions: [
           Permission.new(
             resource: Permission::CASE,
-            actions: [Permission::CASE_FROM_FAMILY, Permission::VIEW_FAMILY_RECORD]
+            actions: [Permission::READ, Permission::CASE_FROM_FAMILY, Permission::VIEW_FAMILY_RECORD]
           )
         ]
       )

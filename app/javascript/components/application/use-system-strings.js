@@ -23,7 +23,8 @@ const ALLOWED_FILTER_KEYS = [
   "loc:owned_by_location2",
   "urgent_protection_concern",
   "marginalized_community_self_identifying",
-  "displacement_status"
+  "displacement_status",
+  "loc:incident_location"
 ];
 const ALLOWED_LIST_HEADER_KEYS = [
   "priority",
@@ -33,7 +34,8 @@ const ALLOWED_LIST_HEADER_KEYS = [
   "client_code",
   "current_location",
   "violence_type",
-  "label"
+  "label",
+  "date_of_incident"
 ];
 const ALLOWED_DASHBOARD_KEYS = [
   "dashboard.protection_concerns",
@@ -42,12 +44,23 @@ const ALLOWED_DASHBOARD_KEYS = [
   "dashboard.action_needed.cases",
   "dashboard.case_overview",
   "dashboard.dash_group_overview",
+  "dashboard.dash_cases_by_incident_type",
   "dashboard.workflow_team",
   "dashboard.cases_by_social_worker",
-  "dashboard.reporting_locations"
+  "dashboard.reporting_locations",
+  "dashboard.dash_case_incident_overview",
+  "dashboard.with_incidents",
+  "dashboard.with_new_incidents",
+  "dashboard.without_incidents"
 ];
-const ALLOWED_NAVIGATION_KEYS = ["navigation.cases"];
-const ALLOWED_ACTION_BUTTON_KEYS = ["case.skip_and_create"];
+const ALLOWED_NAVIGATION_KEYS = ["navigation.cases", "navigation.registry_records", "navigation.incidents"];
+const ALLOWED_ACTION_BUTTON_KEYS = [
+  "case.skip_and_create",
+  "forms.record_types.incident",
+  "actions.incident_from_case",
+  "incident.link_incident_to_case",
+  "actions.incident_details_from_case"
+];
 const ALLOWED_PAGE_KEYS = [
   "cases.label",
   "case.create_new_case",
@@ -56,9 +69,31 @@ const ALLOWED_PAGE_KEYS = [
   "cases.selected_all_records",
   "cases.selected_records",
   "cases.selected_records_assign",
-  "case.skip_and_create"
+  "case.skip_and_create",
+  "registry_records.label",
+  "registry_records.register_new_registry_record",
+  "registry_records.show_registry_record",
+  "registry_records.selected_records",
+  "registry_records.selected_all_records",
+  "incidents.show_incident",
+  "forms.record_types.incident",
+  "incidents.label",
+  "incidents.register_new_incident",
+  "incidents.selected_records",
+  "incidents.selected_all_records",
+  "incidents.selected_records_assign",
+  "incident.messages.creation_success",
+  "incident.messages.update_success",
+  "incident.link_incident_to_case_success",
+  "incidents.disable_dialog_title",
+  "incidents.disable_dialog",
+  "incidents.disable_success",
+  "incidents.enable_dialog_title",
+  "incidents.enable_dialog",
+  "incidents.enable_success",
+  "reassign.incident_from_case_warning"
 ];
-const ALLOWED_FORM_KEYS = ["incidents.type_violence"];
+const ALLOWED_FORM_KEYS = ["incidents.type_violence", "forms.record_types.registry_details", "incidents.label"];
 
 const FILTER = "filter";
 const LIST_HEADER = "listHeader";
@@ -68,10 +103,18 @@ const PAGE = "page";
 const ACTION_BUTTON = "actionButton";
 const FORMS = "form";
 
-function selectAllowedFeatureKeys(feature) {
+function selectCustomFilterKeys(userModules) {
+  return userModules
+    .valueSeq()
+    .flatMap(userModule => userModule.getIn(["options", "custom_list_filters", "cases"], []))
+    .map(filter => filter.field_name)
+    .toArray();
+}
+
+function selectAllowedFeatureKeys(feature, customFilterKeys = []) {
   switch (feature) {
     case FILTER:
-      return ALLOWED_FILTER_KEYS;
+      return [...ALLOWED_FILTER_KEYS, ...customFilterKeys];
     case LIST_HEADER:
       return ALLOWED_LIST_HEADER_KEYS;
     case DASHBOARD:
@@ -107,7 +150,7 @@ function useSystemStrings(feature) {
           [key, i18n.locale],
           options.noTranslateFallback ? fallbackI18nKey : i18n.t(fallbackI18nKey || key, options)
         );
-        const allowedKeys = selectAllowedFeatureKeys(feature);
+        const allowedKeys = selectAllowedFeatureKeys(feature, selectCustomFilterKeys(userModules));
 
         if (allowedKeys.includes(key)) {
           if (userModules.size === 1) {

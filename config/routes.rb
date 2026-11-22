@@ -26,9 +26,9 @@ Rails.application.routes.draw do
   end
 
   resources :health, only: %i[index show]
-  # rubocop:disable Style/FormatStringToken(RuboCop)
+  # rubocop:disable Style/FormatStringToken
   get 'login/:id', to: redirect(path: '/v2/login/%{id}')
-  # rubocop:enable Style/FormatStringToken(RuboCop)
+  # rubocop:enable Style/FormatStringToken
 
   get 'manifest', to: 'themes#manifest', defaults: { format: :json }
   get :theme, to: 'themes#index', defaults: { format: :js }
@@ -130,6 +130,7 @@ Rails.application.routes.draw do
           post :'password-reset', to: 'password_reset#password_reset'
           post :'self-register', to: 'self_register#create'
           post :update_bulk, to: 'users#update_bulk'
+          post :send_emails, to: 'users#send_emails'
         end
       end
       resources :identity_providers, only: [:index]
@@ -189,6 +190,10 @@ Rails.application.routes.draw do
           post :assigns, to: 'assigns#create_bulk'
         end
       end
+
+      post 'intakes/:id', to: 'intakes#create'
+      get 'intakes/:id/forms',   to: 'intake_form_sections#index'
+      get 'intakes/:id/lookups', to: 'intake_lookups#index'
 
       scope '/webpush' do
         get 'config', action: :config, controller: 'webpush_config'

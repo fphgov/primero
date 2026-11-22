@@ -23,9 +23,9 @@ module Api::V2::Concerns::Record
   end
 
   def show
-    authorize! :read, model_class
+    authorize_read!(model_class)
     @record = find_record
-    authorize! :read, @record
+    authorize_read!(@record)
     permit_readable_fields
     select_fields_for_show
     render 'api/v2/records/show'
@@ -54,6 +54,7 @@ module Api::V2::Concerns::Record
   def destroy
     authorize! :enable_disable_record, model_class
     @record = find_record
+    authorize! :read, @record
     @record.update_properties(current_user, record_state: false)
     @record.save!
     render 'api/v2/records/destroy'
@@ -88,7 +89,7 @@ module Api::V2::Concerns::Record
   end
 
   def authorized_roles
-    @authorized_roles ||= [current_user.role]
+    @authorized_roles ||= [authorized_user.role]
   end
 
   def permit_readable_fields
@@ -139,11 +140,15 @@ module Api::V2::Concerns::Record
     @permitted_form_fields_service = PermittedFormFieldsService.instance
     @permitted_field_values_service = PermittedFieldValuesService.instance
     @permitted_field_service = PermittedFieldService.new(
-      current_user,
+      authorized_user,
       model_class,
       @permitted_form_fields_service,
       { action_name: params[:record_action], id_search: params[:id_search] }
     )
+  end
+
+  def authorized_user
+    current_user
   end
 
   def query_scope
@@ -205,6 +210,12 @@ module Api::V2::Concerns::Record
   def authorize_update!
     if params[:record_action].present?
       authorize!(params[:record_action].to_sym, model_class)
+
+      unless [Permission::INCIDENT_DETAILS_FROM_CASE,
+              Permission::SERVICES_SECTION_FROM_CASE].include?(params[:record_action]) &&
+             current_user.can?(:search_owned_by_others, model_class)
+        authorize!(:read, @record)
+      end
     else
       authorize!(:update, @record)
     end
@@ -212,6 +223,10 @@ module Api::V2::Concerns::Record
 
   def authorize_index!
     authorize!(:index, model_class)
+  end
+
+  def authorize_read!(model)
+    authorize!(:read, model)
   end
 
   def permitted_index_params(params)

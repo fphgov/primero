@@ -2,6 +2,8 @@
 
 # API for managing transfers
 class Api::V2::TransfersController < Api::V2::RecordResourceController
+  include Api::V2::Concerns::PendingTransitionRestriction
+
   def index
     authorize! :read, @record
     @transitions = @record.transfers
@@ -10,6 +12,7 @@ class Api::V2::TransfersController < Api::V2::RecordResourceController
 
   def create
     authorize! :transfer, @record
+    authorize_pending_transition!(@record)
     @transition = transfer(@record)
     updates_for_record(@record)
     render 'api/v2/transitions/create'
@@ -25,6 +28,7 @@ class Api::V2::TransfersController < Api::V2::RecordResourceController
   def update
     authorize! :read, @record
     @transition = Transfer.find(params[:id])
+    authorize! :update, @transition
     accept_or_reject!(params[:data][:status], @transition)
     updates_for_record(@transition.record)
     render 'api/v2/transitions/update'
@@ -47,6 +51,12 @@ class Api::V2::TransfersController < Api::V2::RecordResourceController
   end
 
   private
+
+  def find_records
+    super
+
+    @records = @records.reject { |record| record.pending_transition_for?(current_user) }
+  end
 
   def transfer(record)
     permitted = params.require(:data).permit(

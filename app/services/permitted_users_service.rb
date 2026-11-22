@@ -23,8 +23,11 @@ class PermittedUsersService
   end
 
   def bulk_disable_users(filters)
-    users = apply_filters(permitted_users, filters)
-    users.update_all(disabled: true, updated_at: Time.current)
+    users_for_filters(filters).update_all(disabled: true, updated_at: Time.current)
+  end
+
+  def users_for_filters(filters = nil)
+    apply_filters(permitted_users, filters)
   end
 
   private
@@ -56,6 +59,7 @@ class PermittedUsersService
                       ))
   end
 
+  # rubocop:disable Metrics/AbcSize
   def apply_filters(users_query, filters)
     return users_query unless filters.present?
 
@@ -65,13 +69,21 @@ class PermittedUsersService
 
     query_filters = build_query_filters(filters)
     users_query = users_query.joins(:user_groups) if query_filters[:user_groups].present?
-
+    users_query = users_query.where(build_location_filter(filters))
     users_query = build_search_query(users_query, filters[:query])
     users_query.where(query_filters)
   end
+  # rubocop:enable Metrics/AbcSize
+
+  def build_location_filter(filters)
+    return unless filters[:location].present?
+
+    location_filter = SearchFilters::LocationList.new(column_name: 'location', values: filters[:location])
+    location_filter.json_path_query
+  end
 
   def build_query_filters(filters)
-    query_filters = filters.except(:query, :ids, *User::AUDIT_LAST_DATE.keys).compact
+    query_filters = filters.except(:query, :ids, :location, *User::AUDIT_LAST_DATE.keys).compact
     user_group_ids = query_filters.delete('user_group_ids')
 
     return query_filters if user_group_ids.blank?

@@ -14,36 +14,51 @@ class SystemSettings < ApplicationRecord
   TIMEFRAME_HOURS_TO_ASSIGN = 3
   TIMEFRAME_HOURS_TO_ASSIGN_HIGH = 1
   DAYS_SINCE_REFERRAL_STATUS_CHANGED = 14
+  DEFAULT_REGISTRY_FIELD_NAMES = %w[registry_id_display name].freeze
+  DEFAULT_REGISTRY_FIELD_OPTIONS = {
+    collapsed_field_names: DEFAULT_REGISTRY_FIELD_NAMES,
+    preview_field_names: DEFAULT_REGISTRY_FIELD_NAMES,
+    searchable_field_names: DEFAULT_REGISTRY_FIELD_NAMES
+  }.with_indifferent_access.freeze
+  DEFAULT_REGISTRY_OPTIONS = {
+    RegistryRecord::REGISTRY_TYPE_FARMER => DEFAULT_REGISTRY_FIELD_OPTIONS,
+    RegistryRecord::REGISTRY_TYPE_COMMITTEE => DEFAULT_REGISTRY_FIELD_OPTIONS,
+    RegistryRecord::REGISTRY_TYPE_FOSTER_CARE => DEFAULT_REGISTRY_FIELD_OPTIONS,
+    RegistryRecord::REGISTRY_TYPE_PROVIDER => DEFAULT_REGISTRY_FIELD_OPTIONS
+  }.with_indifferent_access.freeze
 
   store_accessor(:system_options, :due_date_from_appointment_date,
                  :show_alerts, :code_of_conduct_enabled, :timeframe_hours_to_assign,
                  :timeframe_hours_to_assign_high, :duplicate_field_to_form,
                  :maximum_users, :maximum_users_warning, :maximum_attachments_per_record,
-                 :primero_promote_config, :field_labels_i18n, :maximum_attachments_space,
+                 :primero_promote_config, :exclude_user_groups_from_configuration,
+                 :field_labels_i18n, :maximum_attachments_space,
                  :maximum_attachments_space_warning, :registration_streams,
                  :registration_streams_link_labels_i18n, :registration_streams_consent_text_i18n,
                  :reporting_location_i18n, :days_since_referral_status_changed,
-                 :phone_formats, :default_phone_format)
+                 :phone_formats, :default_phone_format, :registration_streams_thankyou_message_i18n,
+                 :registration_streams_title_i18n, :public_locations_file)
 
   localize_properties %i[welcome_email_text approvals_labels field_labels registration_streams_link_labels
                          registration_streams_consent_text]
-  localize_jsonb_properties %i[field_labels registration_streams_link_labels registration_streams_consent_text]
+  localize_jsonb_properties %i[field_labels registration_streams_link_labels
+                               registration_streams_title registration_streams_thankyou_message
+                               registration_streams_consent_text registration_streams_title]
 
   has_one_attached :location_file
-
   has_one_attached :unused_fields_report_file
 
   validate :validate_reporting_location,
            if: ->(system_setting) { system_setting.reporting_location_config.present? }
-
-  after_initialize :set_version
-  before_save :set_version
   validate :validate_maximum_users
   validate :validate_maximum_users_warning
   validate :validate_maximum_users_values, if: :maximum_users_fields_present?
   validate :validate_maximum_attachments_space
   validate :validate_maximum_attachments_space_warning
   validate :validate_maximum_attachments_space_values, if: :maximum_attachments_space_fields_present?
+
+  after_initialize :set_version
+  before_save :set_version
 
   def name
     I18n.t('system_settings.label')
@@ -55,8 +70,16 @@ class SystemSettings < ApplicationRecord
     system_name || Rails.application.routes.default_url_options[:host]
   end
 
+  def registry_options
+    super.presence || DEFAULT_REGISTRY_OPTIONS
+  end
+
   def registry_types
-    system_options&.[]('registry_types')
+    registry_options.keys
+  end
+
+  def registry_type_default
+    super.presence || RegistryRecord::REGISTRY_TYPE_PROVIDER
   end
 
   def set_version
@@ -218,6 +241,10 @@ class SystemSettings < ApplicationRecord
     (total_attachment_file_size / user_count).to_i
   end
 
+  def registration_streams
+    system_options['registration_streams']&.map { |rs| RegistrationStream.new(rs) } || []
+  end
+
   class << self
     def current(rebuild = false)
       return @current unless @current.nil? || rebuild
@@ -227,6 +254,15 @@ class SystemSettings < ApplicationRecord
 
     def reset
       @current = nil
+    end
+
+    def find_registration_stream_by_id(id)
+      current&.registration_streams&.find { |rs| rs.unique_id == id }
+    end
+
+    def registration_stream_forms(id)
+      sys = SystemSettings.current
+      sys&.registration_streams&.find { |rs| rs.unique_id == id }&.permitted_forms
     end
 
     def locked_for_configuration_update?

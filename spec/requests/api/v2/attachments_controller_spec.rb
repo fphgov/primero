@@ -35,8 +35,15 @@ describe Api::V2::AttachmentsController, type: :request do
       attachment.attach!
       attachment
     end
-
     let(:file_content) { File.read(Rails.root.join('spec/resources/jorge.jpg')) }
+    let(:attachment_without_file) do
+      attachment = Attachment.new(
+        record: @case, field_name: 'photos', attachment_type: Attachment::IMAGE,
+        file_name: 'jorge2.jpg'
+      )
+      attachment.save!
+      attachment
+    end
 
     context 'when user is authenticated' do
       before :each do
@@ -57,10 +64,7 @@ describe Api::V2::AttachmentsController, type: :request do
       end
 
       it 'return nil when the attached file blob is missing' do
-        allow(attachment.file).to receive(:download).and_raise(ActiveStorage::FileNotFoundError)
-        allow(Attachment).to receive(:find).with(attachment.id.to_s).and_return(attachment)
-
-        get "/api/v2/cases/#{@case.id}/attachments/#{attachment.id}"
+        get "/api/v2/cases/#{@case.id}/attachments/#{attachment_without_file.id}"
 
         expect(response).to have_http_status(:success)
         expect(response.body).to eq('')
@@ -221,6 +225,25 @@ describe Api::V2::AttachmentsController, type: :request do
         expect(json['errors'][0]['resource']).to eq("/api/v2/cases/#{@case.id}/attachments")
         expect(json['errors'][0]['message']).to eq('Forbidden')
       end
+    end
+  end
+
+  describe 'POST /api/v2/:record/:id/attachments with a pending transition' do
+    it 'returns 403 and does not attach the file' do
+      @case.update_column(:data, @case.data.merge('referred_users_pending' => %w[faketest]))
+
+      login_for_test({ permitted_field_names: [Attachable::PHOTOS_FIELD_NAME] })
+      params = {
+        data: {
+          field_name: Attachable::PHOTOS_FIELD_NAME, attachment_type: Attachment::IMAGE,
+          file_name: 'unicef.png', attachment: attachment_base64('unicef.png')
+        }
+      }
+
+      post("/api/v2/cases/#{@case.id}/attachments", params:)
+
+      expect(response).to have_http_status(403)
+      expect(@case.reload.attachments).to be_empty
     end
   end
 

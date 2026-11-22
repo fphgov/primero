@@ -8,7 +8,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 
-import { getIncidentFromCase } from "../../records";
+import { getIncidentFromCase, usePendingTransition } from "../../records";
 import { SaveReturnIcon } from "../../../images/primero-icons";
 import { useI18n } from "../../i18n";
 import Flagging from "../../flagging";
@@ -49,20 +49,26 @@ function RecordFormToolbar({
   primeroModule,
   record,
   recordType,
-  shortId
+  shortId,
+  title
 }) {
   const { isRTL } = useThemeHelper();
   const dispatch = useDispatch();
   const i18n = useI18n();
+  const selectedRecordType = params.recordType || recordType;
 
-  const savingRecord = useMemoizedSelector(state => getSavingRecord(state, params.recordType));
-  const loadingRecord = useMemoizedSelector(state => getLoadingRecordState(state, params.recordType));
-  const incidentFromCase = useMemoizedSelector(state => getIncidentFromCase(state, recordType));
+  const savingRecord = useMemoizedSelector(state => getSavingRecord(state, selectedRecordType));
+  const loadingRecord = useMemoizedSelector(state => getLoadingRecordState(state, selectedRecordType));
+  const incidentFromCase = useMemoizedSelector(state => getIncidentFromCase(state, selectedRecordType));
   const isEnabledWebhookSyncFor = useMemoizedSelector(state =>
-    getIsEnabledWebhookSyncFor(state, primeroModule, recordType)
+    getIsEnabledWebhookSyncFor(state, primeroModule, selectedRecordType)
   );
   const redirectedToCreateNewRecord = useMemoizedSelector(state => getRedirectedToCreateNewRecord(state));
-  const { incidentFromCaseIdDisplay, incidentFromCaseId } = useIncidentFromCase({ recordType, record });
+  const { incidentFromCaseIdDisplay, incidentFromCaseId } = useIncidentFromCase({
+    recordType: selectedRecordType,
+    record
+  });
+  const { hasPendingTransition, tooltip: pendingTransitionTooltip } = usePendingTransition(record);
 
   const rtlClass = isRTL ? css.flipImage : "";
 
@@ -105,6 +111,8 @@ function RecordFormToolbar({
       type={ACTION_BUTTON_TYPES.default}
       pending={savingRecord}
       noTranslate
+      disabled={hasPendingTransition}
+      tooltip={pendingTransitionTooltip}
       rest={{
         onClick: handleFormSubmit
       }}
@@ -126,7 +134,7 @@ function RecordFormToolbar({
     );
   }
 
-  const title = (
+  const titleComponent = (
     <RecordPageHeading
       caseIdDisplay={caseIdDisplay}
       i18n={i18n}
@@ -145,7 +153,7 @@ function RecordFormToolbar({
   );
 
   return (
-    <PageHeading title={title} prefixComponent={renderRecordStatusIndicator}>
+    <PageHeading title={title || titleComponent} prefixComponent={renderRecordStatusIndicator}>
       <>
         {mode.isShow && params && recordType === RECORD_TYPES.incidents && incidentFromCase?.size ? (
           <ActionButton
@@ -165,7 +173,12 @@ function RecordFormToolbar({
                 badgeContent={record.get("flag_count")}
                 className={css.badgeIndicator}
               >
-                <Flagging record={params.id} recordType={params.recordType} />
+                <Flagging
+                  record={params.id}
+                  recordType={params.recordType}
+                  disabled={hasPendingTransition}
+                  tooltip={pendingTransitionTooltip}
+                />
               </Badge>
             </DisableOffline>
           </Permission>
@@ -190,6 +203,8 @@ function RecordFormToolbar({
               icon={<CreateIcon />}
               text="buttons.edit"
               type={ACTION_BUTTON_TYPES.default}
+              disabled={hasPendingTransition}
+              tooltip={pendingTransitionTooltip}
               rest={{
                 to: editRedirect || `/${params.recordType}/${params.id}/edit`,
                 component: Link,
@@ -217,7 +232,8 @@ RecordFormToolbar.propTypes = {
   primeroModule: PropTypes.string.isRequired,
   record: PropTypes.object,
   recordType: PropTypes.string.isRequired,
-  shortId: PropTypes.string
+  shortId: PropTypes.string,
+  title: PropTypes.string
 };
 
 export default withRouter(RecordFormToolbar);

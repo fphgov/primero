@@ -8,8 +8,7 @@ module Indicators
     # rubocop:enable Style/ClassAndModuleChildren
     OPEN_ENABLED = [
       SearchFilters::BooleanValue.new(field_name: 'record_state', value: true),
-      SearchFilters::TextValue.new(field_name: 'status', value: Record::STATUS_OPEN),
-      SearchFilters::TextValue.new(field_name: 'module_id', value: 'primeromodule-cp')
+      SearchFilters::TextValue.new(field_name: 'status', value: Record::STATUS_OPEN)
     ].freeze
 
     CLOSED_ENABLED = [
@@ -281,6 +280,13 @@ module Indicators
     PROTECTION_CONCERNS_OPEN_CASES = GroupedIndicator.new(
       name: 'protection_concerns_open_cases',
       pivots: [{ field_name: 'protection_concerns', multivalue: true }],
+      record_model: Child,
+      scope: OPEN_ENABLED
+    ).freeze
+
+    CASES_BY_INCIDENT_TYPE = GroupedIndicator.new(
+      name: 'cases_by_incident_type',
+      pivots: [{ field_name: 'incident_types', multivalue: true }],
       record_model: Child,
       scope: OPEN_ENABLED
     ).freeze

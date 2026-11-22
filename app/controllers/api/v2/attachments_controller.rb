@@ -2,29 +2,36 @@
 
 # API endpoints for adding and removing attachments on Primero resources (usually records)
 class Api::V2::AttachmentsController < Api::V2::RecordResourceController
+  include Api::V2::Concerns::PendingTransitionRestriction
+
   before_action :validate_update_params!, only: [:update]
   before_action :initialize_attachment, only: [:create]
   before_action :set_attachment, only: %i[show update destroy]
 
   def show
+    authorize_record_view!
     authorize! :read, @attachment
-
     send_file
   end
 
   def create
+    authorize! :write, @record
+    authorize_pending_transition!(@record)
     authorize! :create, @attachment
     @attachment.attach!
     updates_for_record(@record)
   end
 
   def update
+    authorize! :write, @record
+    authorize! :write, @attachment
     @attachment.assign_attributes(attachment_update_params)
     @attachment.save!
     updates_for_record(@record)
   end
 
   def destroy
+    authorize! :write, @record
     authorize! :destroy, @attachment
     @attachment.detach!
     updates_for_record(@record)
@@ -40,9 +47,18 @@ class Api::V2::AttachmentsController < Api::V2::RecordResourceController
 
   private
 
+  def authorize_record_view!
+    authorize! :read, @record
+  rescue CanCan::AccessDenied => e
+    raise e unless current_user.can_preview?(@record.class)
+  end
+
   def send_file
+    file_content = file.download
+    return unless file_content
+
     send_data(
-      file.download,
+      file_content,
       filename: file.filename.to_s,
       type: file.content_type,
       disposition: 'inline'
@@ -90,7 +106,7 @@ class Api::V2::AttachmentsController < Api::V2::RecordResourceController
   end
 
   def set_attachment
-    @attachment = Attachment.find(params[:id])
+    @attachment = @record.attachments.find(params[:id])
   end
 
   def file

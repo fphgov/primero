@@ -5,6 +5,7 @@ class Api::V2::ChildrenController < ApplicationApiController
   include Api::V2::Concerns::Pagination
   include Api::V2::Concerns::Record
   include Api::V2::Concerns::Referrable
+  include Api::V2::Concerns::PendingTransitionRestriction
 
   def traces
     authorize! :read, Child
@@ -33,6 +34,7 @@ class Api::V2::ChildrenController < ApplicationApiController
   def create_family
     authorize! :case_from_family, Child
     @current_record = Child.find(family_params[:case_id])
+    authorize! :read, @current_record
     @record = FamilyLinkageService.new_family_linked_child(
       current_user, @current_record, family_params[:family_detail_id]
     )
@@ -53,5 +55,9 @@ class Api::V2::ChildrenController < ApplicationApiController
     return @record_id ||= request.path.split('/')[4] if action_name == 'traces'
 
     super
+  end
+
+  def authorize_update!
+    super && authorize_pending_transition!(@record)
   end
 end

@@ -412,6 +412,11 @@ class Filter < ValueObject
     option_strings_source: 'lookup-yes-no'
   )
 
+  MY_FAMILIES = Filter.new(
+    name: 'families.filter_by.my_families',
+    field_name: 'my_families'
+  )
+
   class << self
     def filters(user, record_type)
       filters = case record_type
@@ -454,6 +459,7 @@ class Filter < ValueObject
       }
     end
 
+    # rubocop:disable Metrics/AbcSize
     # rubocop:disable Metrics/MethodLength
     def case_filters(user)
       filters = []
@@ -466,7 +472,14 @@ class Filter < ValueObject
       filters << DATE_CASE unless user.gbv_only? || user.mrm_only?
       filters << ENABLED
       filters += photo_filters(user)
+      filters += custom_case_filters(user)
       filters
+    end
+
+    def custom_case_filters(user)
+      user.modules.flat_map(&:custom_case_list_filters).uniq { |filter| filter['field_name'] }.map do |filter|
+        Filter.new(filter.symbolize_keys)
+      end
     end
 
     def user_based_filters(user)
@@ -486,6 +499,7 @@ class Filter < ValueObject
       filters += reporting_location_filters(user)
       filters
     end
+    # rubocop:enable Metrics/AbcSize
     # rubocop:enable Metrics/MethodLength
 
     def approvals_filters(user)
@@ -674,6 +688,7 @@ class Filter < ValueObject
       filters = []
       filters << MODULE_ID if include_module_id?
       filters << FLAGGED_CASE
+      filters << MY_FAMILIES
       filters << FAMILY_STATUS
       filters << ENABLED
       filters << FAMILY_LOCATION_CURRENT

@@ -23,6 +23,7 @@ class Field < ApplicationRecord
   CUSTOM = 'custom'
   CALCULATED = 'calculated'
   SIGNATURE_FIELD = 'signature'
+  REGISTRY = 'registry'
 
   DATE_VALIDATION_DEFAULT = 'default_date_validation'
   DATE_VALIDATION_NOT_FUTURE = 'not_future_date'
@@ -75,7 +76,7 @@ class Field < ApplicationRecord
       'option_strings_source', 'order', 'hidden_text_field', 'subform_section_id',
       'collapsed_field_for_subform_section_id', 'autosum_total', 'autosum_group', 'selected_value', 'link_to_path',
       'link_to_path_external', 'field_tags', 'searchable_select', 'expose_unique_id', 'subform_sort_by',
-      'subform_group_by', 'required', 'date_validation', 'date_include_time', 'matchable',
+      'subform_group_by', 'required', 'date_validation', 'date_include_time', 'date_input', 'matchable',
       { 'subform_section_configuration' => {} }, { 'tally' => [:id, { display_text: {} }] }, { 'calculation' => {} },
       'display_conditions_record', { 'display_conditions_record' => {} }, 'display_conditions_subform',
       { 'display_conditions_subform' => {} }, 'subform_sort_by_direction'
@@ -117,6 +118,10 @@ class Field < ApplicationRecord
 
     def all_location_field_names(parent_form = 'case')
       fields_for_record(parent_form).where(type: Field::SELECT_BOX, option_strings_source: 'Location').pluck(:name)
+    end
+
+    def all_registry_fields(parent_form = 'case')
+      fields_for_record(parent_form, [true, false]).includes(form_section: :subform_field).where(type: Field::REGISTRY)
     end
 
     def find_by_name(field_names)
@@ -169,12 +174,12 @@ class Field < ApplicationRecord
   end
 
   def options_list(locale: I18n.locale, lookups: nil)
-    return [] if option_strings_source == 'violations'
     return unless [SELECT_BOX, RADIO_BUTTON, TICK_BOX].include?(type)
+    return options_list_source_string(locale:, lookups:) if option_strings_source.present?
     return option_strings_text(locale) if option_strings_text.present?
     return options_list_tickbox(locale) if type == Field::TICK_BOX
 
-    options_list_source_string(locale:, lookups:)
+    []
   end
 
   def options_list_tickbox(locale = I18n.locale)
@@ -183,11 +188,14 @@ class Field < ApplicationRecord
 
   def options_list_source_string(locale: I18n.locale, lookups: nil)
     source_options = option_strings_source.split
-    if source_options[0] == 'lookup'
-      lookups ? Lookup.values(source_options.last, lookups, locale:) : source_options
-    else
-      source_options[0]
-    end
+
+    return [] if source_options[0] == 'violations'
+    return source_options[0] unless source_options[0] == 'lookup'
+    # TODO: This is a misleading check because Lookup.values already does a presence check
+    #       Is this some optimization?
+    return [] unless lookups
+
+    Lookup.values(source_options.last, lookups, locale:)
   end
 
   # TODO: This is the TSFV service grouping. Is this still v2 functionality? Delete, after porting to front end?

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 source 'https://rubygems.org'
-ruby '3.4.9'
+ruby '3.4.11'
 
 gem 'activerecord-nulldb-adapter' # Running Rake tasks at build time before DB is set up. TODO: Still needed?
 gem 'activerecord-session_store', '~> 2.0'
@@ -23,6 +23,9 @@ gem 'file_validators',     '~> 3.0'    # ActiveRecord extension for validating a
 gem 'i18n-js',             '~> 3.9'    # Shares Rails i18n strings with the front end
 gem 'image_processing',    '~> 1.12'   # Ruby bindings for ImageMagick, resize attachments. Depenency of ActiveStorage
 gem 'jbuilder',            '~> 2.11'   # JSON templating for the API
+# TODO: V3 introduces changes that rejects and throws an
+# exception to duplicate keys. Will need some work to make codebase compatible
+gem 'json',                '>= 2.0.0', '!=2.7.0', '< 3'
 # TODO: Upgrade to json_schemer >=2.4.0, but need to rework app/overrides/json_schemer.rb monkeypatch
 gem 'json_schemer',        '~> 1.0'    # Validation for submited JSON.
 gem 'jwt',                 '~> 3.1'    # Ruby JWT library used to authenticate 3rd party identity provider tokens
@@ -30,7 +33,7 @@ gem 'matrix',              '~> 0.4'    # No longer part of Ruby 3.2 core. Must b
 gem 'minipack',            '~> 0.3'    # An alternative to Webpacker.
 gem 'mutex_m',             '~> 0.3'    # Removed Ruby 3.4 dependency.
 gem 'net-http-persistent', '~> 4.0'    # Thread safe persistent HTTP connections, optional Faraday dependency
-gem 'nokogiri',            '~> 1.18'   # Security assertion on implicit dependency.
+gem 'nokogiri',            '~> 1.19'   # Security assertion on implicit dependency.
 gem 'observer',            '~> 0.1'    # Removed Ruby 3.4 dependency.
 gem 'ostruct',             '~> 0.6'    # Removed Ruby 3.5 dependency
 gem 'pdfjs_viewer',        '~> 0.1'    # PDF.js viewer for displaying PDFs in the browser
@@ -48,8 +51,7 @@ gem 'rake',                '~> 13.0'
 gem 'rbnacl',              '>= 7.1.1'  # Libsodium Ruby binding. Used for encrypting export file passwords.
 gem 'resolv',              '~> 0.6'    # DNS resolver. TODO: Used by what?
 gem 'ruby-mailchecker',    '~> 6.0'    # Suggests correct email domains for mistyped email addresses
-# TODO: Upgrade to rubyzip >= 3.0.0 after write_xlsx supports it
-gem 'rubyzip',             '~> 2.4'    # Zip and encrypt exported files.
+gem 'rubyzip',             '~> 3.4'    # Zip and encrypt exported files.
 gem 'spreadsheet',         '~> 1.3'    # Read XLS spreadsheets for imports (not XLSX!). TODO: Different gem? Reconsider?
 # Note: if upgrading Sunspot, update the corresponding version of Solr on the Docker image
 # Current Solr version is 5.3.1
@@ -61,7 +63,7 @@ gem 'text',                '~> 1.3'    # Phonetic Search Algorithms
 gem 'tzinfo-data',         '~> 1.2025' # Timezone Data for TZInfo
 gem 'web-push',            '~> 3.0'
 gem 'will_paginate',       '~> 4.0'    # Paginates ActiveRecord models  TODO: This can be refactored away.
-gem 'write_xlsx',          '~> 1.11'   # Exports XLSX
+gem 'write_xlsx',          '~> 1.12.3' # Exports XLSX
 
 group :development, :test do
   gem 'brakeman', require: false
@@ -83,14 +85,14 @@ group :development, :test do
   # TODO: This is needed to read .xlsx files for validation in the exporter tests.
   # TODO: The app currently uses Spreadsheet to read excel files, but it only supports reading .xls
   # TODO: Changing the application to support reading .xlsx will be handled by a later ticket
-  gem 'roo',                        '~> 2.10'
+  gem 'roo',                        '~> 3.0'
   gem 'rspec',                      '~> 3.12'
   gem 'rspec-activemodel-mocks',    '~> 1.1'
   gem 'rspec-collection_matchers',  '~> 1.2'
   gem 'rspec-instafail',            '~> 1.0'
   gem 'rspec-rails',                '~> 6.0'
-  gem 'rubocop',                    '~> 1.54'
-  gem 'rubocop-performance',        '~> 1.18'
+  gem 'rubocop',                    '~> 1.91'
+  gem 'rubocop-performance',        '~> 1.25'
   gem 'ruby-lsp',                   '~> 0.17'
   gem 'simplecov',                  '~> 0.18'
   # TODO: Latest version (1.2.5) of this conflicts with sunspot gem. Upgrade when we upgrade sunspot

@@ -46,6 +46,7 @@ export const ACTIONS = {
   DASH_FLAGS: "dash_flags",
   DASH_GROUP_OVERVIEW: "dash_group_overview",
   DASH_NATIONAL_ADMIN_SUMMARY: "dash_national_admin_summary",
+  DASH_CASES_BY_INCIDENT_TYPE: "dash_cases_by_incident_type",
   DASH_PROTECTION_CONCERNS: "dash_protection_concerns",
   DASH_REPORTING_LOCATION: "dash_reporting_location",
   DASH_SHARED_FROM_MY_TEAM: "dash_shared_from_my_team",
@@ -137,7 +138,8 @@ export const ACTIONS = {
   VIEW_CASE_RELATIONSHIPS: "view_case_relationships",
   CASE_MANAGEMENT_KPIS_REPORT: "case_management_kpis_report",
   DISTRIBUTION_USERS_ROLE_REPORT: "distribution_users_role_report",
-  DISABLE_MULTIPLE: "disable_multiple"
+  DISABLE_MULTIPLE: "disable_multiple",
+  SEND_EMAIL_MULTIPLE: "send_email_multiple"
 };
 
 export const MANAGE = [ACTIONS.MANAGE];
@@ -152,6 +154,7 @@ export const RESOURCES = {
   configurations: "primero_configurations",
   contact_information: "contact_information",
   dashboards: "dashboards",
+  exports: "exports",
   families: "families",
   forms: "forms",
   incidents: "incidents",
@@ -339,7 +342,8 @@ export const OVERVIEW_DASHBOARD = Object.freeze([
   ACTIONS.DASH_CASE_RISK,
   ACTIONS.DASH_GROUP_OVERVIEW,
   ACTIONS.DASH_CASE_INCIDENT_OVERVIEW,
-  ACTIONS.DASH_NATIONAL_ADMIN_SUMMARY
+  ACTIONS.DASH_NATIONAL_ADMIN_SUMMARY,
+  ACTIONS.DASH_CASES_BY_INCIDENT_TYPE
 ]);
 
 export const ACTION_NEEDED_DASHBOARD = Object.freeze([
@@ -422,3 +426,5 @@ export const VIEW_CASE_RELATIONSHIPS = [...MANAGE, ACTIONS.VIEW_CASE_RELATIONSHI
 export const UPDATE_CASE_RELATIONSHIPS = [...MANAGE, ACTIONS.UPDATE_CASE_RELATIONSHIPS];
 
 export const CAN_DISABLE_MULTIPLE_USERS = [ACTIONS.DISABLE_MULTIPLE];
+
+export const CAN_SEND_EMAIL_MULTIPLE_USERS = [...MANAGE, ACTIONS.SEND_EMAIL_MULTIPLE];

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_31_000000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_05_153040) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "ltree"
   enable_extension "pg_catalog.plpgsql"
@@ -224,6 +224,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_31_000000) do
     t.string "srch_transferred_to_user_groups", default: [], array: true
     t.string "srch_transferred_to_users", default: [], array: true
     t.string "srch_workflow"
+    t.string "srch_incident_types", default: [], array: true
     t.index "((data ->> 'case_id'::text))", name: "cases_case_id_unique_idx", unique: true
     t.index "((phonetic_data -> 'tokens'::text))", name: "cases_phonetic_tokens_idx", using: :gin
     t.index "jsonb_array_length((data -> 'followup_subform_section'::text))", name: "cases_followup_subform_section_length", where: "(jsonb_array_length((data -> 'followup_subform_section'::text)) > 0)"
@@ -451,6 +452,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_31_000000) do
     t.string "type"
     t.datetime "updated_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.boolean "visible", default: true, null: false
+    t.string "date_input"
     t.index ["form_section_id"], name: "index_fields_on_form_section_id"
     t.index ["name"], name: "index_fields_on_name"
     t.index ["subform_summary"], name: "index_fields_on_subform_summary", using: :gin
@@ -559,7 +561,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_31_000000) do
     t.string "srch_associated_user_agencies", default: [], array: true
     t.string "srch_associated_user_groups", default: [], array: true
     t.string "srch_associated_user_names", default: [], array: true
-    t.string "srch_cp_sexual_violence_type"
     t.datetime "srch_created_at", precision: nil
     t.boolean "srch_flagged", default: false
     t.string "srch_gbv_sexual_violence_type"
@@ -584,6 +585,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_31_000000) do
     t.string "srch_transferred_to_users", default: [], array: true
     t.string "srch_unaccompanied_separated_status"
     t.string "srch_violation_with_verification_status", default: [], array: true
+    t.string "srch_cp_incident_violence_type"
     t.index "((data ->> 'incident_id'::text))", name: "incidents_incident_id_unique_idx", unique: true
     t.index "((phonetic_data -> 'tokens'::text))", name: "incidents_phonetic_tokens_idx", using: :gin
     t.index ["data"], name: "index_incidents_on_data", using: :gin
@@ -705,6 +707,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_31_000000) do
     t.string "record_type"
     t.string "user_name"
     t.index ["record_type", "record_id"], name: "index_record_histories_on_record_type_and_record_id"
+  end
+
+  create_table "registry_associations", force: :cascade do |t|
+    t.string "registry_associable_type", null: false
+    t.uuid "registry_associable_id", null: false
+    t.uuid "registry_record_id", null: false
+    t.string "field_name", null: false
+    t.string "subform_unique_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["registry_associable_type", "registry_associable_id"], name: "index_registry_associations_on_registry_associable"
+    t.index ["registry_record_id"], name: "index_registry_associations_on_registry_record_id"
   end
 
   create_table "registry_records", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -841,6 +855,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_31_000000) do
     t.jsonb "unhcr_needs_codes_mapping"
     t.datetime "updated_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.jsonb "welcome_email_text_i18n"
+    t.string "registry_type_default"
+    t.jsonb "registry_options"
   end
 
   create_table "themes", force: :cascade do |t|
@@ -915,6 +931,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_31_000000) do
     t.string "transitioned_to_user_groups", array: true
     t.string "type"
     t.string "type_of_export"
+    t.boolean "service_external_referral_registry"
+    t.jsonb "data", default: {}, null: false
+    t.datetime "resolved_at"
     t.index ["authorized_role_unique_id"], name: "index_transitions_on_authorized_role_unique_id"
     t.index ["id", "type"], name: "index_transitions_on_id_and_type"
     t.index ["record_type", "record_id"], name: "index_transitions_on_record_type_and_record_id"

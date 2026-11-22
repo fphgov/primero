@@ -15,7 +15,9 @@ class IdentityProvider < ApplicationRecord
   store_accessor :configuration,
                  :client_id, :authorization_url, :identity_scope,
                  :verification_url, :issuer, :user_domain, :domain_hint, :force_standard_oidc, :username_claim,
-                 :redirect_uri
+                 :redirect_uri, :skip_oidc_prompt, :oidc_prompt
+
+  has_many :users, inverse_of: :identity_provider
 
   class << self
     # Identity providers are set at deployment-time. They should not change.
