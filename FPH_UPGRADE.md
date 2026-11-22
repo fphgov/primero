@@ -66,19 +66,21 @@ Két mappával dolgozunk:
 - **`primero/docker`**: itt buildeljük az image-eket.
 - **Deploy mappa** (lokálisan `ddev/docker`, prodon ennek a megfelelője): itt van a `docker-compose.yaml`, a `defaults.env` és a mentő script. Minden `docker compose` parancsot innen futtass.
 
+A prod szerveren a Dockert csak `sudo`-val lehet használni, ezért minden Dockert hívó parancs (a scriptek is) `sudo`-val szerepel.
+
 ### 2.1. Adatbázis mentése (deploy mappa)
 
 ```bash
-./postgres_backup.sh
+sudo ./postgres_backup.sh
 ```
 
-A script név alapján keresi a postgres konténert. Ha azt írja, hogy a konténer nem fut, vesd össze a scriptben megadott nevet a `docker ps` kimenetével.
+A script név alapján keresi a postgres konténert. Ha azt írja, hogy a konténer nem fut, vesd össze a scriptben megadott nevet a `sudo docker ps` kimenetével.
 
 ### 2.2. Image-ek buildelése (`primero/docker`)
 
 ```bash
-./build.sh application
-./build.sh nginx
+sudo ./build.sh application
+sudo ./build.sh nginx
 ```
 
 Az nginx-et csak akkor kell újrabuildelni, ha a `docker/nginx` mappa változott.
@@ -86,15 +88,18 @@ Az nginx-et csak akkor kell újrabuildelni, ha a `docker/nginx` mappa változott
 ### 2.3. Alkalmazás leállítása (deploy mappa)
 
 ```bash
-docker compose --profile app stop application worker
+sudo docker compose --profile app stop application worker nginx
 ```
 
-Így a régi kód nem fut a már migrált adatbázissal. Az nginx ezalatt 502-es hibát ad.
+Így a régi kód nem fut a már migrált adatbázissal. Az oldal ezalatt nem érhető el.
+
+- **Az nginx-et is le kell állítani.** Az nginx csak induláskor oldja fel az `application` címét. Ha az application konténer az új image miatt újra létrejön, új IP-címet kaphat, és a tovább futó nginx a régire küldené a kéréseket (502). A 2.5. lépés az application után indítja.
+- **`down` helyett `stop` kell.** A `down` a postgres-t is leállítja, a következő lépésben futó `run --rm application` pedig nem indítja el, mert az application-nek nincs `depends_on` beállítása. Így a migráció nem érné el az adatbázist.
 
 ### 2.4. Migráció
 
 ```bash
-docker compose --profile app run --rm application primero-migrate
+sudo docker compose --profile app run --rm application primero-migrate
 ```
 
 Csak a még le nem futott sémamigrációkat futtatja, seedet nem.
@@ -104,7 +109,7 @@ Ne a `configure` service-t használd! Az `primero-bootstrap`-et futtat, ami a `d
 ### 2.5. Indítás
 
 ```bash
-docker compose --profile app up -d
+sudo docker compose --profile app up -d
 ```
 
 ### 2.6. Adatmigrációs scriptek
@@ -116,8 +121,8 @@ Ha egy verzió ilyet is hoz, a `db/data_migration/v<verzió>/README.md` írja le
 3. Még azelőtt, hogy a felhasználók belépnek. Egyes scriptek tömegesen írják felül a rekordokat, így egy közben mentett módosítás elveszhet.
 
 ```bash
-docker compose exec application bin/rails r ./db/data_migration/v<verzió>/<script>.rb
-docker compose exec application bin/rails r ./db/data_migration/v<verzió>/<script>.rb true
+sudo docker compose exec application bin/rails r ./db/data_migration/v<verzió>/<script>.rb
+sudo docker compose exec application bin/rails r ./db/data_migration/v<verzió>/<script>.rb true
 ```
 
 ## 3. Verziófüggő teendők
