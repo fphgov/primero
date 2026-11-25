@@ -42,7 +42,8 @@ class IdpToken
         token_string, nil, true,
         algorithm: ALGORITHM, jwks:,
         aud:, verify_aud: true, iss:, verify_iss: true,
-        verify_iat: true, verify_expiration: true, verify_not_before: true
+        verify_iat: false, verify_expiration: true, verify_not_before: true,
+        nbf_leeway: 60
       )
     end
   end
